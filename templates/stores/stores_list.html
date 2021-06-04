@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Stores</title>
+</head>
+<body>
+{{% for store in store_list %}}
+    {{store.name }}
+    {{store.description }}
+    {{store.date_created }}
+    {{store.user }}
+    {{store.url}}
+{{% endfor %}}
+</body>
+</html>

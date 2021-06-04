@@ -1,5 +1,10 @@
-from django.core.validators import MinValueValidator, MaxValueValidator
-from django.db import models
+from django.db import models, transaction
+from django.contrib.auth.models import PermissionsMixin, UserManager
+from django.contrib.auth.base_user import AbstractBaseUser
+from django.utils.translation import ugettext_lazy as _
+from django.contrib.auth.models import (
+    AbstractBaseUser, PermissionsMixin, BaseUserManager
+)
 
 
 TRENDING_CATEGORIES = (
@@ -18,30 +23,62 @@ TRENDING_PRODUCTS = (
 
 )
 
+class UserManager(BaseUserManager):
 
-class User(models.Model):
+    def _create_user(self, email, password, **extra_fields):
 
-    name = models.CharField(max_length=100, verbose_name="Your name or Brand name")
-    email = models.EmailField(max_length=50, unique=True, verbose_name="Email")
-    password = models.CharField(max_length=30, verbose_name="Password")
-    image = models.ImageField(verbose_name='Image')
-    age = models.PositiveSmallIntegerField(
-        validators=[MinValueValidator(0), MaxValueValidator(102)],
-        verbose_name="Age",
-        default=0
-    )
+        if not email:
+            raise ValueError("The given email must be set")
+        try:
+            with transaction.atomic():
+                user = self.model(email=email, **extra_fields)
+                user.set_password(password)
+                user.save(using=self._db)
+            return user
+        except:
+            raise
 
+    def create_user(self, email, password=None, **extra_fields):
+        extra_fields.setdefault("is_staff", False)
+        extra_fields.setdefault("is_superuser", False)
+        return self._create_user(email, password, **extra_fields)
+
+    def create_superuser(self, email, password, **extra_fields):
+        extra_fields.setdefault("is_staff", True)
+        extra_fields.setdefault("is_superuser", True)
+        return self._create_user(email, password=password, **extra_fields)
+
+
+class User(AbstractBaseUser, PermissionsMixin):
+    username = models.CharField(_('username'), max_length=30, blank=True)
+    email = models.EmailField(max_length=40, unique=True)
+    is_staff = models.BooleanField(default=True)
+    first_name = models.CharField(max_length=30)
+    last_name = models.CharField(max_length=30)
+    avatar = models.ImageField(upload_to='avatars/', null=True, blank=True)
+    url = models.URLField(verbose_name='URL', blank=True, null=True)
+    description = models.CharField(max_length=255, verbose_name="Description", blank=True, null=True)
+    image = models.ImageField(verbose_name='Photo')
     date_created = models.DateField(auto_now=True)
 
 
-    def __str__(self):
-        return self.name
+    objects = UserManager()
+
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = []
+
+    def save(self, *args, **kwargs):
+        super(User, self).save(*args, **kwargs)
+        return self
 
     class Meta:
+        db_table = _('User')
+        verbose_name = _('user')
+        verbose_name_plural = _('users')
 
-        db_table = "User"
-        verbose_name = "Пользователь"
-        verbose_name_plural = "Пользователи"
+    def __str__(self):
+        return f"{self.first_name} - {self.last_name}"
+
 
 
 class Store(models.Model):
@@ -59,14 +96,14 @@ class Store(models.Model):
 
     class Meta:
 
-        db_table = "Store"
-        verbose_name = "Магазин"
-        verbose_name_plural = "Магазины"
+        db_table = _("Store")
+        verbose_name = _("Store")
+        verbose_name_plural = _("Stores")
 
 
 class Category(models.Model):
 
-    name = models.CharField(max_length=255, verbose_name='Имя категории')
+    name = models.CharField(max_length=255, verbose_name='Name of category')
     slug = models.SlugField(unique=True)
 
     def __str__(self):
@@ -74,9 +111,9 @@ class Category(models.Model):
 
     class Meta:
 
-        db_table = "Category"
-        verbose_name = "Категория"
-        verbose_name_plural = "Категории"
+        db_table = _("Category")
+        verbose_name = _("Category")
+        verbose_name_plural = _("Categories")
 
 
 class Product(models.Model):
@@ -96,6 +133,6 @@ class Product(models.Model):
 
     class Meta:
 
-        db_table = "Product"
-        verbose_name = "Продукт"
-        verbose_name_plural = "Продукты"
+        db_table = _("Product")
+        verbose_name = _("Product")
+        verbose_name_plural = _("Products")
