@@ -5,12 +5,12 @@
     <title>Stores</title>
 </head>
 <body>
-{{% for store in store_list %}}
+{% for store in store_list %}
     {{store.name }}
     {{store.description }}
     {{store.date_created }}
     {{store.user }}
     {{store.url}}
-{{% endfor %}}
+{% endfor %}
 </body>
 </html>

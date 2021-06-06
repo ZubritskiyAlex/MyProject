@@ -5,11 +5,11 @@
     <title>Products</title>
 </head>
 <body>
-{{% for product in product_list %}}
+{% for product in product_list %}
     {{product.title }}
     {{product.image }}
     {{product.price }}
     {{product.stores }}
-{{% endfor %}}
+{% endfor %}
 </body>
 </html>

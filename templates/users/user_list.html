@@ -5,12 +5,12 @@
     <title>Users</title>
 </head>
 <body>
-{{% for user in user_list %}}
+{% for user in user_list %}
     {{user.username }}
     {{user.email }}
     {{user.first_name }}
     {{user.last_name }}
     {{user.image }}
-{{% endfor %}}
+{% endfor %}
 </body>
 </html>
