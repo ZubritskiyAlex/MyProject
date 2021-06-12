@@ -55,12 +55,11 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_staff = models.BooleanField(default=True)
     first_name = models.CharField(max_length=30)
     last_name = models.CharField(max_length=30)
-    avatar = models.ImageField(upload_to='avatars/', null=True, blank=True)
     url = models.URLField(verbose_name='URL', blank=True, null=True)
     description = models.CharField(max_length=255, verbose_name="Description", blank=True, null=True)
     image = models.ImageField(verbose_name='Photo')
     date_created = models.DateField(auto_now=True)
-
+    is_owner = models.BooleanField(default=False)
 
     objects = UserManager()
 
@@ -89,6 +88,7 @@ class Store(models.Model):
     tranding_category = models.IntegerField(choices=TRENDING_CATEGORIES)
     popular_product = models.IntegerField(choices=TRENDING_PRODUCTS)
     date_created = models.DateField(auto_now=True)
+    image = models.ImageField(verbose_name='Image')
 
     def __str__(self):
         return f"{self.user} - {self.name}-{self.description}-{self.url}"
@@ -117,7 +117,8 @@ class Category(models.Model):
 
 
 class Product(models.Model):
-
+    #обсудить owner
+    owner = models.ForeignKey(User, on_delete=models.CASCADE)
     title = models.CharField(max_length=255, verbose_name="Product name")
     stores = models.ManyToManyField(Store, verbose_name='Stores')
     category = models.ForeignKey(Category, verbose_name='Category', on_delete=models.CASCADE)
@@ -141,32 +142,16 @@ class Product(models.Model):
         verbose_name = _("Product")
         verbose_name_plural = _("Products")
 
-#class ProductShots(models.Model):
- #   """Product Shots"""
- #   title = models.CharField("Title", max_length=100)
-  #  description = models.TextField("Description")
-  #  image = models.ImageField("Image", upload_to="products/")
-  #  movie = models.ForeignKey(Product, verbose_name="Products", on_delete=models.CASCADE)
-
-
-  #  def __str__(self):
-     #   return self.title
-
-   # class Meta:
-   #     verbose_name = "Product shot"
-   #     verbose_name_plural = "Product shots"
-
-
-
-
 
 class Review(models.Model):
     """Reviews"""
-    email = models.EmailField()
+    email = models.EmailField(verbose_name="Email")
     name = models.CharField("Name", max_length=100)
     text = models.TextField("Message", max_length=5000)
     parent = models.ForeignKey(
         'self', verbose_name="Parent", on_delete=models.SET_NULL, blank=True, null=True
+    )
+    review_on_store = models.ForeignKey(Store, verbose_name="Parent", on_delete=models.SET_NULL, blank=True, null=True
     )
     product = models.ForeignKey(Product, verbose_name="Product", on_delete=models.CASCADE)
 

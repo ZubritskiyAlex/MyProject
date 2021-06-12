@@ -62,19 +62,44 @@ class ProductAdmin(admin.ModelAdmin):
     get_image.short_description = "Image"
 
 
-#@admin.register(ProductShots)
-#class ProductShotsInLine(admin.TabularInline):
-#    model = ProductShots
-#    extra = 1
-#    readonly_fields = ("get_image",)
 
-#    def get_image(self, obj):
-#        return mark_safe(f'<img src={obj.image.url} width="100" height = "110"')
-
-    #get_image.short_description = "Image"
+@admin.register(User)
+class UserAdmin(admin.ModelAdmin):
+    list_display =("username", "email","is_owner","is_staff")
+    list_editable = ("is_owner","is_staff")
 
 
-admin.site.register(User)
-admin.site.register(Store)
+
+
+@admin.register(Store)
+class StoreAdmin(admin.ModelAdmin):
+    list_display = ("name", "user", "url", "description", "popular_product",)
+    readonly_fields = ("get_image",)
+    list_filter = ("date_created", "url", 'tranding_category')
+    search_fields = ("name", "url", "popular_product")
+    inlines = [ReviewInline]
+    save_on_top = True
+    save_as = True
+    fieldsets = (
+        ('Description', {
+            "classes": ("collapse",),
+            "fields": (("name", "description", "image"),)
+        }),
+        ('Popular', {
+            "classes": ("collapse",),
+            "fields": ("tranding_category", "popular_product",)
+        }),
+
+        ("Options", {
+            "classes": ("collapse",),
+            "fields": (("url",))
+        }),
+    )
+
+    def get_image(self, obj):
+        return mark_safe(f'<img src={obj.image.url} width="100" height = "110"')
+
+    get_image.short_description = "Image"
+
 
 

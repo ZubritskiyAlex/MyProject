@@ -3,7 +3,7 @@ from django import forms
 from .models import Review, Product, Store
 
 
-class ReviewForm(forms.ModelForm):
+class AddReviewForm(forms.ModelForm):
     """Form review"""
 
     class Meta:
@@ -14,6 +14,7 @@ class ReviewForm(forms.ModelForm):
         review = Review(**self.cleaned_data)
         review.save()
         return review
+
 
 class AddProductForm(forms.ModelForm):
     """Add product form"""
@@ -44,3 +45,6 @@ class AddStoreForm(forms.ModelForm):
         store.save()
         return store
 
+
+class ReviewForm:
+    pass
