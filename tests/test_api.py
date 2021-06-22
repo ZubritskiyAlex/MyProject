@@ -5,7 +5,7 @@ from rest_framework import status
 from rest_framework.exceptions import ErrorDetail
 from rest_framework.test import APITestCase
 from api.serializers import ProductSerializer, StoreSerializer, UserSerializer, CategorySerializer, ReviewSerializer
-from teespring.models import Product, Store, User, Review, Category
+from teespring.models import Product, Store, User, Review, Category, UsersProductsRelation, UsersStoresRelation
 
 
 class ProductApiTestCase(APITestCase):
@@ -547,3 +547,192 @@ class CategoryApiTestCase(APITestCase):
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.category_1.refresh_from_db()
         self.assertEqual('Clothes', self.category_1.slug)
+
+
+class UsersProductRelationTestCase(APITestCase):
+
+    def SetUp(self):
+        self.user = User.objects.create(username="Alex", email="abc@gmail.com", is_staff=False,
+
+                                     first_name="Alexander", last_name="Zubritskiy",
+
+                                     url="https://dagadf.com", description="asafasfc", image=None,
+
+                                     date_created="26.04.2000", is_owner=False,
+                                     )
+
+        self.user_2 = User.objects.create(username="Alex", email="abc@gmail.com", is_staff=False,
+
+                                        first_name="Zeka", last_name="Zekov",
+
+                                        url="https://dagadf.com", description="asafasfc", image=None,
+
+                                        date_created="26.04.2000", is_owner=False,
+                                        )
+
+        self.product_1 = Product.objects.create(title="Phone", stores="TechnoStore", category="Digital", description="Devices Store",
+                                           price="500.00", date_created="01.09.2003", is_tranding_category=True,
+                                           image=None, url="https://mi-shop.by/", draft=True, owner=self.user
+                                           )
+        self.product_2 = Product.objects.create(title="Hoodie", stores="Bershka", category="clothes", description="test_2",
+                                           price="255.00", date_created="11.11.2000", is_tranding_category=True,
+                                           image=None, url="https://www.bershka.com/", draft=False, owner="Petr"
+                                           )
+
+
+    def test_like(self):
+        url = reverse('userproductrelation-detail', args=(self.product_1.id,))
+
+        data = {
+            "like": True,
+        }
+        json_data = json.dumps(data)
+        self.client.force_login(self.user)
+        response = self.client.patch(url, data=json_data,
+                                     content_type='application/json')
+
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
+        relation = UsersProductsRelation.objects.get(user=self.user,
+                                                     book=self.product_1)
+
+        self.assertTrue(relation.like)
+
+        data = {
+            "in_bookmarks": True,
+        }
+        json_data =json.dumps(data)
+        response = UsersProductsRelation.objects.get(user=self.user,
+                                                     book=self.product_1)
+        self.assertTrue(relation.in_bookmarks)
+
+    def test_rate(self):
+        url = reverse('userproductrelation-detail', args=(self.product_1.id,))
+
+        data = {
+            "rate": 3,
+        }
+        json_data = json.dumps(data)
+        self.client.force_login(self.user)
+        response = self.client.patch(url, data=json_data,
+                                     content_type='application/json')
+
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
+        relation = UsersProductsRelation.objects.get(user=self.user,
+                                                     book=self.product_1)
+        self.assertEqual(3, relation.rate)
+
+
+    def test_rate_wrong(self):
+        url = reverse('userproductrelation-detail', args=(self.product_1.id,))
+
+        data = {
+            "rate": 9,
+        }
+        json_data = json.dumps(data)
+        self.client.force_login(self.user)
+        response = self.client.patch(url, data=json_data,
+                                     content_type='application/json')
+
+        self.assertEqual(status.HTTP_200_OK, response.status_code, response.data)
+        relation = UsersProductsRelation.objects.get(user=self.user,
+                                                     book=self.product_1)
+        self.assertEqual(3, relation.rate)
+
+
+class UsersStoresRelationTestCase(APITestCase):
+
+    def SetUp(self):
+        self.user = User.objects.create(username="Alex", email="abc@gmail.com", is_staff=False,
+
+                                     first_name="Alexander", last_name="Zubritskiy",
+
+                                     url="https://dagadf.com", description="asafasfc", image=None,
+
+                                     date_created="26.04.2000", is_owner=False,
+                                     )
+
+        self.user_2 = User.objects.create(username="Alex", email="abc@gmail.com", is_staff=False,
+
+                                        first_name="Zeka", last_name="Zekov",
+
+                                        url="https://dagadf.com", description="asafasfc", image=None,
+
+                                        date_created="26.04.2000", is_owner=False,
+                                        )
+        self.store_1 = Store.objects.create(user="Alex", name="TecStore", url="https://dagzdaxaqwdaf.com",
+
+                                            description="Devices shop",
+
+                                            tranding_category="Clothes", popular_product='Face mask',
+
+                                            date_created="27.02.1990", image=None,
+
+                                            )
+
+        self.store_2 = Store.objects.create(user="Zeka", name="TechnoStore", url="https://dagzdaqwdaf.com",
+
+                                            description="Devices shop",
+
+                                            tranding_category="Clothes", popular_product='Face mask',
+
+                                            date_created="27.02.1990", image=None,
+
+                                            )
+
+    def test_like(self):
+        url = reverse('user_store_relation-detail', args=(self.store_1.id,))
+
+        data = {
+            "like": True,
+        }
+        json_data = json.dumps(data)
+        self.client.force_login(self.user)
+        response = self.client.patch(url, data=json_data,
+                                     content_type='application/json')
+
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
+        relation = UsersStoresRelation.objects.get(user=self.user,
+                                                     book=self.store_1)
+
+        self.assertTrue(relation.like)
+
+        data = {
+            "in_bookmarks": True,
+        }
+        json_data =json.dumps(data)
+        response = UsersStoresRelation.objects.get(user=self.user,
+                                                     book=self.store_1)
+        self.assertTrue(relation.in_bookmarks)
+
+    def test_rate(self):
+        url = reverse('user_store_relation-detail', args=(self.store_1.id,))
+
+        data = {
+            "rate": 3,
+        }
+        json_data = json.dumps(data)
+        self.client.force_login(self.user)
+        response = self.client.patch(url, data=json_data,
+                                     content_type='application/json')
+
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
+        relation = UsersStoresRelation.objects.get(user=self.user,
+                                                     book=self.store_1)
+        self.assertEqual(3, relation.rate)
+
+
+    def test_rate_wrong(self):
+        url = reverse('userproductrelation-detail', args=(self.store_1.id,))
+
+        data = {
+            "rate": 9,
+        }
+        json_data = json.dumps(data)
+        self.client.force_login(self.user)
+        response = self.client.patch(url, data=json_data,
+                                     content_type='application/json')
+
+        self.assertEqual(status.HTTP_200_OK, response.status_code, response.data)
+        relation = UsersProductsRelation.objects.get(user=self.user,
+                                                     book=self.store_1)
+        self.assertEqual(3, relation.rate)

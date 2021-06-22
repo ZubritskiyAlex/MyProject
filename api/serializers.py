@@ -1,6 +1,6 @@
 from rest_framework.serializers import ModelSerializer
 
-from teespring.models import User, Store, Product, Category, Review, UserProductRelation, UserStoreRelation
+from teespring.models import User, Store, Product, Category, Review, UsersProductsRelation, UsersStoresRelation
 
 
 class UserSerializer(ModelSerializer):
@@ -33,14 +33,13 @@ class ReviewSerializer(ModelSerializer):
         fields = '__all__'
 
 
-class UserProductRelationSerializers(ModelSerializer):
+class UsersProductsRelationSerializers(ModelSerializer):
     class Meta:
-        model = UserProductRelation
+        model = UsersProductsRelation
         fields = '__all__'
 
 
-class UserStoreRelationSerializers(ModelSerializer):
+class UsersStoresRelationSerializers(ModelSerializer):
     class Meta:
-        model = UserStoreRelation
+        model = UsersStoresRelation
         fields = '__all__'
-

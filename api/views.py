@@ -3,8 +3,9 @@ from rest_framework.viewsets import ModelViewSet, GenericViewSet
 from api.pagination import CustomPageNumberPagination
 from api.permissions import IsOwnerStaffOrReadOnly
 from api.serializers import UserSerializer, StoreSerializer, CategorySerializer, ProductSerializer, ReviewSerializer, \
-    UserProductRelationSerializers, UserStoreRelationSerializers
-from teespring.models import User, Store, Category, Product, Review, UserProductRelation, UserStoreRelation
+    UsersProductsRelationSerializers, UsersStoresRelationSerializers
+from teespring.models import User, Store, Category, Product, Review,  \
+    UsersStoresRelation, UsersProductsRelation
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
 from rest_framework.filters import SearchFilter, OrderingFilter
@@ -69,15 +70,27 @@ class ReviewViewSet(ModelViewSet):
 #   search_fields = ("title", "content")
 
 
-class UserProductRelationView(UpdateModelMixin, GenericViewSet):
+class UsersProductsRelationView(UpdateModelMixin, GenericViewSet):
     permission_classes = [IsAuthenticated]
-    queryset = UserProductRelation.objects.all()
-    serializer_class = UserProductRelationSerializers
-    lookup_field = 'book'
+    queryset = UsersProductsRelation.objects.all()
+    serializer_class = UsersProductsRelationSerializers
+    lookup_field = 'product'
+
+    def get_object(self):
+        obj, created = UsersProductsRelation.objects.get_or_create(
+                    user=self.request.user,
+                    product_id=self.kwargs['book'])
+        return obj
 
 
-class UserStoreRelationView(UpdateModelMixin, GenericViewSet):
+class UsersStoresRelationView(UpdateModelMixin, GenericViewSet):
     permission_classes = [IsAuthenticated]
-    queryset = UserStoreRelation.objects.all()
-    serializer_class = UserStoreRelationSerializers
+    queryset = UsersStoresRelation.objects.all()
+    serializer_class = UsersStoresRelationSerializers
     lookup_field = 'store'
+
+    def get_object(self):
+        obj, created = UsersProductsRelation.objects.get_or_create(
+                    user=self.request.user,
+                    product_id=self.kwargs['store'])
+        return obj

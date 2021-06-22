@@ -92,9 +92,9 @@ class Store(models.Model):
     image = models.ImageField(verbose_name='Image')
 
     owner = models.ForeignKey(User, on_delete=models.SET_NULL,
-                              null=True, related_name='my_products')
-    customers = models.ManyToManyField(User, through="UserStoreRelation",
-                                  null=True, related_name='products')
+                              null=True, related_name='my_stores')
+    customers = models.ManyToManyField(User, through="UsersStoresRelation",
+                                  null=True, related_name='stores')
 
 
 
@@ -138,7 +138,7 @@ class Product(models.Model):
     draft = models.BooleanField("Draft", default=False)
 
     owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='my_products')
-    customers = models.ManyToManyField(User, through="UserProductRelation", related_name='products')
+    customers = models.ManyToManyField(User, through="UsersProductsRelation", related_name='products')
 
 
     def __str__(self):
@@ -174,7 +174,7 @@ class Review(models.Model):
         verbose_name_plural = "Reviews"
 
 
-class UserProductRelation(models.Model):
+class UsersProductsRelation(models.Model):
     RATE_CHOICES = (
         (1, 'Ok'),
         (2, 'Fine'),
@@ -183,11 +183,11 @@ class UserProductRelation(models.Model):
         (5, 'Incredible')
     )
 
-    user = models.ForeignKey(User, on_delete=models.CASCADE),
-    product = models.ForeignKey(Product, on_delete=models.CASCADE),
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
     like = models.BooleanField(default=False)
     in_bookmarks = models.BooleanField(default=False)
-    rate = models.PositiveSmallIntegerField(choices= RATE_CHOICES)
+    rate = models.PositiveSmallIntegerField(choices= RATE_CHOICES,null=True)
     date_created = models.DateField(auto_now=True)
 
 
@@ -195,7 +195,7 @@ class UserProductRelation(models.Model):
         return f"{self.user.username} - {self.product.title}, RATE {self.rate}"
 
 
-class UserStoreRelation(models.Model):
+class UsersStoresRelation(models.Model):
 
     RATE_CHOICES = (
         (1, 'Ok'),
@@ -205,12 +205,13 @@ class UserStoreRelation(models.Model):
         (5, 'Incredible')
     )
 
-    user = models.ForeignKey(User, on_delete=models.CASCADE),
-    store = models.ForeignKey(Store, on_delete=models.CASCADE),
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    store = models.ForeignKey(Store, on_delete=models.CASCADE)
     like = models.BooleanField(default=False)
     in_bookmarks = models.BooleanField(default=False)
-    rate = models.PositiveSmallIntegerField(choices=RATE_CHOICES)
-    date_created = models.DateField(auto_now=True)
+    rate = models.PositiveSmallIntegerField(choices=RATE_CHOICES, null=True)
+    date_created = models.DateField()
+
 
 
     def __str__(self):

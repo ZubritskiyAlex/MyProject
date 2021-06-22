@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.contrib.admin import ModelAdmin
 from django.utils.safestring import mark_safe
 
-from .models import User, Store, Category, Product, Review, UserProductRelation, UserStoreRelation
+from .models import User, Store, Category, Product, Review, UsersProductsRelation, UsersStoresRelation
 
 @admin.register(Review)
 class ReviewAdmin(admin.ModelAdmin):
@@ -102,13 +102,13 @@ class StoreAdmin(admin.ModelAdmin):
     get_image.short_description = "Image"
 
 
-@admin.register(UserProductRelation)
-class UserProductRelation(ModelAdmin):
+@admin.register(UsersProductsRelation)
+class UsersProductsRelation(ModelAdmin):
     pass
 
 
-@admin.register(UserStoreRelation)
-class UserStoreRelation(ModelAdmin):
+@admin.register(UsersStoresRelation)
+class UsersStoresRelation(ModelAdmin):
     pass
 
 
