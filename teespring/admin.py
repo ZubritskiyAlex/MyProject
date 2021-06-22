@@ -1,8 +1,8 @@
 from django.contrib import admin
+from django.contrib.admin import ModelAdmin
 from django.utils.safestring import mark_safe
 
-from .models import User, Store, Category, Product, Review
-
+from .models import User, Store, Category, Product, Review, UserProductRelation, UserStoreRelation
 
 @admin.register(Review)
 class ReviewAdmin(admin.ModelAdmin):
@@ -100,6 +100,17 @@ class StoreAdmin(admin.ModelAdmin):
         return mark_safe(f'<img src={obj.image.url} width="100" height = "110"')
 
     get_image.short_description = "Image"
+
+
+@admin.register(UserProductRelation)
+class UserProductRelation(ModelAdmin):
+    pass
+
+
+@admin.register(UserStoreRelation)
+class UserStoreRelation(ModelAdmin):
+    pass
+
 
 
 

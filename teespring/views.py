@@ -8,6 +8,12 @@ from teespring.models import Product, Store, User, Category
 from .forms import ReviewForm, AddProductForm, AddStoreForm, AddReviewForm
 
 
+def index_view(request):
+    return render(request, 'index.html', {})
+
+
+
+
 class ProductsListView(ListView):
     """Products list"""
 

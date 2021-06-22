@@ -1,10 +1,12 @@
-from rest_framework.viewsets import ModelViewSet
+from rest_framework.mixins import UpdateModelMixin
+from rest_framework.viewsets import ModelViewSet, GenericViewSet
 from api.pagination import CustomPageNumberPagination
 from api.permissions import IsOwnerStaffOrReadOnly
-from api.serializers import UserSerializer, StoreSerializer, CategorySerializer, ProductSerializer, ReviewSerializer
-from teespring.models import User, Store, Category, Product, Review
+from api.serializers import UserSerializer, StoreSerializer, CategorySerializer, ProductSerializer, ReviewSerializer, \
+    UserProductRelationSerializers, UserStoreRelationSerializers
+from teespring.models import User, Store, Category, Product, Review, UserProductRelation, UserStoreRelation
 from rest_framework.pagination import LimitOffsetPagination
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
 from rest_framework.filters import SearchFilter, OrderingFilter
 
 
@@ -66,3 +68,16 @@ class ReviewViewSet(ModelViewSet):
     filter_backends = (SearchFilter, OrderingFilter)
 #   search_fields = ("title", "content")
 
+
+class UserProductRelationView(UpdateModelMixin, GenericViewSet):
+    permission_classes = [IsAuthenticated]
+    queryset = UserProductRelation.objects.all()
+    serializer_class = UserProductRelationSerializers
+    lookup_field = 'book'
+
+
+class UserStoreRelationView(UpdateModelMixin, GenericViewSet):
+    permission_classes = [IsAuthenticated]
+    queryset = UserStoreRelation.objects.all()
+    serializer_class = UserStoreRelationSerializers
+    lookup_field = 'store'

@@ -7,6 +7,7 @@ from django.contrib.auth.models import (
 )
 
 
+
 TRENDING_CATEGORIES = (
     (1, 'Digital',),
     (2, 'Apparel',),
@@ -90,6 +91,13 @@ class Store(models.Model):
     date_created = models.DateField(auto_now=True)
     image = models.ImageField(verbose_name='Image')
 
+    owner = models.ForeignKey(User, on_delete=models.SET_NULL,
+                              null=True, related_name='my_products')
+    customers = models.ManyToManyField(User, through="UserStoreRelation",
+                                  null=True, related_name='products')
+
+
+
     def __str__(self):
         return f"{self.user} - {self.name}-{self.description}-{self.url}"
 
@@ -117,8 +125,7 @@ class Category(models.Model):
 
 
 class Product(models.Model):
-    #обсудить owner
-    owner = models.ForeignKey(User, on_delete=models.CASCADE)
+
     title = models.CharField(max_length=255, verbose_name="Product name")
     stores = models.ManyToManyField(Store, verbose_name='Stores')
     category = models.ForeignKey(Category, verbose_name='Category', on_delete=models.CASCADE)
@@ -129,6 +136,10 @@ class Product(models.Model):
     image = models.ImageField(verbose_name='Image')
     url = models.URLField(verbose_name='URL', blank=True, null=True, unique=True)
     draft = models.BooleanField("Draft", default=False)
+
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='my_products')
+    customers = models.ManyToManyField(User, through="UserProductRelation", related_name='products')
+
 
     def __str__(self):
         return f"{self.title} - {self.price}"
@@ -161,3 +172,46 @@ class Review(models.Model):
     class Meta:
         verbose_name = "Review"
         verbose_name_plural = "Reviews"
+
+
+class UserProductRelation(models.Model):
+    RATE_CHOICES = (
+        (1, 'Ok'),
+        (2, 'Fine'),
+        (3, 'Good'),
+        (4, 'Amazing'),
+        (5, 'Incredible')
+    )
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE),
+    product = models.ForeignKey(Product, on_delete=models.CASCADE),
+    like = models.BooleanField(default=False)
+    in_bookmarks = models.BooleanField(default=False)
+    rate = models.PositiveSmallIntegerField(choices= RATE_CHOICES)
+    date_created = models.DateField(auto_now=True)
+
+
+    def __str__(self):
+        return f"{self.user.username} - {self.product.title}, RATE {self.rate}"
+
+
+class UserStoreRelation(models.Model):
+
+    RATE_CHOICES = (
+        (1, 'Ok'),
+        (2, 'Fine'),
+        (3, 'Good'),
+        (4, 'Amazing'),
+        (5, 'Incredible')
+    )
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE),
+    store = models.ForeignKey(Store, on_delete=models.CASCADE),
+    like = models.BooleanField(default=False)
+    in_bookmarks = models.BooleanField(default=False)
+    rate = models.PositiveSmallIntegerField(choices=RATE_CHOICES)
+    date_created = models.DateField(auto_now=True)
+
+
+    def __str__(self):
+        return f"{self.user.username} - {self.product.title}, RATE {self.rate}"
