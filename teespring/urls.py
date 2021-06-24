@@ -1,6 +1,6 @@
-from django.urls import path
 from . import views
-
+from django.conf import settings
+from django.urls import path, include
 
 urlpatterns = [
     path("products/",views.ProductsListView.as_view(), name='product_list'),
@@ -14,14 +14,3 @@ urlpatterns = [
     path("review/<int:pk>/", views.AddReview.as_view(), name='add_review'),
 
 ]
-
-
-#from user_profile import views
-
-#urlpatterns = [
-#    path("<str:username>/", views.UserDetailView.as_view(), name="user-profile"),
-#    path("<str:username>/edit/", views.UserUpdateView.as_view(), name="edit-profile"),
-#    path(
-#        "<str:username>/delete/", views.UserDeleteView.as_view(), name="delete-profile"
-#    ),
-#]

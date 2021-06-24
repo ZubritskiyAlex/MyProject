@@ -1,11 +1,26 @@
 from unittest import TestCase
+
+from django.db.models import When, Count, Case, Avg
+
 from api.serializers import ProductSerializer, UserSerializer, StoreSerializer, ReviewSerializer
-from teespring.models import Product, User, Store, Category, Review
+from teespring.models import Product, User, Store, Category, Review, UsersProductsRelation, UsersStoresRelation
 
 
 class ProductSerializerTestCase(TestCase):
 
     def test_ok(self):
+        user_1 = User.objects.create(username="Alex", email="abc@gmail.com", is_staff=False,
+                                     first_name="Alexander",
+                                     last_name="Zubritskiy", url="https://dagadf.com", description="asafasfc",
+                                     image=None,
+                                     date_created="26.04.2000", is_owner=False,
+                                     )
+        user_2 = User.objects.create(username="Zekych", email="axvabc@gmail.com", is_staff=False,
+                                     first_name="Zeka",
+                                     last_name="Zekov", url="https://dagzdafadf.com", description="axzvvsafasfc",
+                                     image=None,
+                                     date_created="27.02.2005", is_owner=False,
+                                     )
         product_1 = Product.objects.create(title="Phone", stores="TechnoStore", category="Digital", description="Devices Store",
                                            price="500.00", date_created="01.09.2003", is_tranding_category=True,
                                            image=None, url="https://mi-shop.by/", draft=False,
@@ -13,8 +28,16 @@ class ProductSerializerTestCase(TestCase):
         product_2 = Product.objects.create(title="Hoodie", stores="Bershka", category="clothes", description="Сlothes store",
                                            price="250.00", date_created="11.07.2005", is_tranding_category=True,
                                            image=None, url="https://www.bershka.com/", draft=False,
-                                           )
-        data = ProductSerializer([product_1, product_2], many=True)
+
+                                       )
+        UsersProductsRelation.objects.create(user=user_1, product=product_1, like=True,rate=4)
+        UsersProductsRelation.objects.create(user=user_2, product=product_1, like=True,rate=4)
+        UsersProductsRelation.objects.create(user=user_1, product=product_2, like=True,rate=5)
+        UsersProductsRelation.objects.create(user=user_2, product=product_2, like=True,rate=5)
+
+        products = Product.objects.all().annotate(annotated_likes=Count(Case(When(usersproductsrelation__like=True, then=1))),
+                                                  rating=Avg('usersproductsrelation__rate'))
+        data = ProductSerializer(products, many=True)
         expected_data = [
             {
                 'title': product_1.title,
@@ -27,6 +50,9 @@ class ProductSerializerTestCase(TestCase):
                 'image': product_1.image,
                 'url': product_1.url,
                 'draft': product_1.draft,
+                'likes_count': 1,
+                'annotated_likes': 1,
+                'rating': 4
                     },
 
             {
@@ -40,6 +66,9 @@ class ProductSerializerTestCase(TestCase):
                 'image': product_2.image,
                 'url': product_2.url,
                 'draft': product_2.draft,
+                'likes_count': 1,
+                'annotated_likes': 1,
+                'rating': 5
             }
         ]
         self.assertEqual(expected_data, data)
@@ -58,6 +87,7 @@ class UserSerializerTestCase(TestCase):
                                      last_name="Zekov",url ="https://dagzdafadf.com",description ="axzvvsafasfc",image =None,
                                      date_created="27.02.2005",is_owner =False,
                                      )
+
         data = UserSerializer([user_1, user_2], many=True)
         expected_data = [
             {
@@ -92,6 +122,18 @@ class UserSerializerTestCase(TestCase):
 class StoreSerializerTestCase(TestCase):
 
     def test_ok(self):
+        user_1 = User.objects.create(username="Alex", email="abc@gmail.com", is_staff=False,
+                                     first_name="Alexander",
+                                     last_name="Zubritskiy", url="https://dagadf.com", description="asafasfc",
+                                     image=None,
+                                     date_created="26.04.2000", is_owner=False,
+                                     )
+        user_2 = User.objects.create(username="Zekych", email="axvabc@gmail.com", is_staff=False,
+                                     first_name="Zeka",
+                                     last_name="Zekov", url="https://dagzdafadf.com", description="axzvvsafasfc",
+                                     image=None,
+                                     date_created="27.02.2005", is_owner=False,
+                                     )
         store_1 = Store.objects.create(user= "Petr", name="TechnoStore", url="https://dagzdaqwdaf.com",
                                        description="Devices shop",
                                        tranding_category="Digital", popular_product='Staple Tee',
@@ -102,6 +144,10 @@ class StoreSerializerTestCase(TestCase):
                                        tranding_category="Clothes",popular_product='Face mask',
                                        date_created="27.02.1990", image=None,
                                        )
+        UsersStoresRelation.objects.create(user=user_1, product=store_1,like=True, rate=5)
+        UsersStoresRelation.objects.create(user=user_2, product=store_1,like=True, rate=5)
+        UsersStoresRelation.objects.create(user=user_1, product=store_2,like=True, rate=4)
+        UsersStoresRelation.objects.create(user=user_2, product=store_2,like=True, rate=4)
         data = StoreSerializer([store_1, store_2], many=True)
         expected_data = [
             {
@@ -112,7 +158,9 @@ class StoreSerializerTestCase(TestCase):
                 'tranding_category':store_1.tranding_category,
                 'popular_product':store_1.popular_product,
                 'date_created':store_1.date_created,
-                'image':store_1.image
+                'image':store_1.image,
+                'likes_count': 1,
+                'rating': 5
                     },
 
             {
@@ -123,7 +171,9 @@ class StoreSerializerTestCase(TestCase):
                 'tranding_category': store_2.tranding_category,
                 'popular_product': store_2.popular_product,
                 'date_created': store_2.date_created,
-                'image': store_2.image
+                'image': store_2.image,
+                'likes_count': 1,
+                'rating': 4
 
             },
         ]

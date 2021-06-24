@@ -15,3 +15,4 @@ router.register(r'store_relation', UsersStoresRelationView)
 
 
 urlpatterns = router.urls
+

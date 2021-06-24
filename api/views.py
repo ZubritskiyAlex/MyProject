@@ -1,3 +1,4 @@
+from django.db.models import Count, Case, When, Avg
 from rest_framework.mixins import UpdateModelMixin
 from rest_framework.viewsets import ModelViewSet, GenericViewSet
 from api.pagination import CustomPageNumberPagination
@@ -24,7 +25,8 @@ class UserViewSet(ModelViewSet):
 
 class StoreViewSet(ModelViewSet):
 
-    queryset = Store.objects.all()
+    queryset = Store.objects.all().annotate(annotate_likes=Count(Case(When(usersstoresrelation__like=True, then=1))),
+                                            rating=Avg('usersproductsrelation__rate')).order_by('id')
     serializer_class = StoreSerializer
     pagination_class = CustomPageNumberPagination
     filter_backends = [SearchFilter, OrderingFilter]
@@ -49,7 +51,8 @@ class CategoryViewSet(ModelViewSet):
 
 
 class ProductViewSet(ModelViewSet):
-    queryset = Product.objects.all()
+    queryset = Product.objects.all().annotate(annotate_likes=Count(Case(When(usersproductsrelation__like=True, then=1))),
+                                                  rating=Avg('usersproductsrelation__rate')).order_by('id')
     serializer_class = ProductSerializer
     pagination_class = CustomPageNumberPagination
     filter_backends = [SearchFilter, OrderingFilter]
@@ -79,7 +82,7 @@ class UsersProductsRelationView(UpdateModelMixin, GenericViewSet):
     def get_object(self):
         obj, created = UsersProductsRelation.objects.get_or_create(
                     user=self.request.user,
-                    product_id=self.kwargs['book'])
+                    product_id=self.kwargs['product'])
         return obj
 
 

@@ -1,5 +1,6 @@
 import json
 
+from django.db.models import When, Case, Count, Avg
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.exceptions import ErrorDetail
@@ -36,9 +37,15 @@ class ProductApiTestCase(APITestCase):
     def test_get(self):
         url = reverse('product-list')
         response = self.client.get(url)
-        serializer_data = ProductSerializer([self.product_1, self.product_2, self.product_3], many=True).data
+        products = Product.objects.all().annotate(
+
+        )
+
+        serializer_data = ProductSerializer(products, many=True).data
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual(serializer_data, response.data)
+
+
 
 
     def test_get_search(self):
@@ -197,9 +204,14 @@ class StoreApiTestCase(APITestCase):
     def test_get(self):
         url = reverse('store-list')
         response = self.client.get(url)
-        serializer_data = StoreSerializer.data
+        stores = Store.objects.all().annotate(
+            id__in=[self.store_1.id, self.store_2.id, self.store_3.id]).annotate(
+            annotated_likes=Count(Case(When(usersstoresrelation__like=True, then=1))),rating=Avg('usersstoresrelation__rate').order_by('id'))
+        serializer_data = StoreSerializer(stores,many=True).data
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual(serializer_data, response.data)
+
+
 
 
     def test_get_search(self):
@@ -633,10 +645,7 @@ class UsersProductRelationTestCase(APITestCase):
         response = self.client.patch(url, data=json_data,
                                      content_type='application/json')
 
-        self.assertEqual(status.HTTP_200_OK, response.status_code, response.data)
-        relation = UsersProductsRelation.objects.get(user=self.user,
-                                                     book=self.product_1)
-        self.assertEqual(3, relation.rate)
+        self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code, response.data)
 
 
 class UsersStoresRelationTestCase(APITestCase):
@@ -732,7 +741,5 @@ class UsersStoresRelationTestCase(APITestCase):
         response = self.client.patch(url, data=json_data,
                                      content_type='application/json')
 
-        self.assertEqual(status.HTTP_200_OK, response.status_code, response.data)
-        relation = UsersProductsRelation.objects.get(user=self.user,
-                                                     book=self.store_1)
-        self.assertEqual(3, relation.rate)
+        self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code, response.data)
+
