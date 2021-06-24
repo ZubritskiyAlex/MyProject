@@ -726,7 +726,7 @@ class UsersStoresRelationTestCase(APITestCase):
 
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         relation = UsersStoresRelation.objects.get(user=self.user,
-                                                     book=self.store_1)
+                                                     store=self.store_1)
         self.assertEqual(3, relation.rate)
 
 
@@ -742,4 +742,3 @@ class UsersStoresRelationTestCase(APITestCase):
                                      content_type='application/json')
 
         self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code, response.data)
-

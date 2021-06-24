@@ -215,4 +215,4 @@ class UsersStoresRelation(models.Model):
 
 
     def __str__(self):
-        return f"{self.user.username} - {self.product.title}, RATE {self.rate}"
+        return f"{self.user.username} - {self.store.description}, RATE {self.rate}"

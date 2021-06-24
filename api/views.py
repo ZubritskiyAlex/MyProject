@@ -25,9 +25,8 @@ class UserViewSet(ModelViewSet):
 
 class StoreViewSet(ModelViewSet):
 
-    queryset = Store.objects.all().annotate(annotate_likes=Count(Case(When(usersstoresrelation__like=True, then=1))),
-                                            rating=Avg('usersproductsrelation__rate')).order_by('id')
-    serializer_class = StoreSerializer
+    queryset = UsersStoresRelation.objects.filter(like=True)
+    serializer_class = UsersStoresRelationSerializers
     pagination_class = CustomPageNumberPagination
     filter_backends = [SearchFilter, OrderingFilter]
     permission_classes = [IsOwnerStaffOrReadOnly]
