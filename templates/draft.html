@@ -1,0 +1,42 @@
+{% load static %}
+<html>
+    <head>
+        <title>Teespring</title>
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+        <link href='//fonts.googleapis.com/css?family=Lobster&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
+        <link rel="stylesheet" href="{% static 'css/blog.css' %}">
+    </head>
+    <body>
+        <div class="page-header">
+            <h1><a href="/">My_teespring</a></h1>
+        </div>
+
+        <div class="content container">
+            <div class="row">
+                <div class="col-md-8">
+                {% for store in stores %}
+                    <div class="post">
+                        <div class="date">
+                            {{ store.name }}
+                            {{ store.description }}
+                            {{ store.url}}
+                            {{ store.date_created }}
+                            {{ store.image }}
+
+                        </div>
+                        <h1><a href="">{{ store.name }}</a></h1>
+                        <p>{{ store.description|linebreaksbr }}</p>
+                    </div>
+                {% endfor %}
+                </div>
+            </div>
+        </div>
+    </body>
+
+<form action="/team_name_url/" method="post">
+    <label for="team_name">Enter name: </label>
+    <input id="team_name" type="text" name="name_field" value="Create your store!">
+    <input type="submit" value="Create">
+</form>
+</html>

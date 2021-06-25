@@ -7,9 +7,10 @@ from django.views.generic import ListView, DetailView, FormView
 from teespring.models import Product, Store, User, Category
 from .forms import ReviewForm, AddProductForm, AddStoreForm, AddReviewForm
 
+menu = ["Stores","Products","Users","About app", "Create store", "Create product"]
 
 def index_view(request):
-    return render(request, 'index.html', {})
+    return render(request, 'index.html', {'menu': menu, 'title': 'Main page'})
 
 
 

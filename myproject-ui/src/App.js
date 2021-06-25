@@ -4,8 +4,7 @@ import './App.css';
 function App() {
   return (
     <div className="App">
-      <h1>Hello from React to Django</h1>
-
+      <h1>Welcome to the Teespring!</h1>
     </div>
   );
 }

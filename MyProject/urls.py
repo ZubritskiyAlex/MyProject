@@ -23,13 +23,14 @@ from teespring.views import index_view
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', index_view),
+
+    path('main/', index_view),
     path('api-auth/', include('rest_framework.urls')),
     path("api/", include("api.urls")),
     path('auth/', include('djoser.urls')),
     path('auth/', include('djoser.urls.authtoken')),
     path('auth/', include('djoser.urls.jwt')),
-    path("api/v1/", include("teespring.urls")),
+    path("teespring/", include("teespring.urls")),
     path("api/", include("api.urls")),
 ]
 
