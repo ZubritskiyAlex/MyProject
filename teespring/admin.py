@@ -2,7 +2,9 @@ from django.contrib import admin
 from django.contrib.admin import ModelAdmin
 from django.utils.safestring import mark_safe
 
-from .models import User, Store, Category, Product, Review, UsersProductsRelation, UsersStoresRelation
+from .models import User, Store, Category, Product, Review, UsersProductsRelation, UsersStoresRelation, CartProduct, \
+    Cart, Order
+
 
 @admin.register(Review)
 class ReviewAdmin(admin.ModelAdmin):
@@ -111,6 +113,15 @@ class UsersProductsRelation(ModelAdmin):
 class UsersStoresRelation(ModelAdmin):
     pass
 
+@admin.register(CartProduct)
+class CartProduct(ModelAdmin):
+    pass
+
+@admin.register(Cart)
+class Cart(ModelAdmin):
+    pass
 
 
-
+@admin.register(Order)
+class Order(ModelAdmin):
+  pass

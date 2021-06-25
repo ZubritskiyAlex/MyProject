@@ -1,12 +1,19 @@
 from django.db.models import Count, Case, When, Avg
+from django.shortcuts import get_object_or_404
+from rest_framework import status
+
+from rest_framework.decorators import action
 from rest_framework.mixins import UpdateModelMixin
+from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet, GenericViewSet
 from api.pagination import CustomPageNumberPagination
 from api.permissions import IsOwnerStaffOrReadOnly
 from api.serializers import UserSerializer, StoreSerializer, CategorySerializer, ProductSerializer, ReviewSerializer, \
-    UsersProductsRelationSerializers, UsersStoresRelationSerializers
-from teespring.models import User, Store, Category, Product, Review,  \
-    UsersStoresRelation, UsersProductsRelation
+    UsersProductsRelationSerializers, UsersStoresRelationSerializers, CartSerializer, CartProductSerializer, \
+    OrderSerializer
+from api.utils import get_cart_and_products_in_cart
+from teespring.models import User, Store, Category, Product, Review, \
+    UsersStoresRelation, UsersProductsRelation, Cart, CartProduct, Order
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
 from rest_framework.filters import SearchFilter, OrderingFilter
@@ -25,8 +32,10 @@ class UserViewSet(ModelViewSet):
 
 class StoreViewSet(ModelViewSet):
 
-    queryset = UsersStoresRelation.objects.filter(like=True)
-    serializer_class = UsersStoresRelationSerializers
+    #queryset = UsersStoresRelation.objects.filter(like=True)
+    queryset = Store.objects.all()
+  #  queryset = UsersStoresRelation.objects.filter(like=True)
+    serializer_class = StoreSerializer
     pagination_class = CustomPageNumberPagination
     filter_backends = [SearchFilter, OrderingFilter]
     permission_classes = [IsOwnerStaffOrReadOnly]
@@ -63,6 +72,34 @@ class ProductViewSet(ModelViewSet):
         serializer.validated_data['owner'] = self.request.user
         serializer.save()
 
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+        cart, products_in_cart = get_cart_and_products_in_cart(request)
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            serializer_data = serializer.data
+            if cart:
+                for product in serializer_data:
+                    product['in_cart'] = True if product['id'] in products_in_cart else False
+            return self.get_paginated_response(serializer_data)
+
+        serializer = self.get_serializer(queryset, many=True)
+        serializer_data = serializer.data
+        if cart:
+            for product in serializer_data:
+                product['in_cart'] = True if product['id'] in products_in_cart else False
+        return Response(serializer_data)
+
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance)
+        cart, products_in_cart = get_cart_and_products_in_cart(request)
+        serializer_data = serializer.data
+        if cart:
+            serializer_data['in_cart'] = False if instance.id not in products_in_cart else True
+        return Response(serializer_data)
+
 
 class ReviewViewSet(ModelViewSet):
     queryset = Review.objects.all()
@@ -96,3 +133,75 @@ class UsersStoresRelationView(UpdateModelMixin, GenericViewSet):
                     user=self.request.user,
                     product_id=self.kwargs['store'])
         return obj
+
+
+
+class CartViewSet(ModelViewSet):
+
+    serializer_class = CartSerializer
+    queryset = Cart.objects.all()
+
+    @staticmethod
+    def get_cart(user):
+        if user.is_authenticated:
+            return Cart.objects.filter(owner=user.customer, for_anonymous_user=False).first()
+        return Cart.objects.filter(for_anonymous_user=True).first()
+
+    @staticmethod
+    def _get_or_create_cart_product(user:User , cart: Cart, product: Product):
+        cart_product, created = CartProduct.objects.get_or_create(
+            user=user,
+            product=product,
+            cart=cart
+        )
+        return cart_product, created
+
+    @action(methods=["get"], detail=False)
+    def current_customer_cart(self, *args, **kwargs):
+        cart = self.get_cart(self.request.user)
+        cart_serializer = CartSerializer(cart)
+        return Response(cart_serializer.data)
+
+    @action(methods=['put'], detail=False, url_path='current_customer_cart/add_to_cart/(?P<product_id>\d+)')
+    def product_add_to_cart(self, *args, **kwargs):
+        cart = self.get_cart(self.request.user)
+        product = get_object_or_404(Product, id=kwargs['product_id'])
+        cart_product, created = self._get_or_create_cart_product(self.request.user.customer, cart, product)
+        if created:
+            cart.products.add(cart_product)
+            cart.save()
+            return Response({"detail": "Товар добавлен в корзину", "added": True})
+        return Response({'detail': "Товар уже в корзине", "added": False}, status=status.HTTP_400_BAD_REQUEST)
+
+    @action(methods=["patch"], detail=False, url_path='current_customer_cart/change_qty/(?P<qty>\d+)/(?P<cart_product_id>\d+)')
+    def product_change_qty(self, *args, **kwargs):
+        cart_product = get_object_or_404(CartProduct, id=kwargs['cart_product_id'])
+        cart_product.qty = int(kwargs['qty'])
+        cart_product.save()
+        cart_product.cart.save()
+        return Response(status=status.HTTP_200_OK)
+
+    @action(methods=["put"], detail=False, url_path='current_customer_cart/remove_from_cart/(?P<cproduct_id>\d+)')
+    def product_remove_from_cart(self, *args, **kwargs):
+        cart = self.get_cart(self.request.user)
+        cproduct = get_object_or_404(CartProduct, id=kwargs['cproduct_id'])
+        cart.products.remove(cproduct)
+        cproduct.delete()
+        cart.save()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+class CartProductViewSet(ModelViewSet):
+
+    queryset = CartProduct.objects.all()
+    serializer_class = CartProductSerializer
+    filter_backends = (SearchFilter, OrderingFilter)
+    search_fields = ("title", "content")
+
+
+class OrderViewSet(ModelViewSet):
+
+    queryset = Order.objects.all()
+    serializer_class = OrderSerializer
+    pagination_class = CustomPageNumberPagination
+    filter_backends = (SearchFilter, OrderingFilter)
+    search_fields = ("first_name", "last_name", "address", "created_at", "order_date",)

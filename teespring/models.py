@@ -1,6 +1,7 @@
 from django.db import models, transaction
 from django.contrib.auth.models import PermissionsMixin, UserManager
 from django.contrib.auth.base_user import AbstractBaseUser
+from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import (
     AbstractBaseUser, PermissionsMixin, BaseUserManager
@@ -216,3 +217,98 @@ class UsersStoresRelation(models.Model):
 
     def __str__(self):
         return f"{self.user.username} - {self.store.description}, RATE {self.rate}"
+
+
+class CartProduct(models.Model):
+
+    user = models.ForeignKey(User, verbose_name='Buyer', on_delete=models.CASCADE)
+    cart = models.ForeignKey('Cart', verbose_name='Cart', on_delete=models.CASCADE, related_name='related_products')
+    qty = models.PositiveIntegerField(default=1, verbose_name='Quantity')
+    product = models.ForeignKey(Product, verbose_name='Product', on_delete=models.CASCADE)
+    final_price = models.DecimalField(max_digits=9, decimal_places=2, verbose_name='Total_price')
+
+    def __str__(self):
+        return "Product: {} (for cartproduct)".format(self.product.title)
+
+    def save(self, *args, **kwargs):
+        self.final_price = self.qty * self.product.price
+        super().save(*args, **kwargs)
+
+
+class Cart(models.Model):
+
+    owner = models.ForeignKey(User, null=True, verbose_name='Owner', on_delete=models.CASCADE)
+    products = models.ManyToManyField(CartProduct, blank=True, related_name='related_cart')
+    total_products = models.PositiveIntegerField(default=0)
+    final_price = models.DecimalField(max_digits=9, default=0, decimal_places=2, verbose_name='Total_price')
+    in_order = models.BooleanField(default=False)
+    for_anonymous_user = models.BooleanField(default=False)
+
+    def __str__(self):
+        return str(self.id)
+
+    def save(self, *args, **kwargs):
+        if self.id:
+            self.total_products = self.products.count()
+            self.final_price = sum([cproduct.final_price for cproduct in self.products.all()])
+        super().save(*args, **kwargs)
+
+
+#class Customer(models.Model):
+
+#    user = models.OneToOneField(User, verbose_name='User', on_delete=models.CASCADE)
+ #   phone = models.CharField(max_length=20, verbose_name='Phone number', null=True, blank=True)
+  #  address = models.CharField(max_length=255, verbose_name='Adress', null=True, blank=True)
+   # orders = models.ManyToManyField('Order', verbose_name='Orders', related_name='related_order', blank=True)
+
+#    def __str__(self):
+#        if not (self.user.first_name and self.user.last_name):
+#            return self.user.username
+#        return "Buyer: {} {}".format(self.user.first_name, self.user.last_name)
+
+class Order(models.Model):
+
+    STATUS_NEW = 'New'
+    STATUS_IN_PROGRESS = 'In_progress'
+    STATUS_READY = 'Is_ready'
+    STATUS_COMPLETED = 'Completed'
+
+    BUYING_TYPE_SELF = 'Self delivery'
+    BUYING_TYPE_DELIVERY = 'Delivery'
+
+    STATUS_CHOICES = (
+        (STATUS_NEW, 'New order'),
+        (STATUS_IN_PROGRESS, 'The order is being processed'),
+        (STATUS_READY, 'Order is ready'),
+        (STATUS_COMPLETED, 'The order is completed')
+    )
+
+    BUYING_TYPE_CHOICES = (
+        (BUYING_TYPE_SELF, 'Delivery self'),
+        (BUYING_TYPE_DELIVERY, 'Delivery')
+    )
+
+    buyer = models.ForeignKey(User, verbose_name='Buyer', related_name='related_orders', on_delete=models.CASCADE)
+    first_name = models.CharField(max_length=255, verbose_name='Name')
+    last_name = models.CharField(max_length=255, verbose_name='Last_name')
+    phone = models.CharField(max_length=20, verbose_name='Phone number')
+    cart = models.ForeignKey(Cart, verbose_name='Cart', on_delete=models.CASCADE, null=True, blank=True)
+    address = models.CharField(max_length=1024, verbose_name='adress', null=True, blank=True)
+    status = models.CharField(
+        max_length=100,
+        verbose_name='Status order',
+        choices=STATUS_CHOICES,
+        default=STATUS_NEW
+    )
+    buying_type = models.CharField(
+        max_length=100,
+        verbose_name='Type order',
+        choices=BUYING_TYPE_CHOICES,
+        default=BUYING_TYPE_SELF
+    )
+    comment = models.TextField(verbose_name='Comment to order', null=True, blank=True)
+    created_at = models.DateTimeField(auto_now=True, verbose_name='Date created order')
+    order_date = models.DateField(verbose_name='Date delivery order', default=timezone.now)
+
+    def __str__(self):
+        return str(self.id)

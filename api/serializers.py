@@ -1,13 +1,23 @@
 from rest_framework import serializers
 from rest_framework.serializers import ModelSerializer
 
-from teespring.models import User, Store, Product, Category, Review, UsersProductsRelation, UsersStoresRelation
+from teespring.models import User, Store, Product, Category, Review, UsersProductsRelation, UsersStoresRelation, \
+    CartProduct, Cart, Order
 
 
 class UserSerializer(ModelSerializer):
+
+    user = serializers.SerializerMethodField()
+
     class Meta:
         model = User
         fields = '__all__'
+
+    @staticmethod
+    def get_user(obj):
+        if not (obj.user.first_name and obj.user.last_name):
+            return obj.user.username
+        return ' '.join([obj.user.first_name, obj.user.last_name])
 
 
 class StoreSerializer(ModelSerializer):
@@ -58,4 +68,28 @@ class UsersProductsRelationSerializers(ModelSerializer):
 class UsersStoresRelationSerializers(ModelSerializer):
     class Meta:
         model = UsersStoresRelation
+        fields = '__all__'
+
+
+class CartProductSerializer(serializers.ModelSerializer):
+
+    product = ProductSerializer()
+
+    class Meta:
+        model = CartProduct
+        fields = ['id', 'product', 'qty', 'final_price']
+
+class CartSerializer(serializers.ModelSerializer):
+
+    products = CartProductSerializer(many=True)
+    owner = UserSerializer()
+
+    class Meta:
+        model = Cart
+        fields = '__all__'
+
+class OrderSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Order
         fields = '__all__'
