@@ -9,7 +9,7 @@ class AddReviewForm(forms.ModelForm):
 
     class Meta:
         model = Review
-        fields = ("name", "email", "text")
+        fields = '__all__'
 
     def save(self, **kwargs):
         review = Review(**self.cleaned_data)
@@ -47,11 +47,14 @@ class AddStoreForm(forms.ModelForm):
         return store
 
 
-class ReviewForm:
-    pass
-
-
 class OrderForm(ModelForm):
+    """Add order form"""
+
     class Meta:
         model = Order
         fields= '__all__'
+
+    def save(self, **kwargs):
+        order = Order(**self.cleaned_data)
+        order.save()
+        return order

@@ -19,12 +19,13 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
 
+import teespring.views
 from teespring.views import index_view
 
 urlpatterns = [
     path('admin/', admin.site.urls),
 
-    path('main/', index_view),
+    path('main/', teespring.views.index_view),
     path('api-auth/', include('rest_framework.urls')),
     path("api/", include("api.urls")),
     path('auth/', include('djoser.urls')),

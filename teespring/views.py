@@ -3,17 +3,14 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.urls import reverse
 
-from django.views.generic import ListView, DetailView, FormView
+from django.views.generic import ListView, DetailView
 from teespring.models import Product, Store, User, Category, Order
-from .forms import ReviewForm, AddProductForm, AddStoreForm, AddReviewForm, OrderForm
+from .forms import AddProductForm, AddStoreForm, AddReviewForm, OrderForm
 
-menu = ["Stores","Products","Users","About app", "Create store", "Create product"]
+menu = ["Stores", "Products", "Users", "About app", "Create store", "Create product"]
 
 def index_view(request):
     return render(request, 'index.html', {'menu': menu, 'title': 'Main page'})
-
-
-
 
 class ProductsListView(ListView):
     """Products list"""
@@ -32,11 +29,8 @@ class ProductDetailView(DetailView):
     """ProductDetailView"""
 
     model = Product
-#    form_class = forms.
     template_name = "products/product_detail.html"
     slug_field = "url"
-
-
 
     def get_success_url(self):
         return reverse('products:detail', args=[self.kwargs['slug'], self.kwargs['pk']])
@@ -58,7 +52,7 @@ class ProductDetailView(DetailView):
 
 
     def get(self, request, slug):
-        product = Product.objects.get(url=slug)
+        product = Product.objects.get(slug)
         return render(request, "products/product_detail.html", {"product": product})
 
 
@@ -138,12 +132,13 @@ class CategoryDetailView(DetailView):
         category = Category.objects.get(slug)
         return render(request, "categories/category_detail.html", {"category": category})
 
+
 class CreateProduct(DetailView):
 
     @login_required
     def product_create(self, request):
         if request.method == 'POST':
-            form = AddProductForm(request.user,request.POST)
+            form = AddProductForm(request.user, request.POST)
             if form.is_valid():
                 product = form.save()
                 url = product.get_url()
@@ -151,6 +146,31 @@ class CreateProduct(DetailView):
         else:
             form = AddProductForm()
         return render(request, 'products/product_create.html', {'form': form})
+
+    @login_required()
+    def update_product(request, pk):
+
+        product = Product.objects.get(id=pk)
+        form = AddProductForm(instance=product)
+
+        if request.method == 'POST':
+            form = AddProductForm(request.POST, instance=product)
+            if form.is_valid():
+                form.save()
+                return redirect('/')
+
+        context = {'form': form}
+        return render(request, 'products/product_update.html', context)
+
+    @login_required()
+    def delete_product(request, pk):
+        product = Product.objects.get(id=pk)
+        if request.method == 'POST':
+            product.delete()
+            return redirect('/')
+
+        context = {'item': product}
+        return render(request, 'products/product_delete.html', context)
 
 
 class CreateStore(DetailView):
@@ -167,27 +187,77 @@ class CreateStore(DetailView):
             form = AddStoreForm()
         return render(request, 'stores/store_create.html', {'form': form})
 
+    @login_required
+    def update_store(request, pk):
+
+        store = Store.objects.get(id=pk)
+        form = AddStoreForm(instance=store)
+
+        if request.method == 'POST':
+            form = AddStoreForm(request.POST, instance=store)
+            if form.is_valid():
+                form.save()
+                return redirect('/')
+
+        context = {'form': form}
+        return render(request, 'stores/store_update.html', context)
+
+    @login_required
+    def delete_store(request, pk):
+        store = Store.objects.get(id=pk)
+        if request.method == 'POST':
+            store.delete()
+            return redirect('/')
+
+        context = {'item': store}
+        return render(request, 'stores/store_delete.html', context)
+
 
 class CreateReview(DetailView):
 
     @login_required
-    def store_create(self, request):
+    def review_create(self, request):
         if request.method == 'POST':
-            form = AddStoreForm(request.user, request.POST)
+            form = AddReviewForm(request.user, request.POST)
             if form.is_valid():
                 review = form.save()
                 url = review.get_url()
                 return HttpResponseRedirect(url)
         else:
             form = AddReviewForm()
-        return render(request, 'stores/store_create.html', {'form': form})
+        return render(request, 'review/review_create.html', {'form': form})
+
+    @login_required
+    def review_update(request, pk):
+
+        review = AddReview.objects.get(id=pk)
+        form = AddReviewForm(instance=review)
+
+        if request.method == 'POST':
+            form = AddReviewForm(request.POST, instance=review)
+            if form.is_valid():
+                form.save()
+                return redirect('/')
+
+        context = {'form': form}
+        return render(request, 'review/review_update.html', context)
+
+    @login_required
+    def delete_review(request, pk):
+        review = AddReviewForm.objects.get(id=pk)
+        if request.method == 'POST':
+            review.delete()
+            return redirect('/')
+
+        context = {'item': review}
+        return render(request, 'review/review_delete.html', context)
 
 
 class AddReview(DetailView):
     """Feedback for product"""
 
     def post(self, request, pk):
-        form = ReviewForm(request.POST)
+        form = AddReviewForm(request.POST)
         product = Product.objects.get(id=pk)
         if form.is_valid():
             form = form.save(commit=False)
@@ -195,39 +265,39 @@ class AddReview(DetailView):
             form.save()
         return redirect(product.get_absolute_url())
 
+
 class OrderCreate(DetailView):
-        """CRUD ORDER"""
+    '''CRUD ORDER'''
+    def create_order(request):
 
-def create_order(request):
+        form = OrderForm()
+        if request.method =='POST':
+            form = OrderForm(request.POST)
+            if form.is_valid():
+                form.save()
+                return redirect('/')
+        context = {'form':form}
+        return render(request, 'order/order_form.html', context)
 
-    form = OrderForm()
-    if request.method =='POST':
-        form = OrderForm(request.POST)
-        if form.is_valid():
-            form.save()
+    def update_order(request,pk):
+
+        order = Order.objects.get(id=pk)
+        form = OrderForm(instance=order)
+
+        if request.method =='POST':
+            form = OrderForm(request.POST, instance=order)
+            if form.is_valid():
+                form.save()
+                return redirect('/')
+
+        context = {'form': form}
+        return render(request,'order/order_form.html', context)
+
+    def delete_order(request, pk):
+        order = Order.objects.get(id=pk)
+        if request.method == 'POST':
+            order.delete()
             return redirect('/')
-    context = {'form':form}
-    return render(request, 'order/order_form.html', context)
 
-def update_order(request,pk):
-
-    order = Order.objects.get(id=pk)
-    form = OrderForm(instance=order)
-
-    if request.method =='POST':
-        form = OrderForm(request.POST, instance=order)
-        if form.is_valid():
-            form.save()
-            return redirect('/')
-
-    context = {'form': form}
-    return render(request,'order/order_form.html', context)
-
-def delete_order(request, pk):
-    order = Order.objects.get(id=pk)
-    if request.method == 'POST':
-        order.delete()
-        return redirect('/')
-
-    context = {'item': order}
-    return render(request, 'order/delete_order.html', context)
+        context = {'item': order}
+        return render(request, 'order/delete_order.html', context)
