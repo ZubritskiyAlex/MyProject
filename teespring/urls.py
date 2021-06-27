@@ -1,6 +1,10 @@
+from django.contrib.auth.views import LogoutView
+
 from . import views
 from django.conf import settings
 from django.urls import path, include
+
+from .views import LoginView, RegistrationView
 
 urlpatterns = [
     path("products/", views.ProductsListView.as_view(), name='product_list'),
@@ -26,5 +30,9 @@ urlpatterns = [
 
     path("create_review/", views.CreateReview.review_create, name='create_review'),
     path("update_review/<str:pk>/", views.CreateReview.review_update, name='update_review'),
-    path("delete_review/<str:pk>/", views.CreateReview.delete_review, name='delete_review')
+    path("delete_review/<str:pk>/", views.CreateReview.delete_review, name='delete_review'),
+
+    path('login/',LoginView.as_view(), name ='login'),
+    path('registration/',RegistrationView.as_view(), name='registration'),
+    path('logout/',LogoutView.as_view(), name='logout'),
 ]
