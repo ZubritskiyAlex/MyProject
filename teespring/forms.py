@@ -1,6 +1,7 @@
 from django import forms
+from django.forms import ModelForm
 
-from .models import Review, Product, Store
+from .models import Review, Product, Store, Order
 
 
 class AddReviewForm(forms.ModelForm):
@@ -48,3 +49,9 @@ class AddStoreForm(forms.ModelForm):
 
 class ReviewForm:
     pass
+
+
+class OrderForm(ModelForm):
+    class Meta:
+        model = Order
+        fields= '__all__'

@@ -17,7 +17,7 @@ class App extends Component{
       return (
           <div>
               <h1>{products[0].title}</h1>
-              <button onClick= {setBooks.bind(this, newProducts)}>SET NEW product</button>
+              <button onClick= {setBooks.bind(this.newProducts)}>SET NEW product</button>
           </div>
       );
   }
