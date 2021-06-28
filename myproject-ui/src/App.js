@@ -2,10 +2,14 @@ import React,{ Component } from "react";
 import logo from './logo.svg';
 import './App.css';
 import './store';
+import {Card} from "semantic-ui-react";
 import {connect} from "react-redux";
 import {setProducts} from "./action/products";
 import products from '/products.json';
 import axios from 'axios';
+import { Menu } from './components/Menu';
+import { ProductCard } from './components/ProductCard';
+
 
 class App extends Component{
   componentWillMount() {
@@ -17,18 +21,15 @@ class App extends Component{
 
 
     render() {
-      const { products } = this.props;
+      const { products, isReady } = this.props;
       return (
-          <ul>
-              {
-                  !books ? 'Loading...' : books.map(book =>(
-                      <li>
-                          <b>{book.title}</b>-{book.author}
-                      </li>
-                      )
-                  )
-              }
-          </ul>
+          <Container>
+              <Menu/>
+              <Card.Group itemsPerRow={4}>
+              <ul>
+              {!isReady ? 'Loading...' : products.map((product,i) =>(<ProductCard key={i} {...product} />))} </ul>
+              </Card.Group>
+          </Container>
       );
   }
 }
@@ -38,7 +39,8 @@ const mapState = state => ({
 });
 
 const mapStateToProps = ({products}) => ({
-    products: products.items
+    products: products.items,
+    isReady: products.isReady
 });
 
 const  mapDispatchToProps = dispatch => ({
