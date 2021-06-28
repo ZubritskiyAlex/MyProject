@@ -15,6 +15,7 @@ menu = ["Stores", "Products", "Users", "About app", "Create store", "Create prod
 def index_view(request):
     return render(request, 'index.html', {'menu': menu, 'title': 'Main page'})
 
+
 class ProductsListView(ListView):
     """Products list"""
 
@@ -33,7 +34,7 @@ class ProductDetailView(DetailView):
 
     model = Product
     template_name = "products/product_detail.html"
-    slug_field = "url"
+    slug_field = "title"
 
     def get_success_url(self):
         return reverse('products:detail', args=[self.kwargs['slug'], self.kwargs['pk']])
@@ -57,6 +58,21 @@ class ProductDetailView(DetailView):
     def get(self, request, slug):
         product = Product.objects.get(slug)
         return render(request, "products/product_detail.html", {"product": product})
+
+
+class SearchProducts(ListView):
+    "Search products"
+    paginate_by = 5
+
+    def get_queryset(self):
+        return Product.objects.filter(title__icontains=self.request.GET.get('q'))
+
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        context['q'] = f'q={self.request.GET.get("q")}'
+        return context
+
+
 
 
 class StoresListView(ListView):
@@ -85,6 +101,21 @@ class StoreDetailView(DetailView):
         return render(request, "stores/store_detail.html", {"store": store})
 
 
+
+class SearchStores(ListView):
+    "Search stores"
+    paginate_by = 5
+
+    def get_queryset(self):
+        return Store.objects.filter(title__icontains=self.request.GET.get('q'))
+
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args,**kwargs)
+        context['q'] = f'q={self.request.GET.get("q")}'
+        return context
+
+
+
 class UsersListView(ListView):
     """Users list"""
 
@@ -102,7 +133,7 @@ class UserDetailViewSet(DetailView):
     """UserDetailView """
 
     model = User
-    slug_field = "url"
+    slug_field = "username"
     template_name = "users/user_detail.html"
 
     def get(self, request, slug):
@@ -355,3 +386,4 @@ class RegistrationView(CartMixin, View):
             return HttpResponseRedirect('/')
         context = {'form': form, 'cart': self.cart}
         return render(request,'registration.html', context)
+

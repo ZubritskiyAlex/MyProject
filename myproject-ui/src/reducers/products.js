@@ -1,23 +1,23 @@
 const  initialState = {
-  products: [],
+    isReady: false,
+    items: null
 };
 
 export  default (state = initialState,action) => {
-    switch (action, type){
-    case 'SET_PRODUCTS':
-        return {
-            ...state,
-            products: action.payload
-        };
-    case 'ADD_PRODUCTS':
-        return {
-            ...state,
-            products: [
-                ...state.products,
-                action.payload
-            ]
-        };
-    default:
-        return state;
+    switch (action.type) {
+        case 'SET_PRODUCTS':
+            return {
+                ...state,
+                items: action.payload,
+                isReady: true
+            };
+        case 'SET_IS_READY':
+            return {
+                ...state,
+                isReady: action.payload
+            };
+            break;
+        default:
+            return state;
     }
 };
