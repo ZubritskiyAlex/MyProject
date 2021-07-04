@@ -76,12 +76,12 @@
 
     const defaults = {
         actionContainer: "div.actions",
-        counterContainer: "span.action-counter",
+        counterContainer: "span.actions-counter",
         allContainer: "div.actions span.all",
         acrossInput: "div.actions input.select-across",
         acrossQuestions: "div.actions span.question",
         acrossClears: "div.actions span.clear",
-        allToggleId: "action-toggle",
+        allToggleId: "actions-toggle",
         selectedClass: "selected"
     };
 
@@ -140,7 +140,7 @@
         Array.from(document.getElementById('result_list').tBodies).forEach(function(el) {
             el.addEventListener('change', function(event) {
                 const target = event.target;
-                if (target.classList.contains('action-select')) {
+                if (target.classList.contains('actions-select')) {
                     const checkboxes = affectedCheckboxes(target, shiftPressed);
                     checker(checkboxes, options, target.checked);
                     updateCounter(actionCheckboxes, options);
@@ -153,7 +153,7 @@
 
         document.querySelector('#changelist-form button[name=index]').addEventListener('click', function() {
             if (list_editable_changed) {
-                const confirmed = confirm(gettext("You have unsaved changes on individual editable fields. If you run an action, your unsaved changes will be lost."));
+                const confirmed = confirm(gettext("You have unsaved changes on individual editable fields. If you run an actions, your unsaved changes will be lost."));
                 if (!confirmed) {
                     event.preventDefault();
                 }
@@ -164,10 +164,10 @@
         // The button does not exist if no fields are editable.
         if (el) {
             el.addEventListener('click', function(event) {
-                if (document.querySelector('[name=action]').value) {
+                if (document.querySelector('[name=actions]').value) {
                     const text = list_editable_changed
-                        ? gettext("You have selected an action, but you haven’t saved your changes to individual fields yet. Please click OK to save. You’ll need to re-run the action.")
-                        : gettext("You have selected an action, and you haven’t made any changes on individual fields. You’re probably looking for the Go button rather than the Save button.");
+                        ? gettext("You have selected an actions, but you haven’t saved your changes to individual fields yet. Please click OK to save. You’ll need to re-run the actions.")
+                        : gettext("You have selected an actions, and you haven’t made any changes on individual fields. You’re probably looking for the Go button rather than the Save button.");
                     if (!confirm(text)) {
                         event.preventDefault();
                     }
@@ -188,7 +188,7 @@
     }
 
     ready(function() {
-        const actionsEls = document.querySelectorAll('tr input.action-select');
+        const actionsEls = document.querySelectorAll('tr input.actions-select');
         if (actionsEls.length > 0) {
             Actions(actionsEls);
         }
