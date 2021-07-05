@@ -10,10 +10,15 @@ from teespring.models import Product, Store, User, Category, Order
 from .forms import AddProductForm, AddStoreForm, AddReviewForm, OrderForm, LoginForm, RegistrationForm
 from .mixins import CartMixin
 
-menu = ["Stores", "Products", "Users", "About app", "Create store", "Create product"]
+menu = ["Stores", "Products", "About app", "Create store", "Create product","Log in", "Registration", "Feedback"]
 
-def index_view(request):
-    return render(request, 'index.html', {'menu': menu, 'title': 'Main page'})
+def main_page(request):
+    stores = Store.objects.all()
+    products = Product.objects.all()
+    return render(request, 'main.html', {'stores': stores, 'products': products, 'menu': menu, 'title': 'Main page'})
+
+def about(request):
+    return render(request, 'about.html', {'menu': menu, 'title': 'About app'})
 
 
 class ProductsListView(ListView):
@@ -387,3 +392,5 @@ class RegistrationView(CartMixin, View):
         context = {'form': form, 'cart': self.cart}
         return render(request,'registration.html', context)
 
+def add_product(request):
+    return render(request, 'products/addproduct.html',)

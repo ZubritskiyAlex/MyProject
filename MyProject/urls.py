@@ -20,12 +20,11 @@ from django.contrib import admin
 from django.urls import path, include
 
 import teespring.views
-from teespring.views import index_view
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-
-    path('main/', teespring.views.index_view),
+    path('', teespring.views.main_page, name='home'),
+    path('about/', teespring.views.about, name='about'),
     path('api-auth/', include('rest_framework.urls')),
     path("api/", include("api.urls")),
     path('auth/', include('djoser.urls')),
