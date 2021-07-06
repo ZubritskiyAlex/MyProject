@@ -1,6 +1,6 @@
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.views import View
@@ -10,15 +10,41 @@ from teespring.models import Product, Store, User, Category, Order
 from .forms import AddProductForm, AddStoreForm, AddReviewForm, OrderForm, LoginForm, RegistrationForm
 from .mixins import CartMixin
 
-menu = ["Stores", "Products", "About app", "Create store", "Create product","Log in", "Registration", "Feedback"]
+menu = [
+    {'title': "Stores", 'url_name': 'about'},
+    {'title':"Products", 'url_name': 'about'},
+    {'title': "Create store", 'url_name': 'about'},
+    {'title': "Create product", 'url_name': 'about'},
+    {'title': "Log in", 'url_name': 'about'},
+    {'title': "Registration", 'url_name': 'about'},
+    {'title': "Feedback", 'url_name': 'about'},
+    {'title': "About app", 'url_name': 'about'},
+    ]
 
 def main_page(request):
     stores = Store.objects.all()
     products = Product.objects.all()
-    return render(request, 'main.html', {'stores': stores, 'products': products, 'menu': menu, 'title': 'Main page'})
+    context = {
+         'stores': stores,
+         'products': products,
+         'menu': menu,
+         'title': 'Main page'
+    }
+
+    return render(request, 'main.html', context=context)
 
 def about(request):
     return render(request, 'about.html', {'menu': menu, 'title': 'About app'})
+
+def add_product(request):
+    return HttpResponse("Add product")
+
+def add_store(request):
+    return HttpResponse("Add Store")
+
+
+
+
 
 
 class ProductsListView(ListView):
@@ -392,5 +418,4 @@ class RegistrationView(CartMixin, View):
         context = {'form': form, 'cart': self.cart}
         return render(request,'registration.html', context)
 
-def add_product(request):
-    return render(request, 'products/addproduct.html',)
+

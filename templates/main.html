@@ -15,7 +15,7 @@
     {{p.description|linebreaks|truncatewords:10}}
     {% endautoescape %}
             <div class="clear"></div>
-            <p class="link-read-post"><a href="#">More detailed</a></p>
+            <p class="link-read-post"><a href="{{p.get_absolute_url}}">More detailed</a></p>
             </li>
     {% endfor %}
 </ul>
@@ -31,7 +31,7 @@
     {{s.description|linebreaks|truncatewords:10}}
     {% endautoescape %}
         <div class="clear"></div>
-        <p class="link-read-post"><a href="#">More detailed</a></p>
+        <p class="link-read-post"><a href="{{s.get_absolute_url}}">More detailed</a></p>
         </li>
     {% endfor %}
 </ul>

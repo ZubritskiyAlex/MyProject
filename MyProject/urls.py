@@ -18,13 +18,10 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
-
-import teespring.views
+from api.views import signup, login
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', teespring.views.main_page, name='home'),
-    path('about/', teespring.views.about, name='about'),
     path('api-auth/', include('rest_framework.urls')),
     path("api/", include("api.urls")),
     path('auth/', include('djoser.urls')),
@@ -32,6 +29,13 @@ urlpatterns = [
     path('auth/', include('djoser.urls.jwt')),
     path("teespring/", include("teespring.urls")),
     path("api/", include("api.urls")),
+
+    #Auth
+    path('signup/',signup),
+    path('login/', login),
+
+
+
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

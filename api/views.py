@@ -1,5 +1,7 @@
 from django.db.models import Count, Case, When, Avg
+from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
+from django.views.decorators.csrf import csrf_exempt
 from rest_framework import status
 
 from rest_framework.decorators import action
@@ -12,11 +14,42 @@ from api.serializers import UserSerializer, StoreSerializer, CategorySerializer,
     UsersProductsRelationSerializers, UsersStoresRelationSerializers, CartSerializer, CartProductSerializer, \
     OrderSerializer
 from api.utils import get_cart_and_products_in_cart
+from rest_framework.parsers import JSONParser
+from django.db import IntegrityError
+from rest_framework.authtoken.models import Token
 from teespring.models import User, Store, Category, Product, Review, \
     UsersStoresRelation, UsersProductsRelation, Cart, CartProduct, Order
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
 from rest_framework.filters import SearchFilter, OrderingFilter
+from django.contrib.auth import authenticate
+
+
+@csrf_exempt
+def signup(request):
+    if request.method == 'POST':
+        try:
+            data = JSONParser().parse(request)
+            user = User.objects.create_user(data['username'], password=data['password'])
+            user.save()
+            token = Token.objects.create(user=user)
+            return JsonResponse({'token':str(token)}, status=201)
+        except IntegrityError:
+            return JsonResponse({'error':'That username has already been taken. Please choose a new username'}, status=400)
+
+@csrf_exempt
+def login(request):
+    if request.method == 'POST':
+        data = JSONParser().parse(request)
+        user = authenticate(request, username=data['username'], password=data['password'])
+        if user is None:
+            return JsonResponse({'error':'Could not login. Please check username and password'}, status=400)
+        else:
+            try:
+                token = Token.objects.get(user=user)
+            except:
+                token = Token.objects.create(user=user)
+            return JsonResponse({'token':str(token)}, status=200)
 
 
 class UserViewSet(ModelViewSet):
@@ -34,7 +67,6 @@ class StoreViewSet(ModelViewSet):
 
     #queryset = UsersStoresRelation.objects.filter(like=True)
     queryset = Store.objects.all()
-  #  queryset = UsersStoresRelation.objects.filter(like=True)
     serializer_class = StoreSerializer
     pagination_class = CustomPageNumberPagination
     filter_backends = [SearchFilter, OrderingFilter]
