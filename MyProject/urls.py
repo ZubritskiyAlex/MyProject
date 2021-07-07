@@ -19,9 +19,10 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
 from api.views import signup, login
-from .yasg import urlpatterns as doc_urls
+#from .yasg import urlpatterns as doc_urls
+from rest_framework_swagger.views import get_swagger_view
 
-
+schema_view = get_swagger_view(title="My Project Swagger")
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -35,11 +36,13 @@ urlpatterns = [
     #Auth
     path('signup/',signup),
     path('login/', login),
+    path('',schema_view),
+    path('accounts/', include('rest_framework.urls'))
 
 
 
 ]
-urlpatterns += doc_urls
+#urlpatterns += doc_urls
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 

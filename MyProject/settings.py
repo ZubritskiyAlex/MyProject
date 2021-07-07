@@ -43,7 +43,8 @@ INSTALLED_APPS = [
     'teespring',
     'rest_framework',
     'rest_framework.authtoken',
-    'drf_yasg',
+    'rest_framework_swagger',
+    #'drf_yasg',
     'djoser',
     'api',
 ]
@@ -154,6 +155,7 @@ AUTH_USER_MODEL = 'teespring.User'
 
 
 REST_FRAMEWORK = {
+    'DEFAULT_SCHEMA_CLASS':'rest_framework.schemas.coreapi.AutoSchema',
     'DEFAULT_PERMISSION_CLASSES': (
 #       'rest_framework.permissions.IsAdminUser',
         'rest_framework.permissions.AllowAny',
@@ -174,6 +176,7 @@ REST_FRAMEWORK = {
         'rest_framework_json_api.pagination.PageNumberPagination',
     'TEST_REQUEST_DEFAULT_FORMAT':'json',
 }
+
 #JWT_AUTH = {
 #    'JWT_EXPIRATION_DELTA': datetime.timedelta(days=3),
 #    'JWT_ALLOW_REFRESH': True,

@@ -8,6 +8,7 @@ from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.mixins import UpdateModelMixin
 from rest_framework.response import Response
+from rest_framework.schemas import AutoSchema
 from rest_framework.viewsets import ModelViewSet, GenericViewSet
 from api.pagination import CustomPageNumberPagination
 from api.permissions import IsOwnerStaffOrReadOnly
@@ -24,6 +25,18 @@ from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
 from rest_framework.filters import SearchFilter, OrderingFilter
 from django.contrib.auth import authenticate
+import coreapi
+
+
+class MyProjectViewSchema(AutoSchema):
+    def get_manual_fields(self, path, method):
+        extra_fields = []
+        if method.lower() in ['post','put']:
+            extra_fields = [
+                coreapi.Field('title')
+            ]
+        manual_fields = super().get_manual_fields(path,method)
+        return  manual_fields + extra_fields
 
 @csrf_exempt
 def signup(request):
@@ -64,7 +77,7 @@ class UserViewSet(ModelViewSet):
 
 
 class StoreViewSet(ModelViewSet):
-
+    schema = MyProjectViewSchema()
     #queryset = UsersStoresRelation.objects.filter(like=True)
     queryset = Store.objects.all()
     serializer_class = StoreSerializer
