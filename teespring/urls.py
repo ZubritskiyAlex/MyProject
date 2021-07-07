@@ -2,17 +2,16 @@ from django.contrib.auth import login
 from django.contrib.auth.views import LogoutView
 
 from . import views
-from django.conf import settings
 from django.urls import path, include
 
-from .views import LoginView, RegistrationView, main_page, add_product
+from .views import LoginView, RegistrationView, main_page, about
 
 urlpatterns = [
 
     path('', main_page, name='home'),
-   # path('about/', about, name='about'),
+    path('about/', about, name='about'),
  ######new
-    path('addproduct/', add_product, name='add_product'),
+   # path('addproduct/', add_product, name='add_product'),
     #path('addstore/', add_store, name='add_store'),
     #path('feedback/', feedback, name='feedback'),
     path('login/',login, name='login'),
