@@ -1,8 +1,12 @@
 {% extends 'base.html'%}
-
+{% load static %}
 {% block content %}
 <h1>{{ title }}</h1>
 <p>Content main page
+<head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="{% static "css/styles.css" %}" />
+</head>
 
 <ul>
     {% for s in stores %}
