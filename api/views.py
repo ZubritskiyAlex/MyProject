@@ -1,3 +1,4 @@
+from django.conf.urls import url
 from django.db.models import Count, Case, When, Avg
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
@@ -23,7 +24,6 @@ from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
 from rest_framework.filters import SearchFilter, OrderingFilter
 from django.contrib.auth import authenticate
-
 
 @csrf_exempt
 def signup(request):

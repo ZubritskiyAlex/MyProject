@@ -8,6 +8,16 @@
     <link rel="stylesheet" href="{% static "css/styles.css" %}" />
 </head>
 
+    <div class="mb-3">
+  <label for="exampleFormControlInput1" class="form-label">Email address</label>
+  <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="name@example.com">
+</div>
+<div class="mb-3">
+  <label for="exampleFormControlTextarea1" class="form-label">Example textarea</label>
+  <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+</div>
+
+
 <ul>
     {% for s in stores %}
     <li>
@@ -30,6 +40,10 @@
         <p>{{p.category}}</p>
     {% endfor %}
 </ul>
-
+<body>
+    <h3>Popular products</h3>
+    <img src="{% static "images/Hoodie.jpeg" %}" alt="Stones along the river" >
+    <img src="{% static "images/laptop.jpg" %}" alt="Stones along the river" >
+</body>
 
 {% endblock %}
