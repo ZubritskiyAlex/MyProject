@@ -31,15 +31,25 @@ docker run --name MyContainer -it ubuntu bash
 
 Stack:
 Django
+	
 DjangoRESTFramework
+	
 PostgreSQL
+	
 ReactJS
+	
 Redux
+	
 Redux Thunk
+
 React Logger
+
 Axios
+
 Lodash
+
 Semantic UI (React)
+
 Bootstrap
 
 	
