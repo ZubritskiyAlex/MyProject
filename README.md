@@ -3,29 +3,29 @@ MyProject
 A web application is a platform for creating an online store. The user can create his own online store. 
 The buyer does not have to be registered to be able to buy.
 
-Getting started
+GETTING STARTED
 
 To clone a project repository: 
 
 git clone https://github.com/ZubritskiyAlex/MyProject.git
 
-Prerequisites:
+PREREQUISITES:
 
 Instructions for installing additional components: pip install -r requirements.txt
 
 
-Start backend:
+START BACKEND:
 
 python manage.py runserver
 
 
-How to run tests:
+HOW TO RUN TESTS:
 
 ./manage.py test tests OR 
 ./manage.py test tests <file name>
 
 
-Start frontend:
+START FRONTEND:
 	
 Be sure to install Node.js!
 
@@ -34,7 +34,7 @@ npm start
 npm run build
 
 
-Docker:
+DOCKER:
 	
 docker run <image_name>
 	
@@ -42,7 +42,7 @@ docker run ubuntu
 	
 docker run --name MyContainer -it ubuntu bash
 
-Stack:
+STACK:
 	
 Django
 	
