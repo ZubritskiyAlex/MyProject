@@ -36,10 +36,7 @@ urlpatterns = [
     #Auth
     path('signup/',signup),
     path('login/', login),
-    path('',schema_view),
-    path('accounts/', include('rest_framework.urls'))
-
-
+#    path('',schema_view),
 
 ]
 #urlpatterns += doc_urls

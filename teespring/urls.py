@@ -8,7 +8,7 @@ from .views import LoginView, RegistrationView, main_page, about
 
 urlpatterns = [
 
-   # path('', main_page, name='home'),
+ #   path('', main_page, name='home'),
     path('about/', about, name='about'),
  ######new
    # path('addproduct/', add_product, name='add_product'),
