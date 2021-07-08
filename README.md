@@ -29,7 +29,6 @@ docker run <image_name>
 docker run ubuntu
 docker run --name MyContainer -it ubuntu bash
 
-	
 Stack:
 Django
 DjangoRESTFramework
