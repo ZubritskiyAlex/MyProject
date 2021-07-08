@@ -1,6 +1,9 @@
+from django.db.models import Count
 from django.views import View
 
-from teespring.models import User, Cart
+from teespring.models import User, Cart, Category
+
+menu = ["Create product", "Create store", "Log in", "Registration", "Feedback", "About app"]
 
 
 
@@ -22,3 +25,19 @@ class CartMixin(View):
                 cart = Cart.objects.create(for_anonymous_user=True)
         self.cart = cart
         return super().dispatch(request, *args, **kwargs)
+
+
+
+class DataMixin:
+    def get_user_context(self,**kwargs):
+        context = kwargs
+        cats = Category.objects.annotate(Count('product'))
+        user_menu = menu.copy
+        if not self.request.user.is_authenticated:
+            user_menu.pop(1)
+
+        context['menu'] = user_menu
+
+        context['cats'] = cats
+        if 'cat_selected' not in context:
+            context['cat_selected'] = 0

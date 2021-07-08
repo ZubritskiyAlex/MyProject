@@ -1,5 +1,6 @@
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.paginator import Paginator
 from django.http import HttpResponseRedirect
@@ -9,10 +10,8 @@ from django.views import View
 
 from django.views.generic import ListView, DetailView, CreateView
 from teespring.models import Product, Store, User, Category, Order
-from .forms import AddProductForm, AddStoreForm, AddReviewForm, OrderForm, LoginForm, RegistrationForm
-from .mixins import CartMixin
-
-menu = ["Create product", "Create store", "Log in", "Registration", "Feedback", "About app"]
+from .forms import AddProductForm, AddStoreForm, AddReviewForm, OrderForm, LoginForm, RegisterUserForm
+from .mixins import CartMixin, menu, DataMixin
 
 
 def main_page(request):
@@ -294,6 +293,18 @@ class CreateStore(LoginRequiredMixin, CreateView):
         return render(request, 'stores/store_delete.html', context)
 
 
+class AddReview(LoginRequiredMixin, CreateView):
+    """Feedback for product"""
+
+    def post(self, request, pk):
+        form = AddReviewForm(request.POST)
+        product = Product.objects.get(id=pk)
+        if form.is_valid():
+            form = form.save(commit=False)
+            form.product = product
+            form.save()
+        return redirect(product.get_absolute_url())
+
 class CreateReview(LoginRequiredMixin, CreateView):
 
     form_class = AddReviewForm
@@ -339,18 +350,6 @@ class CreateReview(LoginRequiredMixin, CreateView):
         context = {'item': review}
         return render(request, 'review/review_delete.html', context)
 
-
-class AddReview(LoginRequiredMixin, CreateView):
-    """Feedback for product"""
-
-    def post(self, request, pk):
-        form = AddReviewForm(request.POST)
-        product = Product.objects.get(id=pk)
-        if form.is_valid():
-            form = form.save(commit=False)
-            form.product = product
-            form.save()
-        return redirect(product.get_absolute_url())
 
 
 class OrderCreate(DetailView):
@@ -410,34 +409,40 @@ class LoginView(CartMixin,View):
             return render(request,'login.html',{'form':form, 'cart':self.cart})
 
 
-class RegistrationView(CartMixin, View):
+class RegisterUserView(DataMixin, CreateView):
+    form_class = RegisterUserForm
+    template_name = 'users/register.html'
+    success_url = reverse_lazy('login')
 
-    def get(self,request,*args,**kwargs):
-        form = LoginForm(request.POST or None)
-        categories = Category.objects.all()
-        context ={'form':form, 'categories':categories,'cart': self.cart}
-        return render(request,'registration.html',context)
+#    def get_context_data(self,*args,object_list=None, **kwargs):
+#        context = super().get_context_data(**kwargs)
+#        c_def = self.get_user_context(title="Register")
+#        return dict(list(context.items()) + list(c_def.items()))
 
-    def post(self, request,*args,**kwargs):
-        form = RegistrationForm(request.POST or None)
-        if form.is_valid():
-            new_user = form.save(commit=False)
-            new_user.username = form.cleaned_data['username']
-            new_user.email = form.cleaned_data['email']
-            new_user.first_name = form.cleaned_data['first_name']
-            new_user.last_name = form.cleaned_data['last_name']
-            new_user.save()
-            new_user.set_password(form.cleaned_data['password'])
-            new_user.save()
-            User.objects.create_user(
-                user=new_user,
-                phone=form.cleaned_data['phone'],
-                address=form.cleaned_data['address']
-            )
-            user = authenticate(username=form.cleaned_data['username'], password = form.cleaned_data['password'])
-            login(request, user)
-            return HttpResponseRedirect('/')
-        context = {'form': form, 'cart': self.cart}
-        return render(request,'registration.html', context)
+#    def get(self,request,*args,**kwargs):
+#        form = LoginForm(request.POST or None)
+#        categories = Category.objects.all()
+#        context ={'form':form, 'categories':categories,'cart': self.cart}
+#        return render(request,'registration.html',context)
 
-
+#    def post(self, request,*args,**kwargs):
+#        form = RegistrationForm(request.POST or None)
+#        if form.is_valid():
+##            new_user = form.save(commit=False)
+#            new_user.username = form.cleaned_data['username']
+#            new_user.email = form.cleaned_data['email']
+#            new_user.first_name = form.cleaned_data['first_name']
+#            new_user.last_name = form.cleaned_data['last_name']
+#            new_user.save()
+#            new_user.set_password(form.cleaned_data['password'])
+#            new_user.save()
+#            User.objects.create_user(
+#                user=new_user,
+#                phone=form.cleaned_data['phone'],
+#                address=form.cleaned_data['address']
+#            )
+#            user = authenticate(username=form.cleaned_data['username'], password = form.cleaned_data['password'])
+#            login(request, user)
+##            return HttpResponseRedirect('/')
+#        context = {'form': form, 'cart': self.cart}
+#        return render(request,'registration.html', context)

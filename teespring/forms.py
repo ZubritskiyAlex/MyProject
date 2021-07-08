@@ -1,8 +1,9 @@
 from django import forms
+from django.contrib.auth.forms import UserCreationForm
 from django.core.exceptions import ValidationError
 from django.forms import ModelForm
 
-from .models import Review, Product, Store, Order, User, Category
+from .models import Review, Product, Store, Order, User
 
 
 class AddReviewForm(forms.ModelForm):
@@ -109,46 +110,16 @@ class LoginForm(forms.ModelForm):
         fields = ['username','password']
 
 
-class RegistrationForm(forms.ModelForm):
 
-    confirm_password = forms.CharField(widget=forms.PasswordInput)
-    password =forms.CharField(widget=forms.PasswordInput)
-    phone = forms.CharField(required=False)
-    address = forms.CharField(required=False)
-    email = forms.EmailField(required=True)
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields['username'].label = 'Login'
-        self.fields['password'].label = 'Password'
-        self.fields['confirm_password'].label = 'Confirm_password'
-        self.fields['phone'].label = 'Phone number'
-        self.fields['first_name'].label = 'Your first name'
-        self.fields['address'].label = 'Adress'
-        self.fields['email'].label = 'Email'
 
-    def clean_email(self):
-        email = self.cleaned_data['email']
-        domain = email.split('.')[-1]
-        if domain in ['com', 'net']:
-            raise forms.ValidationError(f'Registration for domain {domain} impossible')
-        if User.objects.filter(email=email).exists():
-            raise forms.ValidationError('This email address has already been registered')
-        return email
+class RegisterUserForm(UserCreationForm):
 
-    def clean_username(self):
-        username = self.cleaned_data['username']
-        if User.objects.filter(username=username).exists():
-            raise forms.ValidationError(f'Name {username} occupied')
-        return username
-
-    def clean(self):
-        password = self.cleaned_data['password']
-        confirm_password = self.cleaned_data['confirm_password']
-        if password != confirm_password:
-            raise forms.ValidationError('passwords dont match')
-        return self.cleaned_data
+    username = forms.CharField(label='Login',widget=forms.TextInput(attrs={'class':'form-input'}))
+    first_name = forms.CharField(label='First name',widget=forms.TextInput(attrs={'class':'form-input'}))
+    last_name = forms.CharField(label='Last name',widget=forms.TextInput(attrs={'class':'form-input'}))
+    email = forms.EmailField(label='Email', widget=forms.EmailInput(attrs={'class':'form-input'}))
 
     class Meta:
         model = User
-        fields = ['username', 'password', 'confirm_password', 'first_name', 'last_name','phone', 'email']
+        fields = ('first_name','last_name','image','email','is_owner')

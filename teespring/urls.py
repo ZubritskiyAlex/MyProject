@@ -4,7 +4,7 @@ from django.contrib.auth.views import LogoutView
 from . import views
 from django.urls import path, include
 
-from .views import LoginView, RegistrationView, about, main_page, CreateProduct, CreateReview, CreateStore
+from .views import LoginView, about, main_page, CreateProduct, CreateReview, CreateStore, RegisterUserView
 
 urlpatterns = [
 
@@ -12,21 +12,22 @@ urlpatterns = [
     path('about/', about, name='about'),
     path('addproduct/', CreateProduct.as_view(), name='add_product'),
     path('addstore/', CreateStore.as_view(), name='create_store'),
-
     path("products/", views.ProductsListView.as_view(), name='product_list'),
     path("stores/", views.StoresListView.as_view(), name='stores_list'),
     path("users/", views.UsersListView.as_view(), name='user_list'),
+    path('addreview/', CreateReview.as_view(), name='create_review'),
     path("categories/", views.CategoriesListView.as_view(), name='categories_list'),
+
+
+    path('login/',LoginView.as_view(), name ='login'),
+    path('register/',RegisterUserView.as_view(), name='register'),
 
 
 ################################
 
-    path('addreview/', CreateReview.as_view(), name='create_review'),
+
     path('search_stores/',views.SearchStores.as_view(), name='search_stores'),
     path('search_products/',views.SearchProducts.as_view(), name='search_products'),
-
-
-    #path("categories/", views.CategoriesListView.as_view(), name='categories_list'),
     path("product/<str:slug>/", views.ProductDetailView.as_view(), name='product_detail'),
     path("<store>/", views.StoreDetailView.as_view(), name='store_detail'),
     path("<user>/", views.UserDetailViewSet.as_view(), name='user_detail'),
@@ -46,7 +47,7 @@ urlpatterns = [
     path("update_review/<str:pk>/", views.CreateReview.review_update, name='update_review'),
     path("delete_review/<str:pk>/", views.CreateReview.delete_review, name='delete_review'),
 
-    path('login/',LoginView.as_view(), name ='login'),
-    path('registration/',RegistrationView.as_view(), name='registration'),
+
+
     path('logout/',LogoutView.as_view(), name='logout'),
 ]
