@@ -1,11 +1,18 @@
 from django import forms
+from django.core.exceptions import ValidationError
 from django.forms import ModelForm
 
-from .models import Review, Product, Store, Order, User
+from .models import Review, Product, Store, Order, User, Category
 
 
 class AddReviewForm(forms.ModelForm):
     """Form review"""
+
+    def __init__(self,*args,**kwargs):
+        super(AddReviewForm, self).__init__(*args,**kwargs)
+        self.fields['review_on_store'].empty_label = "Store not selected"
+
+
 
     class Meta:
         model = Review
@@ -19,32 +26,47 @@ class AddReviewForm(forms.ModelForm):
 
 class AddProductForm(forms.ModelForm):
     """Add product form"""
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self,*args,**kwargs):
+        super(AddProductForm, self).__init__(*args,**kwargs)
         self.fields['category'].empty_label = "Category not selected"
+        
 
     class Meta:
         model = Product
-        fields = ['title', 'stores', 'description', 'price', 'image', 'url']
+        fields = '__all__'
 
-    def save(self, **kwargs):
-        product = Product(**self.cleaned_data)
-        product.save()
-        return product
+    def clean_title(self):
+        title = self.cleaned_data['title']
+        if len(title) > 200:
+            raise ValidationError('The length exceeds 200 characters')
+
+        return title
 
 
 class AddStoreForm(forms.ModelForm):
     """Add store form"""
 
+    def __init__(self,*args,**kwargs):
+        super(AddStoreForm, self).__init__(*args,**kwargs)
+        self.fields['category'].empty_label = "Category not selected"
+
     class Meta:
         model = Store
-        fields = ['name', 'url', 'description', 'tranding_category']
+        fields = '__all__'
+
 
     def save(self, **kwargs):
         store = Store(**self.cleaned_data)
         store.save()
         return store
+
+
+    def clean_title(self):
+        title = self.cleaned_data['title']
+        if len(title) > 200:
+            raise ValidationError('The length exceeds 200 characters')
+
+        return title
 
 
 class OrderForm(ModelForm):
@@ -58,6 +80,7 @@ class OrderForm(ModelForm):
         order = Order(**self.cleaned_data)
         order.save()
         return order
+
 
 
 class LoginForm(forms.ModelForm):

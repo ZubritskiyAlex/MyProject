@@ -1,25 +1,42 @@
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.paginator import Paginator
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from django.views import View
 
-from django.views.generic import ListView, DetailView
+from django.views.generic import ListView, DetailView, CreateView
 from teespring.models import Product, Store, User, Category, Order
 from .forms import AddProductForm, AddStoreForm, AddReviewForm, OrderForm, LoginForm, RegistrationForm
 from .mixins import CartMixin
 
-menu = ["Create product","Create store", "Log in", "Registration", "Feedback", "About app"]
+menu = ["Create product", "Create store", "Log in", "Registration", "Feedback", "About app"]
+
 
 def main_page(request):
     stores = Store.objects.all()
     products = Product.objects.all()
-    return render(request, 'main.html',{'stores':stores,'products':products,'menu': menu,'title':'Main page'})
+    return render(request, 'main.html',{'stores':stores,'products':products,'menu': menu,'title':'Main page!'})
+
+#def add_product(request):
+#    if request.method == 'POST':
+#        form = AddProductForm(request.POST, request.FILES)
+#        if form.is_valid():
+##            form.save()
+#            return redirect('home')
+#    else:
+#        form = AddProductForm()
+#    return render(request, 'products/addproduct.html', {'form':form,'menu': menu, 'title': 'Add PRODUCT!'})
 
 
 def about(request):
-    return render(request, 'about.html', {'menu': menu,'title': 'About app'})
+    contact_list = Store.objects.all()
+    paginator = Paginator(contact_list, 3)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    return render(request, 'about.html', {'page_obj':page_obj,'menu': menu,'title': 'About app'})
 
 
 class ProductsListView(ListView):
@@ -83,7 +100,7 @@ class SearchProducts(ListView):
 
 class StoresListView(ListView):
     """Stores list"""
-
+    paginate_by = 5
     model = Store
     queryset = Store.objects.all()
     template_name = "stores/stores_list.html"
@@ -127,7 +144,7 @@ class UsersListView(ListView):
 
     model = User
     queryset = User.objects.all()
-    template_name = "users/users_list.html"
+    template_name = "users/user_list.html"
     ordering_fields = ['username', 'is_owner', 'email']
 
 
@@ -173,7 +190,19 @@ class CategoryDetailView(DetailView):
         return render(request, "categories/category_detail.html", {"category": category})
 
 
-class CreateProduct(DetailView):
+class CreateProduct(LoginRequiredMixin, CreateView):
+
+    form_class = AddProductForm
+    template_name = 'products/addproduct.html'
+    success_url = reverse_lazy('home')
+    login_url = reverse_lazy('home')
+    raise_exception = True
+
+    def get_context_data(self, **kwargs):
+        context = super(CreateProduct, self).get_context_data(**kwargs)
+        context['title'] = "Add product"
+        context['menu'] = menu
+        return context
 
     @login_required
     def product_create(self, request):
@@ -185,7 +214,7 @@ class CreateProduct(DetailView):
                 return HttpResponseRedirect(url)
         else:
             form = AddProductForm()
-        return render(request, 'products/product_create.html', {'form': form})
+        return render(request, 'products/addproduct.html', {'form': form})
 
     @login_required()
     def update_product(request, pk):
@@ -213,7 +242,19 @@ class CreateProduct(DetailView):
         return render(request, 'products/product_delete.html', context)
 
 
-class CreateStore(DetailView):
+class CreateStore(LoginRequiredMixin, CreateView):
+
+    form_class = AddStoreForm
+    template_name = 'stores/store_create.html'
+    success_url = reverse_lazy('home')
+    login_url = reverse_lazy('home')
+    raise_exception = True
+
+    def get_context_data(self, **kwargs):
+        context = super(CreateStore, self).get_context_data(**kwargs)
+        context['title'] = "Add store!"
+        context['menu'] = menu
+        return context
 
     @login_required
     def store_create(self, request):
@@ -253,7 +294,13 @@ class CreateStore(DetailView):
         return render(request, 'stores/store_delete.html', context)
 
 
-class CreateReview(DetailView):
+class CreateReview(LoginRequiredMixin, CreateView):
+
+    form_class = AddReviewForm
+    template_name = 'review/review_create.html'
+    success_url = reverse_lazy('home')
+    login_url = reverse_lazy('home')
+    raise_exception = True
 
     @login_required
     def review_create(self, request):
@@ -293,7 +340,7 @@ class CreateReview(DetailView):
         return render(request, 'review/review_delete.html', context)
 
 
-class AddReview(DetailView):
+class AddReview(LoginRequiredMixin, CreateView):
     """Feedback for product"""
 
     def post(self, request, pk):
