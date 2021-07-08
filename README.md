@@ -5,7 +5,9 @@ The buyer does not have to be registered to be able to buy.
 
 Getting started
 
-To clone a project repository:git clone https://github.com/ZubritskiyAlex/MyProject.git
+To clone a project repository: 
+
+git clone https://github.com/ZubritskiyAlex/MyProject.git
 
 Prerequisites:
 
