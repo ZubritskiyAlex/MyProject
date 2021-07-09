@@ -1,18 +1,20 @@
-<!DOCTYPE html>
+{% extends 'base.html'%}
+{% load static %}
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Stores</title>
-</head>
-<body>
-{% for store in store_list %}
-    {{store.name }}
-    {{store.description }}
-    {{store.date_created }}
-    {{store.user }}
-    {{store.url}}
+
+<h1>{{ title }}</h1>
+
+
+{% for s in stores %}
+    {{s.name }}
+    {{s.description }}
+    {{s.date_created }}
+    {{s.user }}
+    {{s.url}}
 {% endfor %}
 
 
-</body>
+
+
+
 </html>

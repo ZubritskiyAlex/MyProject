@@ -21,11 +21,11 @@ urlpatterns = [
     path('register/',RegisterUserView.as_view(), name='register'),
     path('logout/',logout_user, name='logout'),
     path("product/<int:product_id>/", views.show_product, name='product_detail'),
+    path("store/<int:store_id>", views.show_store, name='store'),
 
-#    path('search_stores/',views.SearchStores.as_view(), name='search_stores'),
+    #    path('search_stores/',views.SearchStores.as_view(), name='search_stores'),
 #    path('search_products/',views.SearchProducts.as_view(), name='search_products'),
 
-#    path("<store>/", views.StoreDetailView.as_view(), name='store_detail'),
 #    path("<user>/", views.UserDetailViewSet.as_view(), name='user_detail'),
 #    path("<category>/", views.CategoryDetailView.as_view(), name='category_detail'),
 #    path("create_order/",views.OrderCreate.create_order, name='create_order'),

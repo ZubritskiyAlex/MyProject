@@ -98,6 +98,9 @@ class Store(models.Model):
     customers = models.ManyToManyField(User, through="UsersStoresRelation",
                                   null=True, related_name='stores')
 
+
+
+
     def __str__(self):
         return f"{self.user} - {self.name}-{self.description}-{self.url}"
 

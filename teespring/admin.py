@@ -32,7 +32,7 @@ class ProductAdmin(admin.ModelAdmin):
     """Products"""
     list_display = ("title", "category", "url", "draft", "get_image")
     readonly_fields = ("get_image",)
-    list_filter = ("category", "price", 'date_created', 'stores')
+    list_filter = ("category", "price", 'stores')
     search_fields = ("title", "category__name")
     inlines = [ReviewInline]
     save_on_top = True
@@ -45,7 +45,7 @@ class ProductAdmin(admin.ModelAdmin):
         }),
         ('Product_information', {
             "classes": ("collapse",),
-            "fields": ("description", "image", "get_image", "date_created")
+            "fields": ("description", "image", "get_image",)
         }),
         ('Stores_and_category', {
             "classes": ("collapse",),
