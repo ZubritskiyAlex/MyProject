@@ -2,9 +2,18 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Product_detail</title>
+    <title>Product detail</title>
 </head>
 <body>
+<ul>
+    <h1>{{product_id.title}}</h1>
+    <p>{{product.description|linebreaks|truncatewords:20}}</p>
+    <p>{{product.price}}</p>
+    <p>{{product.stores}}</p>
+    <p>{{product.image}}</p>
+    <p>{{product.category}}</p>
+    <p>{{product.date_created}}</p>
 
+</ul>
 </body>
 </html>

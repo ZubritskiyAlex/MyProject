@@ -219,3 +219,4 @@ SIMPLE_JWT = {
     'SLIDING_TOKEN_REFRESH_LIFETIME': datetime.timedelta(days=1),
 }
 
+#LOGIN_REDIRECT_URL = '/'

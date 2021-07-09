@@ -3,7 +3,7 @@ from django.views import View
 
 from teespring.models import User, Cart, Category
 
-menu = ["Create product", "Create store", "Log in", "Registration", "Feedback", "About app"]
+menu = ["Create product", "Create store", "Feedback", "About app"]
 
 
 

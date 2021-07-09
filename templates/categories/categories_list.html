@@ -1,13 +1,15 @@
-<!DOCTYPE html>
+{% extends 'base.html'%}
+
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Categories</title>
 </head>
 <body>
+<h1>{{ title }}</h1>
 {% for category in category_list %}
-    {{category.name }}
-    {{category.slug }}
+    <h1>{{category.name }}</h1>
+
 {% endfor %}
 </body>
 </html>

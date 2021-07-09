@@ -18,7 +18,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
-from api.views import signup, login
+
 from .yasg import urlpatterns as doc_urls
 
 
@@ -31,12 +31,6 @@ urlpatterns = [
     path('auth/', include('djoser.urls.authtoken')),
     path('auth/', include('djoser.urls.jwt')),
     path("teespring/", include("teespring.urls")),
-
-    #Auth
-    path('signup/',signup),
-    path('login/', login),
-
-
 
 ]
 urlpatterns += doc_urls

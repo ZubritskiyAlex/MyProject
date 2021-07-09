@@ -1,5 +1,5 @@
 from django import forms
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.core.exceptions import ValidationError
 from django.forms import ModelForm
 
@@ -84,9 +84,9 @@ class OrderForm(ModelForm):
 
 
 
-class LoginForm(forms.ModelForm):
-    username = forms.CharField()
-    password = forms.CharField(widget=forms.PasswordInput)
+class LoginUserForm(AuthenticationForm):
+    username = forms.CharField(label='Log in', widget=forms.TextInput(attrs={'class':'form-input'}))
+    password = forms.CharField(widget=forms.PasswordInput(attrs={'class':'form-input'}))
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
