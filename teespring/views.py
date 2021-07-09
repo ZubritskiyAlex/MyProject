@@ -3,10 +3,9 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView
 from django.core.paginator import Paginator
-from django.http import HttpResponseRedirect, HttpResponse
+from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.urls import reverse, reverse_lazy
-
 from django.views.generic import ListView, DetailView, CreateView
 from teespring.models import Product, Store, User, Category, Order
 from .forms import AddProductForm, AddStoreForm, AddReviewForm, OrderForm, RegisterUserForm, LoginUserForm
@@ -14,12 +13,12 @@ from .mixins import menu, DataMixin
 
 
 def show_product(request, product_id):
-    return render(request, 'products/product_detail.html',{'product_id':product_id})
+    return render(request, 'products/product_detail.html')
 
 def main_page(request):
     stores = Store.objects.all()
     products = Product.objects.all()
-    return render(request, 'main.html',{'stores':stores,'products':products,'menu': menu,'title':'Main page!'})
+    return render(request, 'main.html',{'stores':stores,'menu': menu,'title':'Main page!'})
 
 def about(request):
     contact_list = Store.objects.all()
@@ -47,8 +46,8 @@ class ProductDetailView(DetailView):
     template_name = "products/product_detail.html"
     slug_field = "title"
 
-    def get_success_url(self):
-        return reverse('products:detail', args=[self.kwargs['slug'], self.kwargs['pk']])
+    #def get_success_url(self):
+    #    return reverse('products:detail', args=[self.kwargs['slug'], self.kwargs['pk']])
 
     def get_context_data(self, **kwargs):
         context = super(ProductDetailView, self).get_context_data(**kwargs)
