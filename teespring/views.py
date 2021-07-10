@@ -4,19 +4,40 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView
 from django.core.paginator import Paginator
 from django.http import HttpResponseRedirect, HttpResponse
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse, reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView
 from teespring.models import Product, Store, User, Category, Order
 from .forms import AddProductForm, AddStoreForm, AddReviewForm, OrderForm, RegisterUserForm, LoginUserForm
 from .mixins import menu, DataMixin
+from cart.forms import CartAddProductForm
 
+
+def product_detail(request, id, slug):
+    product = get_object_or_404(Product,
+                                id=id,
+                                slug=slug,
+                                available=True)
+    cart_product_form = CartAddProductForm()
+    return render(request, 'shop/product/detail.html', {'product': product,
+                                                        'cart_product_form': cart_product_form})
 
 def show_product(request, product_id):
     return render(request, 'products/product_detail.html')
 
 def show_store(request, store_id):
+    store = get_object_or_404(Store,
+                                id=store_id,
+                                available=True)
     return render(request, 'stores/store_detail.html')
+
+def product_detail(request, id):
+    product = get_object_or_404(Product,
+                                id=id,
+                                available=True)
+    return render(request,
+                  'products/product_detail.html',
+                  {'product': product})
 
 
 def main_page(request):
@@ -354,7 +375,7 @@ class OrderCreate(DetailView):
                 form.save()
                 return redirect('/')
         context = {'form':form}
-        return render(request, 'order/order_form.html', context)
+        return render(request, 'orders/order/create.html', context)
 
     def update_order(request,pk):
 

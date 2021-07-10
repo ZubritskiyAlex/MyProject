@@ -1,15 +1,43 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends 'base.html'%}
+{% load static %}
+{% block content %}
 <head>
     <meta charset="UTF-8">
     <title>Products</title>
+    <link rel="stylesheet" href="{% static "css/styles.css" %}" />
 </head>
 <body>
+    <h1>{{ title }}</h1>
+    <p>All products
+<ul>
 {% for product in product_list %}
-    {{product.title }}
-    {{product.image }}
-    {{product.price }}
-    {{product.stores }}
+<li>
+    <div class="card" style="width: 18rem;">
+  <img src="{{ s.image}}" class="card-img-top" alt="">
+  <div class="card-body">
+    <h2 class="card-title">{{product.title }}</h2>
+    <p class="card-text">{{product.description|linebreaks|truncatewords:20}}</p>
+    <p class="card-text"> {{product.image }}</p>
+    <p class="card-text"> {{product.price }}</p>
+    <p class="card-text"> {{product.stores }}</p>
+  </div>
+  <ul class="list-group list-group-flush">
+    <li class="list-group-item">Stores: {{product.stores}}</li>
+    <li class="list-group-item">Created at: {{product.date_created}}</li>
+    <p class="link-read-post">More information about the product<a href="#"> More detailed</a></p>
+  </ul>
+  <div class="card-body"></div>
+</div>
 {% endfor %}
+</div>
+{% endblock content %}
+</ul>
 </body>
 </html>
+
+
+
+
+
+
+

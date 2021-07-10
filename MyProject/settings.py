@@ -41,6 +41,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'MyProject',
     'teespring',
+    'cart',
+    'orders',
     'rest_framework',
     'rest_framework.authtoken',
     'drf_yasg',
@@ -48,6 +50,8 @@ INSTALLED_APPS = [
     'api',
 ]
 
+
+CART_SESSION_ID = 'cart'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -76,6 +80,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'cart.context_processors.cart',
             ],
         },
     },
@@ -220,3 +225,5 @@ SIMPLE_JWT = {
 }
 
 #LOGIN_REDIRECT_URL = '/'
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
