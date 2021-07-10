@@ -30,6 +30,12 @@ DEBUG = True
 ALLOWED_HOSTS = []
 #ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS").split(" ")
 
+# CELERY SETTINGS
+CELERY_TIMEZONE = 'Europe/Moscow'
+CELERY_TASK_TRACK_STARTED = True
+CELERY_TASK_TIME_LIMIT = 30 * 60
+CELERY_RESULT_BACKEND = 'django-db'
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -48,6 +54,8 @@ INSTALLED_APPS = [
     'drf_yasg',
     'djoser',
     'api',
+    'django_celery_beat',
+    'django_celery_results',
 ]
 
 
