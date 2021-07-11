@@ -1,6 +1,3 @@
-from django.contrib.auth import login
-from django.contrib.auth.views import LogoutView
-
 from . import views
 from django.urls import path, include
 
@@ -25,6 +22,7 @@ urlpatterns = [
     path('cart/', include('cart.urls',)),
     path('orders/', include('orders.urls')),
     path("createorder/",views.OrderCreate.create_order, name='create_order'),
+    path("searchproduct/",views.search_products, name='searchproduct'),
 
 
 #    path('search_stores/',views.SearchStores.as_view(), name='search_stores'),

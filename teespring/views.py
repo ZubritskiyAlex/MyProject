@@ -13,13 +13,23 @@ from .mixins import menu, DataMixin
 from cart.forms import CartAddProductForm
 
 
+def search_products(request):
+    if request.method == 'POST':
+        searched =request.POST['searched']
+        products = Product.objects.filter(title__contains=searched)
+
+        return render(request,'search/searchproduct.html',{'searched':searched,'products':products})
+    else:
+        return render(request, 'search/searchproduct.html',{})
+
+
 def product_detail(request, id, slug):
     product = get_object_or_404(Product,
                                 id=id,
                                 slug=slug,
                                 available=True)
     cart_product_form = CartAddProductForm()
-    return render(request, 'shop/product/detail.html', {'product': product,
+    return render(request, 'products/product_detail.html', {'product': product,
                                                         'cart_product_form': cart_product_form})
 
 def show_product(request, product_id):
@@ -96,14 +106,17 @@ class ProductDetailView(DetailView):
 
 class SearchProducts(ListView):
     "Search products"
+    template_name = 'search/search.html'
+    context_object_name = 'products'
     paginate_by = 5
 
     def get_queryset(self):
-        return Product.objects.filter(title__icontains=self.request.GET.get('q'))
+        return Product.objects.filter(title__icontains=self.request.GET.get('s'))
 
-    def get_context_data(self, *args, **kwargs):
-        context = super().get_context_data(*args, **kwargs)
-        context['q'] = f'q={self.request.GET.get("q")}'
+
+    def get_context_data(self, *args,object_list=None , **kwargs):
+        context = super().get_context_data( **kwargs)
+        context['s'] = f's={self.request.GET.get("s")}&'
         return context
 
 

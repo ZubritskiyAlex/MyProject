@@ -1,20 +1,35 @@
 {% extends 'base.html'%}
 {% load static %}
-<html lang="en">
+{% block content %}
+<head>
+    <meta charset="UTF-8">
+    <title>Stores</title>
+    <link rel="stylesheet" href="{% static "css/styles.css" %}" />
+</head>
+<body>
+    <h1>All stores</h1>
 
-<h1>{{ title }}</h1>
+
+<ul>
+{% for store in store_list %}
+<li>
+
+<div class="card" style="width: 18rem;">
+  <img src="..." class="card-img-top" alt="...">
+  <div class="card-body">
+    <h2 class="card-title">{{store.name }}</h2>
+    <p class="card-text">{{store.description|linebreaks|truncatewords:20}}</p>
+    <p class="card-text">{{store.user }}</p>
+    <p class="card-text">{{store.date_created }}</p>
+    <p class="card-text">{{store.url }}</p>
 
 
-{% for s in stores %}
-    {{s.name }}
-    {{s.description }}
-    {{s.date_created }}
-    {{s.user }}
-    {{s.url}}
+    <a href="#" class="btn btn-primary">More detailed</a>
+  </div>
+</div>
 {% endfor %}
-
-
-
-
-
+</div>
+{% endblock content %}
+</ul>
+</body>
 </html>
