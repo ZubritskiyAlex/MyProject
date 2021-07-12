@@ -85,6 +85,7 @@ class OrderForm(ModelForm):
 
 
 class LoginUserForm(AuthenticationForm):
+    """Login User form"""
     username = forms.CharField(label='Log in', widget=forms.TextInput(attrs={'class':'form-input'}))
     password = forms.CharField(widget=forms.PasswordInput(attrs={'class':'form-input'}))
 
@@ -114,6 +115,7 @@ class LoginUserForm(AuthenticationForm):
 
 
 class RegisterUserForm(UserCreationForm):
+    """Register form"""
 
     username = forms.CharField(label='Login',widget=forms.TextInput(attrs={'class':'form-input'}))
     first_name = forms.CharField(label='First name',widget=forms.TextInput(attrs={'class':'form-input'}))

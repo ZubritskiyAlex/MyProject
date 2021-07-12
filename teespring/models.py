@@ -113,6 +113,8 @@ class Store(models.Model):
         verbose_name_plural = _("Stores")
 
 
+
+
 class Category(models.Model):
 
     name = models.CharField(max_length=255, verbose_name='Name of category')
@@ -122,6 +124,8 @@ class Category(models.Model):
     def __str__(self):
         return self.name
 
+    def get_absolute_url(self):
+        return reverse('category_detail', kwargs={'slug':self.slug})
 
     class Meta:
 
@@ -154,7 +158,7 @@ class Product(models.Model):
         return self.review_set.filter(parent__isnull=True)
 
     def get_absolute_url(self):
-        return reverse('product', kwargs={'product_id': self.pk})
+        return reverse('product', kwargs={'pk': self.pk})
 
     class Meta:
 

@@ -8,7 +8,7 @@ class Cart(object):
 
     def __init__(self, request):
         """
-        Инициализируем корзину
+        Initializing the bucket
         """
         self.session = request.session
         cart = self.session.get(settings.CART_SESSION_ID)
@@ -19,7 +19,7 @@ class Cart(object):
 
     def add(self, product, quantity=1, update_quantity=False):
         """
-        Добавить продукт в корзину или обновить его количество.
+        Add product in bucket or update quantity.
         """
         product_id = str(product.id)
         if product_id not in self.cart:
@@ -32,14 +32,14 @@ class Cart(object):
         self.save()
 
     def save(self):
-        # Обновление сессии cart
+        # Update session cart
         self.session[settings.CART_SESSION_ID] = self.cart
-        # Отметить сеанс как "измененный", чтобы убедиться, что он сохранен
+        # Mark the session as modified to make sure that is saved
         self.session.modified = True
 
     def remove(self, product):
         """
-        Удаление товара из корзины.
+        Remove product from basket.
         """
         product_id = str(product.id)
         if product_id in self.cart:
@@ -48,10 +48,10 @@ class Cart(object):
 
     def __iter__(self):
         """
-        Перебор элементов в корзине и получение продуктов из базы данных.
+        Sorting through the items in the basket and getting products from the database
+
         """
         product_ids = self.cart.keys()
-        # получение объектов product и добавление их в корзину
         products = Product.objects.filter(id__in=product_ids)
         for product in products:
             self.cart[str(product.id)]['product'] = product
@@ -63,19 +63,20 @@ class Cart(object):
 
     def __len__(self):
         """
-        Подсчет всех товаров в корзине.
+        Counting all products in the basket
         """
         return sum(item['quantity'] for item in self.cart.values())
 
 
     def get_total_price(self):
         """
-        Подсчет стоимости товаров в корзине.
+        Calculating the cost of goods in the basket
+
         """
         return sum(Decimal(item['price']) * item['quantity'] for item in
                    self.cart.values())
 
     def clear(self):
-        # удаление корзины из сессии
+        # delete basket from session
         del self.session[settings.CART_SESSION_ID]
         self.session.modified = True

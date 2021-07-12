@@ -1,4 +1,4 @@
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView
@@ -6,6 +6,7 @@ from django.core.paginator import Paginator
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse, reverse_lazy
+from django.views import View
 from django.views.generic import ListView, DetailView, CreateView
 from teespring.models import Product, Store, User, Category, Order
 from .forms import AddProductForm, AddStoreForm, AddReviewForm, OrderForm, RegisterUserForm, LoginUserForm
@@ -33,7 +34,14 @@ def product_detail(request, id, slug):
                                                         'cart_product_form': cart_product_form})
 
 def show_product(request, product_id):
-    return render(request, 'products/product_detail.html')
+    product = get_object_or_404(Product, pk=product_id)
+    context = {
+        'product': product,
+        'title': product.title,
+        'cat_selected': product.category_id,
+    }
+    return render(request,'products/product.html', context=context)
+
 
 def show_store(request, store_id):
     store = get_object_or_404(Store,
@@ -205,13 +213,10 @@ class CategoryDetailView(DetailView):
     """CategoryDetailView """
 
     model = Category
-    slug = "slug"
+    queryset = Category.objects.all()
+    context_object_name = 'category'
+    slug_url_kwarg = "slug"
     template_name = "categories/category_detail.html"
-    ordering = "name"
-
-    def get(self, request, slug):
-        category = Category.objects.get(slug)
-        return render(request, "categories/category_detail.html", {"category": category})
 
 
 class CreateProduct(LoginRequiredMixin, CreateView):
@@ -436,3 +441,13 @@ class LoginUser(DataMixin, LoginView):
 def logout_user(request):
     logout(request)
     return redirect('login')
+
+
+class ViewProduct(DetailView):
+    model = Product
+    pk_url_kwarg = 'product_id'
+    template_name = 'products/product_detail.html'
+    context_object_name = 'product_item'
+
+
+

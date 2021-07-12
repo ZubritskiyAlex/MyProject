@@ -2,7 +2,7 @@
 {% block content %}
     <center>
     {% if searched %}
-        <h1>You searched for...{{ searched }}</h1>
+        <h1>You searched for {{ searched }}</h1>
         <br/>
         {% for product in products %}
             <a href="{% url 'product_detail' product.id %}"> {{ product }} - {{ product.price}}</a><br/>

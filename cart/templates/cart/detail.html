@@ -11,8 +11,7 @@
   </tr>
  </thead>>
  <tbody>
-{% for item in cart %}
-    {% with product=item.product %}
+{% for item in cart.products.all %}
                 <tr>
                     <td>
                         <a href="{{ product.get_absolute_url }}">
@@ -30,7 +29,6 @@
                     <td class="num">${{ item.price }}</td>
                     <td class="num">${{ item.total_price }}</td>
                 </tr>
-            {% endwith %}
 {% endfor %}
         <tr class="total">
             <td>Total</td>
@@ -44,5 +42,3 @@
  </tbody>
 </table>
 {% endblock %}
-
-
