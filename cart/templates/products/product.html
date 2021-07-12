@@ -1,11 +1,23 @@
 {% extends 'base.html' %}
-
+{
 {% block content %}
-<h1>{{ product.title }}</h1>
 
-{% if product.image %}
-<p><img class="img-article-left" src="{{ product.image.url }}"></p>
-{% endif %}
+<div class="row">
+    <div class="col-md-4">
+        <img src="{{ product.image.url }}" class="img-fluid">
+    </div>
+    <div class="col-md-8">
+        <h3>{{ product.title }}</h3>
+        <p>Цена: {{ product.price }} руб.</p>
+        <p>Описание: {{ product.description }}</p>
+        <hr>
+        <a href="#"><button class="btn btn-danger">Добавить в корзину</button></a>
+    </div>
+    <p class="mt-4">Характеристики:</p>
 
-{{ product.description|linebreaks}}
-{% endblock %}
+
+</div>
+
+{% endblock content %}
+
+
