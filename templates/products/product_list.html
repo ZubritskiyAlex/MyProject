@@ -8,12 +8,12 @@
 </head>
 <body>
     <h1>{{ title }}</h1>
-    <p>All products
+    <h2>All products</h2>
 <ul>
 {% for product in product_list %}
 <li>
     <div class="card" style="width: 18rem;">
-  <img src="{{ s.image}}" class="card-img-top" alt="">
+  <img src="{{ product.image}}" class="card-img-top" alt="">
   <div class="card-body">
     <h2 class="card-title">{{product.title }}</h2>
     <p class="card-text">{{product.description|linebreaks|truncatewords:20}}</p>
@@ -24,7 +24,7 @@
   <ul class="list-group list-group-flush">
     <li class="list-group-item">Stores: {{product.stores}}</li>
     <li class="list-group-item">Created at: {{product.date_created}}</li>
-    <p class="link-read-post">More information about the product<a href="#"> More detailed</a></p>
+    <p class="link-read-post">More information about the product<a href="{% url 'product' %}"> More detailed</a></p>
   </ul>
   <div class="card-body"></div>
 </div>
