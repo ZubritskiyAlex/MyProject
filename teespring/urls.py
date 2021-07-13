@@ -6,12 +6,12 @@ from .views import LoginView, about, main_page, CreateProduct, CreateReview, Cre
 
 urlpatterns = [
     path("products/", views.ProductsListView.as_view(), name='product_list'),
+    path("productsofstore/<int:store_id>", views.show_products_of_store, name='products_of_store'),
     path('product/<int:product_id>/', show_product, name='product'),
     path('', main_page, name='home'),
     path('about/', about, name='about'),
     path('addproduct/', CreateProduct.as_view(), name='add_product'),
     path('addstore/', CreateStore.as_view(), name='create_store'),
-
     path("stores/", views.StoresListView.as_view(), name='stores_list'),
     path("users/", views.UsersListView.as_view(), name='user_list'),
     path('addreview/', CreateReview.as_view(), name='create_review'),
@@ -20,7 +20,6 @@ urlpatterns = [
     path('register/', RegisterUserView.as_view(), name='register'),
     path('logout/', logout_user, name='logout'),
     path("product/<int:product_id>/", views.product_detail, name='product_detail'),
-    # path("product/<int:product_id>/", views.product_detail, name='product_detail'),
     path("store/<int:store_id>", views.show_store, name='store'),
     path('cart/', include('cart.urls', )),
     path('orders/', include('orders.urls')),
