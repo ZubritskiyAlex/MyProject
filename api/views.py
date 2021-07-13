@@ -6,7 +6,7 @@ from django.views.decorators.csrf import csrf_exempt
 from rest_framework import status
 
 from rest_framework.decorators import action
-from rest_framework.mixins import UpdateModelMixin
+from rest_framework.mixins import UpdateModelMixin, ListModelMixin
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet, GenericViewSet
 from api.pagination import CustomPageNumberPagination
@@ -23,6 +23,7 @@ from teespring.models import User, Store, Category, Product, Review, \
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
 from rest_framework.filters import SearchFilter, OrderingFilter
+from rest_framework.generics import ListAPIView
 from django.contrib.auth import authenticate
 
 @csrf_exempt
@@ -237,3 +238,4 @@ class OrderViewSet(ModelViewSet):
     pagination_class = CustomPageNumberPagination
     filter_backends = (SearchFilter, OrderingFilter)
     search_fields = ("first_name", "last_name", "address", "created_at", "order_date",)
+

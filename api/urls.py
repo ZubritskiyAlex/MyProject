@@ -15,6 +15,7 @@ router.register(r'order', OrderViewSet)
 router.register(r'review', ReviewViewSet)
 router.register(r'product_relation', UsersProductsRelationView)
 router.register(r'store_relation', UsersStoresRelationView)
+# router.register(r'azazazaza', AazazazazView, basename='azazazaza')
 
 urlpatterns = []
 urlpatterns += router.urls
