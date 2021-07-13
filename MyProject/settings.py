@@ -30,6 +30,12 @@ DEBUG = True
 ALLOWED_HOSTS = []
 #ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS").split(" ")
 
+# CELERY SETTINGS
+CELERY_TIMEZONE = 'Europe/Moscow'
+CELERY_TASK_TRACK_STARTED = True
+CELERY_TASK_TIME_LIMIT = 30 * 60
+CELERY_RESULT_BACKEND = 'django-db'
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -41,13 +47,19 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'MyProject',
     'teespring',
+    'cart',
+    'orders',
     'rest_framework',
     'rest_framework.authtoken',
+    'drf_yasg',
     'djoser',
     'api',
-
+    'django_celery_beat',
+    'django_celery_results',
 ]
 
+
+CART_SESSION_ID = 'cart'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -62,10 +74,12 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'MyProject.urls'
 
+TEMPLATE_DIR = os.path.join(BASE_DIR, "templates")
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates', BASE_DIR/'myproject-ui/build']
+        'DIRS': [TEMPLATE_DIR, BASE_DIR / 'templates', BASE_DIR/'myproject-ui/build']
         ,
         'APP_DIRS': True,
         'OPTIONS': {
@@ -74,6 +88,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'cart.context_processors.cart',
             ],
         },
     },
@@ -134,15 +149,14 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
 STATIC_URL = '/static/'
-STATIC_ROOT = BASE_DIR / 'static'
+STATIC_ROOT = os.path.join(BASE_DIR / 'static')
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR,'media')
 
-STATICFILES_DIRS = (
-    (BASE_DIR / 'myproject-ui/build/static'),
-)
-
+#STATICFILES_DIRS = [
+#    os.path.join(BASE_DIR, "static"),(BASE_DIR / 'myproject-ui/build/static'),
+#]
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
@@ -156,14 +170,17 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
 #       'rest_framework.permissions.IsAdminUser',
         'rest_framework.permissions.AllowAny',
+        'rest_framework.permissions.IsAuthenticated',
+
     ),
     'PAGE_SIZE': 10,
     'DEFAULT_AUTHENTICATION_CLASSES':
         (
        'rest_framework.authentication.TokenAuthentication',
        'rest_framework_simplejwt.authentication.JWTAuthentication',
+       'rest_framework.authentication.SessionAuthentication',
 #        'rest_framework.authentication.BasicAuthentication',
-#        'rest_framework.authentication.SessionAuthentication',
+
 #        'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
     ),
     'DEFAULT_PAGINATION_CLASS':
@@ -214,4 +231,7 @@ SIMPLE_JWT = {
     'SLIDING_TOKEN_LIFETIME': datetime.timedelta(minutes=5),
     'SLIDING_TOKEN_REFRESH_LIFETIME': datetime.timedelta(days=1),
 }
+
+#LOGIN_REDIRECT_URL = '/'
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 

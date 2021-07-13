@@ -1,13 +1,33 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends 'base.html'%}
+{% load static %}
+{% block content %}
 <head>
     <meta charset="UTF-8">
     <title>Categories</title>
+    <link rel="stylesheet" href="{% static "css/styles.css" %}" />
 </head>
 <body>
-{% for category in category_list %}
-    {{category.name }}
-    {{category.slug }}
+    <h1>{{ title }}</h1>
+    <p>All categories
+<ul>
+{% for c in categories_list %}
+<li>
+    <div class="card" style="width: 18rem;">
+  <img src="{{ s.image}}" class="card-img-top" alt="">
+  <div class="card-body">
+    <h2 class="card-title">{{c.name}}</h2>
+    <p class="card-text">{{c.slug|linebreaks|truncatewords:20}}</p>
+
+  </div>
+  <ul class="list-group list-group-flush">
+    <li class="list-group-item">URL: {{c.url}}</li>
+    <p class="link-read-post">More information about the product<a href="#"> More detailed</a></p>
+  </ul>
+  <div class="card-body"></div>
+</div>
 {% endfor %}
+</div>
+{% endblock content %}
+</ul>
 </body>
 </html>

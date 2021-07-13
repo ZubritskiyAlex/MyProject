@@ -286,7 +286,7 @@ class StoreApiTestCase(APITestCase):
         response = self.client.put(url, data=json_data,
                                    content_type='application/json')
         self.assertEqual(status.HTTP_403_FORBIDDEN, response.status_code)
-        self.assertEqual({'detail':ErrorDetail(string='You do not have permission to perform this action.', code='permission_denied')},
+        self.assertEqual({'detail':ErrorDetail(string='You do not have permission to perform this actions.', code='permission_denied')},
                          response.data)
         self.store_1.refresh_from_db()
         self.assertEqual('TecStore', self.store_1.name)

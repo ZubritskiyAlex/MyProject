@@ -1,0 +1,41 @@
+{% extends 'base.html'%}
+{% load static %}
+{% block content %}
+<h1>{{ title }}</h1>
+<p>Content main page
+<head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="{% static "css/styles.css" %}" />
+</head>
+
+
+<ul>
+    {% for s in stores %}
+    <li>
+        <div class="card" style="width: 18rem;">
+  <img src="{{ s.image}}" class="card-img-top" alt="">
+  <div class="card-body">
+    <h2 class="card-title">{{s.name}}</h2>
+    <p class="card-text">{{s.description|linebreaks|truncatewords:20}}</p>
+  </div>
+  <ul class="list-group list-group-flush">
+    <li class="list-group-item">Owner: {{s.user}}</li>
+    <li class="list-group-item">Created at: {{s.date_created}}</li>
+  </ul>
+  <div class="card-body"></div>
+    <p class="link-read-post">More information about the store<a href="{% url 'store' s.pk %}">  More detailed</a></p>
+
+</div>
+{% endfor %}
+
+{% endblock content %}
+
+</ul>
+<body>
+    <h3>Popular products</h3>
+    <img src="{% static "images/Hoodie.jpeg" %}" alt="Hoodie" >
+    <img src="{% static "images/laptop.jpg" %}" alt="Laptop" >
+</body>
+
+
+

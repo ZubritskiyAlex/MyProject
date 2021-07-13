@@ -1,6 +1,7 @@
 from django.db import models, transaction
 from django.contrib.auth.models import PermissionsMixin, UserManager
 from django.contrib.auth.base_user import AbstractBaseUser
+from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import (
@@ -59,7 +60,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     last_name = models.CharField(max_length=30)
     url = models.URLField(verbose_name='URL', blank=True, null=True)
     description = models.CharField(max_length=255, verbose_name="Description", blank=True, null=True)
-    image = models.ImageField(verbose_name='Photo')
+    image = models.ImageField(verbose_name='Photo',null=True)
     date_created = models.DateField(auto_now=True)
     is_owner = models.BooleanField(default=False)
 
@@ -90,8 +91,8 @@ class Store(models.Model):
     tranding_category = models.IntegerField(choices=TRENDING_CATEGORIES)
     popular_product = models.IntegerField(choices=TRENDING_PRODUCTS)
     date_created = models.DateField(auto_now=True)
-    image = models.ImageField(verbose_name='Image')
-
+    image = models.ImageField(verbose_name='Image', null=True)
+    category = models.ForeignKey('Category', verbose_name='Category', on_delete=models.PROTECT,null=True)
     owner = models.ForeignKey(User, on_delete=models.SET_NULL,
                               null=True, related_name='my_stores')
     customers = models.ManyToManyField(User, through="UsersStoresRelation",
@@ -99,14 +100,19 @@ class Store(models.Model):
 
 
 
+
     def __str__(self):
         return f"{self.user} - {self.name}-{self.description}-{self.url}"
 
-    class Meta:
+    def get_absolute_url(self):
+        return reverse('store', kwargs={'store_id': self.pk})
 
+    class Meta:
         db_table = _("Store")
         verbose_name = _("Store")
         verbose_name_plural = _("Stores")
+
+
 
 
 class Category(models.Model):
@@ -117,6 +123,9 @@ class Category(models.Model):
 
     def __str__(self):
         return self.name
+
+    def get_absolute_url(self):
+        return reverse('category_detail', kwargs={'slug':self.slug})
 
     class Meta:
 
@@ -129,16 +138,16 @@ class Product(models.Model):
 
     title = models.CharField(max_length=255, verbose_name="Product name")
     stores = models.ManyToManyField(Store, verbose_name='Stores')
-    category = models.ForeignKey(Category, verbose_name='Category', on_delete=models.CASCADE)
+    category = models.ForeignKey(Category, verbose_name='Category', on_delete=models.PROTECT, null=True)
     description = models.TextField(verbose_name='Description', null=True)
     price = models.DecimalField(max_digits=12, decimal_places=2, verbose_name="Price", default=0)
     date_created = models.DateField(auto_now=True)
     is_tranding_category = models.BooleanField(default=False)
-    image = models.ImageField(verbose_name='Image')
+    image = models.ImageField(verbose_name='Image',null=True)
     url = models.URLField(verbose_name='URL', blank=True, null=True, unique=True)
     draft = models.BooleanField("Draft", default=False)
 
-    owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='my_products')
+    owner = models.ForeignKey(User, on_delete=models.CASCADE,null=True, related_name='my_products')
     customers = models.ManyToManyField(User, through="UsersProductsRelation", related_name='products')
 
 
@@ -147,6 +156,9 @@ class Product(models.Model):
 
     def get_review(self):
         return self.review_set.filter(parent__isnull=True)
+
+    def get_absolute_url(self):
+        return reverse('product', kwargs={'pk': self.pk})
 
     class Meta:
 
@@ -253,18 +265,6 @@ class Cart(models.Model):
             self.final_price = sum([cproduct.final_price for cproduct in self.products.all()])
         super().save(*args, **kwargs)
 
-
-#class Customer(models.Model):
-
-#    user = models.OneToOneField(User, verbose_name='User', on_delete=models.CASCADE)
- #   phone = models.CharField(max_length=20, verbose_name='Phone number', null=True, blank=True)
-  #  address = models.CharField(max_length=255, verbose_name='Adress', null=True, blank=True)
-   # orders = models.ManyToManyField('Order', verbose_name='Orders', related_name='related_order', blank=True)
-
-#    def __str__(self):
-#        if not (self.user.first_name and self.user.last_name):
-#            return self.user.username
-#        return "Buyer: {} {}".format(self.user.first_name, self.user.last_name)
 
 class Order(models.Model):
 
