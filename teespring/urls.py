@@ -5,12 +5,13 @@ from .views import LoginView, about, main_page, CreateProduct, CreateReview, Cre
     ProductDetailView, show_product
 
 urlpatterns = [
+    path("products/", views.ProductsListView.as_view(), name='product_list'),
     path('product/<int:product_id>/', show_product, name='product'),
     path('', main_page, name='home'),
     path('about/', about, name='about'),
     path('addproduct/', CreateProduct.as_view(), name='add_product'),
     path('addstore/', CreateStore.as_view(), name='create_store'),
-    path("products/", views.ProductsListView.as_view(), name='product_list'),
+
     path("stores/", views.StoresListView.as_view(), name='stores_list'),
     path("users/", views.UsersListView.as_view(), name='user_list'),
     path('addreview/', CreateReview.as_view(), name='create_review'),

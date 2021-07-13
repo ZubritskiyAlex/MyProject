@@ -6,12 +6,18 @@ from django.core.paginator import Paginator
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse, reverse_lazy
+from django.views import View
 from django.views.generic import ListView, DetailView, CreateView
 from teespring.models import Product, Store, User, Category, Order
 from .forms import AddProductForm, AddStoreForm, AddReviewForm, OrderForm, RegisterUserForm, LoginUserForm
 from .mixins import menu, DataMixin
 from cart.forms import CartAddProductForm
+from django.shortcuts import render, redirect, get_object_or_404
+from django.views.decorators.http import require_POST
 
+from teespring.models import Product
+from .models import Cart
+from .forms import CartAddProductForm
 
 def search_products(request):
     if request.method == 'POST':
@@ -38,7 +44,7 @@ def show_product(request, product_id):
         'product': product,
         'title': product.title,
     }
-    return render(request,'products/product.html', context=context)
+    return render(request, 'products/product.html', context=context)
 
 
 def show_store(request, store_id):
