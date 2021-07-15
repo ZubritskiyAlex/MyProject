@@ -10,8 +10,13 @@
         <h3>{{ product.title }}</h3>
         <p>Price: {{ product.price }} руб.</p>
         <p>Description: {{ product.description }}</p>
+        <p>Stores: {{ product.stores }}</p>
+        <p>Category: {{ product.category }}</p>
+        <p>Date created: {{ product.date_created }}</p>
+        <p>URL: {{ product.url }}</p>
+        <p>Owner: {{ product.owner }}</p>
         <hr>
-        <a href="{%url 'cart_add' %}"><button class="btn btn-danger">Add to card</button></a>
+        <a href="#"><button class="btn btn-danger">Add to card</button></a>
     </div>
 
 

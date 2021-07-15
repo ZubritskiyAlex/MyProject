@@ -24,7 +24,9 @@
     <p class="card-text">{{store.url }}</p>
 
 
-    <a href="{%url 'products_of_store' store_id %}" class="btn btn-primary">More detailed</a>
+    <a class="btn btn-outline-success" href="#">View products</a>
+    <a class="btn btn-outline-success" href="{% url 'store' store_id=store.id %}">More detailed</a>
+
   </div>
 </div>
 {% endfor %}

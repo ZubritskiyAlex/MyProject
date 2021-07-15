@@ -1,21 +1,18 @@
-{% extends 'base.html' %}
-
-{% block content %}
-
-<div class="row">
-    <div class="col-md-4">
-        <img src="{{ product.image }}" class="img-fluid">
-    </div>
-    <div class="col-md-8">
-        <h3>{{ product.title }}</h3>
-        <p>Price: {{ product.price }} руб.</p>
-        <p>Description: {{ product.description }}</p>
-        <hr>
-        <a href="{%url 'cart_add' %}"><button class="btn btn-danger">Add to card</button></a>
-    </div>
+{% extends 'base.html'%}
+{% load static %}
+<head>
+    <meta charset="UTF-8">
+    <title>Stores</title>
+    <link rel="stylesheet" href="{% static "css/styles.css" %}" />
+</head>
+<body>
+    <h1>Products of stores</h1>
 
 
+<ul>
+{% for product in queryset %}
+            <a href="{% url 'products_of_store' product.id %}"> {{ product }} - {{ product.price}}</a><br/>
+        {% endfor %}
 
-</div>
-
-{% endblock content %}
+</ul>
+</body>

@@ -3,7 +3,7 @@ from django.contrib.admin import ModelAdmin
 from django.utils.safestring import mark_safe
 
 from .models import User, Store, Category, Product, Review, UsersProductsRelation, UsersStoresRelation, CartProduct, \
-    Cart, Order
+    Cart, Order, Customer, OrderItem, ShippingAddress
 
 
 @admin.register(Review)
@@ -122,6 +122,7 @@ class Cart(ModelAdmin):
     pass
 
 
-@admin.register(Order)
-class Order(ModelAdmin):
-  pass
+admin.site.register(Customer)
+admin.site.register(Order)
+admin.site.register(OrderItem)
+admin.site.register(ShippingAddress)

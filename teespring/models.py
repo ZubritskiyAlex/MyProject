@@ -2,7 +2,6 @@ from django.db import models, transaction
 from django.contrib.auth.models import PermissionsMixin, UserManager
 from django.contrib.auth.base_user import AbstractBaseUser
 from django.urls import reverse
-from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import (
     AbstractBaseUser, PermissionsMixin, BaseUserManager
@@ -63,6 +62,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     image = models.ImageField(verbose_name='Photo',null=True)
     date_created = models.DateField(auto_now=True)
     is_owner = models.BooleanField(default=False)
+    orders = models.ManyToManyField('Order', verbose_name='Orders of user')
 
     objects = UserManager()
 
@@ -98,7 +98,7 @@ class Store(models.Model):
     customers = models.ManyToManyField(User, through="UsersStoresRelation",
                                   null=True, related_name='stores')
 
-
+    objects = models.Manager()
 
 
     def __str__(self):
@@ -150,6 +150,7 @@ class Product(models.Model):
     owner = models.ForeignKey(User, on_delete=models.CASCADE,null=True, related_name='my_products')
     customers = models.ManyToManyField(User, through="UsersProductsRelation", related_name='products')
 
+    objects = models.Manager()
 
     def __str__(self):
         return f"{self.title} - {self.price}"
@@ -159,6 +160,16 @@ class Product(models.Model):
 
     def get_absolute_url(self):
         return reverse('product', kwargs={'pk': self.pk})
+
+    @property
+    def imageURL(self):
+        try:
+            url = self.image.url
+        except:
+            url = ''
+        return url
+
+
 
     class Meta:
 
@@ -266,49 +277,69 @@ class Cart(models.Model):
         super().save(*args, **kwargs)
 
 
+#########
+class Customer(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank=True)
+    name = models.CharField(max_length=200, null=True)
+    email = models.CharField(max_length=200, null=True)
+
+    def __str__(self):
+        return self.name
+
+
 class Order(models.Model):
-
-    STATUS_NEW = 'New'
-    STATUS_IN_PROGRESS = 'In_progress'
-    STATUS_READY = 'Is_ready'
-    STATUS_COMPLETED = 'Completed'
-
-    BUYING_TYPE_SELF = 'Self delivery'
-    BUYING_TYPE_DELIVERY = 'Delivery'
-
-    STATUS_CHOICES = (
-        (STATUS_NEW, 'New order'),
-        (STATUS_IN_PROGRESS, 'The order is being processed'),
-        (STATUS_READY, 'Order is ready'),
-        (STATUS_COMPLETED, 'The order is completed')
-    )
-
-    BUYING_TYPE_CHOICES = (
-        (BUYING_TYPE_SELF, 'Delivery self'),
-        (BUYING_TYPE_DELIVERY, 'Delivery')
-    )
-
-    buyer = models.ForeignKey(User, verbose_name='Buyer', related_name='related_orders', on_delete=models.CASCADE)
-    first_name = models.CharField(max_length=255, verbose_name='Name')
-    last_name = models.CharField(max_length=255, verbose_name='Last_name')
-    phone = models.CharField(max_length=20, verbose_name='Phone number')
-    cart = models.ForeignKey(Cart, verbose_name='Cart', on_delete=models.CASCADE, null=True, blank=True)
-    address = models.CharField(max_length=1024, verbose_name='adress', null=True, blank=True)
-    status = models.CharField(
-        max_length=100,
-        verbose_name='Status order',
-        choices=STATUS_CHOICES,
-        default=STATUS_NEW
-    )
-    buying_type = models.CharField(
-        max_length=100,
-        verbose_name='Type order',
-        choices=BUYING_TYPE_CHOICES,
-        default=BUYING_TYPE_SELF
-    )
-    comment = models.TextField(verbose_name='Comment to order', null=True, blank=True)
-    created_at = models.DateTimeField(auto_now=True, verbose_name='Date created order')
-    order_date = models.DateField(verbose_name='Date delivery order', default=timezone.now)
+    customer = models.ForeignKey(Customer, on_delete=models.SET_NULL, blank=True, null=True)
+    date_ordered = models.DateTimeField(auto_now_add=True, null=True)
+    complete = models.BooleanField(default=False, null=True, blank=False)
+    transaction_id = models.CharField(max_length=200, null=True)
 
     def __str__(self):
         return str(self.id)
+
+    @property
+    def shipping(self):
+        shipping = False
+        orderitems = self.orderitem_set.all()
+        for i in orderitems:
+            if i.product.draft == False:
+                shipping = True
+        return shipping
+
+
+    @property
+    def get_cart_total(self):
+        orderitems = self.orderitem_set.all()
+        total = sum([item.get_total for item in orderitems])
+        return total
+
+    @property
+    def get_cart_items(self):
+        orderitems = self.orderitem_set.all()
+        total = sum([item.quantity for item in orderitems])
+        return total
+
+class OrderItem(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.SET_NULL, blank=True, null=True)
+    order = models.ForeignKey(Order, on_delete=models.SET_NULL, blank=True,null=True)
+    quantity = models.IntegerField(default=0, null=True, blank=True)
+    date_added = models.DateTimeField(auto_now_add=True, null=True)
+
+
+    @property
+    def get_total(self):
+        total = self.product.price*self.quantity
+        return total
+
+
+
+class ShippingAddress(models.Model):
+    customer = models.ForeignKey(Customer, on_delete=models.SET_NULL, blank=True, null=True)
+    order = models.ForeignKey(Order, on_delete=models.SET_NULL, blank=True, null=True)
+    address = models.CharField(max_length=200, null=True)
+    city = models.CharField(max_length=200, null=True)
+    state = models.CharField(max_length=200, null=True)
+    zipcode = models.CharField(max_length=200, null=True)
+    date_added=models.DateTimeField(auto_now_add=True, null=True)
+
+    def __str__(self):
+        return self.address

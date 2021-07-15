@@ -1,22 +1,17 @@
+import json
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView
 from django.core.paginator import Paginator
-from django.http import HttpResponseRedirect
-from django.urls import reverse, reverse_lazy
-
+from django.http import HttpResponseRedirect, JsonResponse
+from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView
-from teespring.models import Product, Store, User, Category, Order
+from teespring.models import Store, User, Category, Order, OrderItem
 from .forms import AddProductForm, AddStoreForm, AddReviewForm, OrderForm, RegisterUserForm, LoginUserForm
 from .mixins import menu, DataMixin
-from cart.forms import CartAddProductForm
 from django.shortcuts import render, redirect, get_object_or_404
-from django.views.decorators.http import require_POST
-
 from teespring.models import Product
-from .models import Cart
-from .forms import CartAddProductForm
 
 
 def search_products(request):
@@ -29,14 +24,6 @@ def search_products(request):
         return render(request, 'search/searchproduct.html',{})
 
 
-def product_detail(request, id, slug):
-    product = get_object_or_404(Product,
-                                id=id,
-                                slug=slug,
-                                available=True)
-    cart_product_form = CartAddProductForm()
-    return render(request, 'products/product_detail.html', {'product': product,
-                                                        'cart_product_form': cart_product_form})
 
 def show_product(request, product_id):
     product = get_object_or_404(Product, pk=product_id)
@@ -49,17 +36,15 @@ def show_product(request, product_id):
 
 def show_store(request, store_id):
     store = get_object_or_404(Store,
-                                id=store_id,
-                                available=True)
-    return render(request, 'stores/store_detail.html')
+                                pk=store_id)
+    context = {
+        'store': store,
+        'name': store.name,
+    }
 
-def product_detail(request, id):
-    product = get_object_or_404(Product,
-                                id=id,
-                                available=True)
-    return render(request,
-                  'products/product_detail.html',
-                  {'product': product})
+    return render(request, 'stores/store_detail.html', context=context)
+
+
 
 
 def main_page(request):
@@ -78,60 +63,8 @@ class ProductsListView(ListView):
     """Products list"""
 
     model = Product
-    queryset = Product.objects.all()
     template_name = "products/product_list.html"
     ordering_fields = ['price', 'title', 'category ', 'description']
-
-    def get(self,request):
-        products = Product.objects.all()
-        return render(request, "products/product_list.html", {"product_list": products})
-
-class ProductDetailView(DetailView):
-
-    model = Product
-    template_name = "products/product_detail.html"
-    slug_field = "title"
-
-    def get_success_url(self):
-        return reverse('products:detail', args=[self.kwargs['slug'], self.kwargs['pk']])
-
-    def get_context_data(self, **kwargs):
-        context = super(ProductDetailView, self).get_context_data(**kwargs)
-        context['events'] = self.object.events.all()
-        return context
-
-    def get_form_kwargs(self):
-        kwargs = super(ProductDetailView, self).get_form_kwargs()
-        kwargs['product_pk'] = self.kwargs['pk']
-        return kwargs
-
-    def form_valid(self, form):
-        form.send_download_links()
-        return super(ProductDetailView, self).form_valid(form)
-
-
-
-    def get(self, request, slug):
-        product = Product.objects.get(slug)
-        return render(request, "products/product_detail.html", {"product": product})
-
-
-class SearchProducts(ListView):
-    "Search products"
-    template_name = 'search/search.html'
-    context_object_name = 'products'
-    paginate_by = 5
-
-    def get_queryset(self):
-        return Product.objects.filter(title__icontains=self.request.GET.get('s'))
-
-
-    def get_context_data(self, *args,object_list=None , **kwargs):
-        context = super().get_context_data( **kwargs)
-        context['s'] = f's={self.request.GET.get("s")}&'
-        return context
-
-
 
 
 class StoresListView(ListView):
@@ -146,19 +79,6 @@ class StoresListView(ListView):
     def get(self, request):
         stores = Store.objects.all()
         return render(request, "stores/stores_list.html", {"store_list": stores})
-
-
-class StoreDetailView(DetailView):
-    """StoreDetailView """
-
-    model = Store
-    slug_field = "name"
-    template_name = "stores/store_detail.html"
-
-    def get(self, request, slug):
-        store = Store.objects.get(slug)
-        return render(request, "stores/store_detail.html", {"store": store})
-
 
 
 class SearchStores(ListView):
@@ -188,16 +108,6 @@ class UsersListView(ListView):
         users = User.objects.all()
         return render(request, "users/user_list.html", {"user_list": users})
 
-class UserDetailViewSet(DetailView):
-    """UserDetailView """
-
-    model = User
-    slug_field = "username"
-    template_name = "users/user_detail.html"
-
-    def get(self, request, slug):
-        user = User.objects.get(slug)
-        return render(request, "users/user_detail.html", {"user": user})
 
 
 class CategoriesListView(ListView):
@@ -219,7 +129,6 @@ class CategoryDetailView(DetailView):
     model = Category
     queryset = Category.objects.all()
     context_object_name = 'category'
-    slug_url_kwarg = "slug"
     template_name = "categories/category_detail.html"
 
 
@@ -455,9 +364,97 @@ class ViewProduct(DetailView):
 
 
 def show_products_of_store(request, store_id):
-    queryset = Product.objects.filter(stores=store_id)
+    product = Product.objects.filter(product__id=store_id)
     context = {
-        'products': queryset,
-        'title': queryset.title,
+        'products': product,
+        'title': product.title,
     }
     return render(request, 'products/products_of_store.html', context=context)
+
+
+
+
+
+
+
+#####deni ivy
+
+def store(request):
+    if request.user.is_authenticated:
+        customer = request.user.customer
+        order, created = Order.objects.get_or_create(customer=customer,complete=False)
+        items = order.orderitem_set.all()
+        cartItems = order.get_cart_items
+    else:
+        items = []
+        order = {'get_cart_total':0,'get_cart_items':0}
+        cartItems = order['get_cart_items']
+
+    products = Product.objects.all()
+    context = {'products':products, 'cartItems': cartItems}
+    return render(request, 'shop/shop.html', context)
+
+
+def cart(request):
+
+    if request.user.is_authenticated:
+        customer = request.user.customer
+        order, created = Order.objects.get_or_create(customer=customer,complete=False)
+        items = order.orderitem_set.all()
+        cartItems = order.get_cart_items
+
+    else:
+        items = []
+        order = {'get_cart_total':0,'get_cart_items':0, 'shipping': False}
+        cartItems = order['get_cart_items']
+
+    context = {'items': items, 'order': order, 'cartItems':cartItems}
+    return render(request, 'shop/cart.html', context)
+
+
+def checkout(request):
+    if request.user.is_authenticated:
+        customer = request.user.customer
+        order, created = Order.objects.get_or_create(customer= customer, complete=False)
+        items = order.orderitem_set.all()
+        cartItems = order.get_cart_items
+    else:
+        items = []
+        order = {'get_cart_total': 0, 'get_cart_items': 0, 'shipping': False}
+        cartItems = order['get_cart_items']
+
+    context = {'items':items, 'order':order, 'cartItems':cartItems}
+    return render(request, 'shop/checkout.html', context)
+
+def updateItem(request):
+    data = json.loads(request.body)
+    productId = data['productId']
+    action = data['action']
+    print('Action:', action)
+    print('productId:', productId)
+
+    customer = request.user.customer
+    product = Product.objects.get(id=productId)
+    order, created = Order.objects.get_or_create(customer=customer, complete=False)
+    orderItem, created = OrderItem.objects.get_or_create(order=order, product=product)
+
+    if action == 'add':
+        orderItem.quantity = (orderItem.quantity + 1)
+    elif action == 'remove':
+        orderItem.quantity = (orderItem.quantity - 1)
+
+    orderItem.save()
+
+    if orderItem.quantity <= 0:
+        orderItem.delete()
+
+    return JsonResponse('Item was added', safe=False)
+
+
+
+####
+
+
+def store_detail(request, store_id):
+    store = get_object_or_404(Store, id=store_id)
+    return render(request, "stores/store.html", {'store':store})

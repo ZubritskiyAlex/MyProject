@@ -21,7 +21,6 @@ class AddReviewForm(forms.ModelForm):
         self.fields['review_on_store'].empty_label = "Store not selected"
 
 
-
     class Meta:
         model = Review
         fields = '__all__'
@@ -116,9 +115,6 @@ class LoginUserForm(AuthenticationForm):
     class Meta:
         model = User
         fields = ['username','password']
-
-
-
 
 
 class RegisterUserForm(UserCreationForm):

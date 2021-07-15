@@ -7,22 +7,23 @@
     <link rel="stylesheet" href="{% static "css/styles.css" %}" />
 </head>
 
-<ul class="list-group list-group-flush">
+    <div class="row">
+    <div class="col-md-4">
+        <img src="{{ product.image }}" class="img-fluid">
+    </div>
+    <div class="col-md-8">
+        {% for store in stores %}
+        <h3>{{store.name}}</h3>
+        <p>{{store.date_created}} руб.</p>
+        <p>Description: {{store.description}}</p>
+        <p>Created at: {{store.user}}</p>
+        <hr>
+        <a href="#"><button class="btn btn-danger">Welcome to shop!</button></a>
+        {% endfor %}
+    </div>
 
-    <li class="list-group-item">Storename: {{store.name}}</li>
-    <li class="list-group-item">Created at: {{store.date_created}}</li>
-    <li class="list-group-item">Created at: {{store.description}}</li>
-    <li class="list-group-item">Created at: {{store.user}}</li>
-  </ul>
 
 
-<h1>{{ store.name }}</h1>
-    <p>
-    <pre>
-            Iadafple :)
-            I hope you like it!
-    {{ store.name }}
-    </pre>
-    </p>
+</div>
 
-{% endblock %}
+{% endblock content%}

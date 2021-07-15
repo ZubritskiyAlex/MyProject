@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<a href="{% url 'stores_list' %}">Continue shopping</a>
+
+<div class="row">
+<img src="..." class="img-fluid" alt="Welcome to the store!">
+    <div class="col-md-4">
+        <img src="{{ store.image }}" class="img-fluid">
+    </div>
+    <div class="col-md-8">
+        <h2>{{ store.title }}</h2>
+        <p>Name: {{ store.name }} </p>
+        <p>Description: {{ store.description }}</p>
+        <p>Owner: {{ store.owner }}</p>
+        <p>Date created: {{ store.date_created }}</p>
+        <p>Category: {{ store.category }}</p>
+        <p>URL: {{ store.url }}</p>
+
+        <hr>
+        <a href="#"><button class="btn btn-danger">Check our products! </button></a>
+    </div>
+
+
+
+</div>
+
+{% endblock content %}
