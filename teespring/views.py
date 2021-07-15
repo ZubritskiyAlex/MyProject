@@ -5,8 +5,10 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView
 from django.core.paginator import Paginator
 from django.http import HttpResponseRedirect, JsonResponse
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from django.views.generic import ListView, DetailView, CreateView
+
+from resevation.forms import ReservationForm
 from teespring.models import Store, User, Category, Order, OrderItem
 from .forms import AddProductForm, AddStoreForm, AddReviewForm, OrderForm, RegisterUserForm, LoginUserForm
 from .mixins import menu, DataMixin
@@ -23,14 +25,26 @@ def search_products(request):
     else:
         return render(request, 'search/searchproduct.html',{})
 
+def store_detail(request, store_id):
+    store = get_object_or_404(Store, id=store_id)
+    return render(request, "stores/store.html", {'store':store})
 
 
 def show_product(request, product_id):
     product = get_object_or_404(Product, pk=product_id)
+    form = ReservationForm(request.POST or None, initial={"product": product})
     context = {
         'product': product,
         'title': product.title,
+        'form': form,
+        'sended':request.GET.get("sended", False),
     }
+
+    if request.method == "POST":
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect("{}?sended=True".format(reverse('product', kwargs={"product_id":product_id})))
+
     return render(request, 'products/product.html', context=context)
 
 
@@ -453,8 +467,3 @@ def updateItem(request):
 
 
 ####
-
-
-def store_detail(request, store_id):
-    store = get_object_or_404(Store, id=store_id)
-    return render(request, "stores/store.html", {'store':store})

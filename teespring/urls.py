@@ -21,15 +21,12 @@ urlpatterns = [
     path("searchproduct/", views.search_products, name='searchproduct'),
     path("createorder/", views.OrderCreate.create_order, name='create_order'),
     path("categories/", views.CategoriesListView.as_view(), name='categories_list'),
-    path("productsofstore/<int:store_id>", views.show_products_of_store, name='products_of_store'),
+    #path("productsofstore/<int:store_id>", views.show_products_of_store, name='products_of_store'),
     path('product/<int:product_id>/', show_product, name='product'),
     path('store/<int:store_id>/', store_detail, name='store'),
     path('cart/', include('cart.urls', )),
-
-
-#path('productssort/', products_list, name='product_list'),
-    path('cart/', include('cart.urls', )),
     path('orders/', include('orders.urls')),
+
 #path('cart/',views.cart, name='cart'),
 #path('checkout/',views.checkout, name='checkout'),
 #path('update_item/',views.updateItem, name='update_item'),

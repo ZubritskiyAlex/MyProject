@@ -56,6 +56,7 @@ INSTALLED_APPS = [
     'api',
     'django_celery_beat',
     'django_celery_results',
+    'resevation',
 ]
 
 
