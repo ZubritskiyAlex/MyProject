@@ -7,7 +7,7 @@ from django.core.paginator import Paginator
 from django.http import HttpResponseRedirect, JsonResponse
 from django.urls import reverse_lazy, reverse
 from django.views.generic import ListView, DetailView, CreateView
-
+from rest_framework.viewsets import ModelViewSet
 from resevation.forms import ReservationForm
 from teespring.models import Store, User, Category, Order, OrderItem
 from .forms import AddProductForm, AddStoreForm, AddReviewForm, OrderForm, RegisterUserForm, LoginUserForm
@@ -24,6 +24,7 @@ def search_products(request):
         return render(request,'search/searchproduct.html',{'searched':searched,'products':products})
     else:
         return render(request, 'search/searchproduct.html',{})
+
 
 def store_detail(request, store_id):
     store = get_object_or_404(Store, id=store_id)
@@ -58,9 +59,6 @@ def show_store(request, store_id):
 
     return render(request, 'stores/store_detail.html', context=context)
 
-
-
-
 def main_page(request):
     stores = Store.objects.all()
     return render(request, 'main.html',{'stores':stores, 'title':'Main page!'})
@@ -93,20 +91,6 @@ class StoresListView(ListView):
     def get(self, request):
         stores = Store.objects.all()
         return render(request, "stores/stores_list.html", {"store_list": stores})
-
-
-class SearchStores(ListView):
-    "Search stores"
-    paginate_by = 5
-
-    def get_queryset(self):
-        return Store.objects.filter(title__icontains=self.request.GET.get('q'))
-
-    def get_context_data(self, *args, **kwargs):
-        context = super().get_context_data(*args,**kwargs)
-        context['q'] = f'q={self.request.GET.get("q")}'
-        return context
-
 
 
 class UsersListView(ListView):
@@ -377,93 +361,12 @@ class ViewProduct(DetailView):
     context_object_name = 'product_item'
 
 
+#class ProductsOfStoreViewSet(ModelViewSet):
+#
+
 def show_products_of_store(request, store_id):
-    product = Product.objects.filter(product__id=store_id)
+    products = Store.objects.get(id=store_id).product_set.all()
     context = {
-        'products': product,
-        'title': product.title,
+      'products': products,
     }
     return render(request, 'products/products_of_store.html', context=context)
-
-
-
-
-
-
-
-#####deni ivy
-
-def store(request):
-    if request.user.is_authenticated:
-        customer = request.user.customer
-        order, created = Order.objects.get_or_create(customer=customer,complete=False)
-        items = order.orderitem_set.all()
-        cartItems = order.get_cart_items
-    else:
-        items = []
-        order = {'get_cart_total':0,'get_cart_items':0}
-        cartItems = order['get_cart_items']
-
-    products = Product.objects.all()
-    context = {'products':products, 'cartItems': cartItems}
-    return render(request, 'shop/shop.html', context)
-
-
-def cart(request):
-
-    if request.user.is_authenticated:
-        customer = request.user.customer
-        order, created = Order.objects.get_or_create(customer=customer,complete=False)
-        items = order.orderitem_set.all()
-        cartItems = order.get_cart_items
-
-    else:
-        items = []
-        order = {'get_cart_total':0,'get_cart_items':0, 'shipping': False}
-        cartItems = order['get_cart_items']
-
-    context = {'items': items, 'order': order, 'cartItems':cartItems}
-    return render(request, 'shop/cart.html', context)
-
-
-def checkout(request):
-    if request.user.is_authenticated:
-        customer = request.user.customer
-        order, created = Order.objects.get_or_create(customer= customer, complete=False)
-        items = order.orderitem_set.all()
-        cartItems = order.get_cart_items
-    else:
-        items = []
-        order = {'get_cart_total': 0, 'get_cart_items': 0, 'shipping': False}
-        cartItems = order['get_cart_items']
-
-    context = {'items':items, 'order':order, 'cartItems':cartItems}
-    return render(request, 'shop/checkout.html', context)
-
-def updateItem(request):
-    data = json.loads(request.body)
-    productId = data['productId']
-    action = data['action']
-    print('Action:', action)
-    print('productId:', productId)
-
-    customer = request.user.customer
-    product = Product.objects.get(id=productId)
-    order, created = Order.objects.get_or_create(customer=customer, complete=False)
-    orderItem, created = OrderItem.objects.get_or_create(order=order, product=product)
-
-    if action == 'add':
-        orderItem.quantity = (orderItem.quantity + 1)
-    elif action == 'remove':
-        orderItem.quantity = (orderItem.quantity - 1)
-
-    orderItem.save()
-
-    if orderItem.quantity <= 0:
-        orderItem.delete()
-
-    return JsonResponse('Item was added', safe=False)
-
-
-
-####

@@ -23,7 +23,6 @@ from teespring.models import User, Store, Category, Product, Review, \
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
 from rest_framework.filters import SearchFilter, OrderingFilter
-from rest_framework.generics import ListAPIView
 from django.contrib.auth import authenticate
 
 @csrf_exempt
