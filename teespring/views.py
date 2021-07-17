@@ -361,9 +361,6 @@ class ViewProduct(DetailView):
     context_object_name = 'product_item'
 
 
-#class ProductsOfStoreViewSet(ModelViewSet):
-#
-
 def show_products_of_store(request, store_id):
     products = Store.objects.get(id=store_id).product_set.all()
     context = {

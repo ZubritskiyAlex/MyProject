@@ -8,11 +8,13 @@
     <link rel="stylesheet" href="{% static "css/styles.css" %}" />
 </head>
 <body>
-    <h1>Products of stores</h1>
+    <h1>Products of store</h1>
 
 <ul>
 {% for product in products %}
         <a href="{% url 'products_of_store' product.id %}"> {{ product.title }} - {{ product.price}}</a><br/>
+        <a class="btn btn-outline-success" href="{% url 'product' product_id=product.id %}">More detailed</a>
+
 {% endfor %}
 
 </ul>
