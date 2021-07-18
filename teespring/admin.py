@@ -30,9 +30,9 @@ class CategoryAdmin(admin.ModelAdmin):
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
     """Products"""
-    list_display = ("title", "category", "url", "draft", "get_image")
-    readonly_fields = ("get_image",)
-    list_filter = ("category", "price", 'stores')
+    list_display = ("title", "category", "url", "draft",)
+    #readonly_fields = ("get_image",)
+    list_filter = ("category", "price",)
     search_fields = ("title", "category__name")
     inlines = [ReviewInline]
     save_on_top = True
@@ -45,7 +45,7 @@ class ProductAdmin(admin.ModelAdmin):
         }),
         ('Product_information', {
             "classes": ("collapse",),
-            "fields": ("description", "image", "get_image",)
+            "fields": ("description", "image",)
         }),
         ('Stores_and_category', {
             "classes": ("collapse",),
@@ -58,10 +58,7 @@ class ProductAdmin(admin.ModelAdmin):
         }),
     )
 
-    def get_image(self, obj):
-        return mark_safe(f'<img src={obj.image.url} width="100" height = "110"')
 
-    get_image.short_description = "Image"
 
 
 

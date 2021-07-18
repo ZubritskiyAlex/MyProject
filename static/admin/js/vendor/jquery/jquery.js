@@ -1952,7 +1952,7 @@ Expr = Sizzle.selectors = {
 
 						start = [ forward ? parent.firstChild : parent.lastChild ];
 
-						// non-xml :nth-child(...) stores cache data on `parent`
+						// non-xml :nth-child(...) shops cache data on `parent`
 						if ( forward && useCache ) {
 
 							// Seek `elem` from a previously-cached index

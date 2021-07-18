@@ -61,7 +61,7 @@ def show_store(request, store_id):
 
 def main_page(request):
     stores = Store.objects.all()
-    return render(request, 'main.html',{'stores':stores, 'title':'Main page!'})
+    return render(request, 'main.html',{'shops':stores, 'title':'Main page!'})
 
 def about(request):
     contact_list = Store.objects.all()

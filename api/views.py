@@ -97,7 +97,7 @@ class ProductViewSet(ModelViewSet):
     pagination_class = CustomPageNumberPagination
     filter_backends = [SearchFilter, OrderingFilter]
     filter_fields = ['price']
-    search_fields = ['title', 'stores', 'category']
+    search_fields = ['title', 'shops', 'category']
     permission_classes = [IsOwnerStaffOrReadOnly]
 
     def perform_create(self, serializer):

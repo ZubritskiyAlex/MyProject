@@ -61,7 +61,7 @@ class ProductApiTestCase(APITestCase):
         url = reverse('product-list')
         data = {
             'title': "Phone",
-            'stores': "TechnoStore",
+            'shops': "TechnoStore",
             'category': "Digital",
             'description': "Devices Store",
             'price': "500.00",
@@ -86,7 +86,7 @@ class ProductApiTestCase(APITestCase):
         url = reverse('product-detail', args=(self.product_1.id))
         data = {
             'title': self.product_1.title,
-            'stores': self.product_1.stores,
+            'shops': self.product_1.stores,
             'category': self.product_1.category,
             'description': self.product_1.description,
             'price': 480,
@@ -112,7 +112,7 @@ class ProductApiTestCase(APITestCase):
         url = reverse('product-detail', args=(self.product_1.id,))
         data = {
             'title': self.product_1.title,
-            'stores': self.product_1.stores,
+            'shops': self.product_1.stores,
             'category': self.product_1.category,
             'description': self.product_1.description,
             'price': 410,
@@ -139,7 +139,7 @@ class ProductApiTestCase(APITestCase):
         url = reverse('product-detail', args=(self.product_1.id,))
         data = {
             'title': self.product_1.title,
-            'stores': self.product_1.stores,
+            'shops': self.product_1.stores,
             'category': self.product_1.category,
             'description': self.product_1.description,
             'price': 410,

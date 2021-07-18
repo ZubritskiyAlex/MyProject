@@ -20,7 +20,7 @@ class ProductModelTest(TestCase):
 
     def test_stores_label(self):
         product = Product.objects.get(id=1)
-        field_label = product._meta.get_field('stores').verbose_name
+        field_label = product._meta.get_field('shops').verbose_name
         self.assertEquals(field_label,'Stores')
 
     def test_category_label(self):

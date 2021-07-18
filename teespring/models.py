@@ -96,7 +96,7 @@ class Store(models.Model):
     owner = models.ForeignKey(User, on_delete=models.SET_NULL,
                               null=True, related_name='my_stores')
     customers = models.ManyToManyField(User, through="UsersStoresRelation",
-                                  null=True, related_name='stores')
+                                  null=True, related_name='shops')
 
     objects = models.Manager()
 

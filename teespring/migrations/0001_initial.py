@@ -132,7 +132,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='store',
             name='customers',
-            field=models.ManyToManyField(null=True, related_name='stores', through='teespring.UsersStoresRelation', to=settings.AUTH_USER_MODEL),
+            field=models.ManyToManyField(null=True, related_name='shops', through='teespring.UsersStoresRelation', to=settings.AUTH_USER_MODEL),
         ),
         migrations.AddField(
             model_name='store',
@@ -172,7 +172,7 @@ class Migration(migrations.Migration):
         ),
         migrations.AddField(
             model_name='product',
-            name='stores',
+            name='shops',
             field=models.ManyToManyField(to='teespring.Store', verbose_name='Stores'),
         ),
         migrations.CreateModel(

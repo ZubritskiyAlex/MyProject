@@ -41,7 +41,7 @@ class ProductSerializerTestCase(TestCase):
         expected_data = [
             {
                 'title': product_1.title,
-                'stores': product_1.stores,
+                'shops': product_1.stores,
                 'category': product_1.category,
                 'description': product_1.description,
                 'price': product_1.price,
@@ -57,7 +57,7 @@ class ProductSerializerTestCase(TestCase):
 
             {
                 'title': product_2.title,
-                'stores': product_2.stores,
+                'shops': product_2.stores,
                 'category': product_2.category,
                 'description': product_2.description,
                 'price': product_2.price,
