@@ -1,19 +1,16 @@
-import json
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView
-from django.core.paginator import Paginator
-from django.http import HttpResponseRedirect, JsonResponse
+from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy, reverse
 from django.views.generic import ListView, DetailView, CreateView
-from rest_framework.viewsets import ModelViewSet
 from resevation.forms import ReservationForm
-from teespring.models import Store, User, Category, Order, OrderItem
-from .forms import AddProductForm, AddStoreForm, AddReviewForm, OrderForm, RegisterUserForm, LoginUserForm
-from .mixins import menu, DataMixin
+from teespring.models import Store, User, Category
+from .forms import AddProductForm, AddStoreForm, AddReviewForm,RegisterUserForm, LoginUserForm
 from django.shortcuts import render, redirect, get_object_or_404
 from teespring.models import Product
+from .mixins import DataMixin
 
 
 def search_products(request):
@@ -64,11 +61,7 @@ def main_page(request):
     return render(request, 'main.html',{'shops':stores, 'title':'Main page!'})
 
 def about(request):
-    contact_list = Store.objects.all()
-    paginator = Paginator(contact_list, 3)
-    page_number = request.GET.get('page')
-    page_obj = paginator.get_page(page_number)
-    return render(request, 'about.html', {'page_obj':page_obj,'menu': menu,'title': 'About app'})
+    return render(request, 'about.html', {'title': 'About app'})
 
 
 class ProductsListView(ListView):
@@ -141,7 +134,6 @@ class CreateProduct(LoginRequiredMixin, CreateView):
     def get_context_data(self, **kwargs):
         context = super(CreateProduct, self).get_context_data(**kwargs)
         context['title'] = "Add product"
-        context['menu'] = menu
         return context
 
     @login_required
@@ -193,7 +185,6 @@ class CreateStore(LoginRequiredMixin, CreateView):
     def get_context_data(self, **kwargs):
         context = super(CreateStore, self).get_context_data(**kwargs)
         context['title'] = "Add store!"
-        context['menu'] = menu
         return context
 
     @login_required
@@ -292,44 +283,6 @@ class CreateReview(LoginRequiredMixin, CreateView):
         return render(request, 'review/review_delete.html', context)
 
 
-
-class OrderCreate(DetailView):
-    '''CRUD ORDER'''
-    def create_order(request):
-
-        form = OrderForm()
-        if request.method =='POST':
-            form = OrderForm(request.POST)
-            if form.is_valid():
-                form.save()
-                return redirect('/')
-        context = {'form':form}
-        return render(request, 'orders/order/create.html', context)
-
-    def update_order(request,pk):
-
-        order = Order.objects.get(id=pk)
-        form = OrderForm(instance=order)
-
-        if request.method =='POST':
-            form = OrderForm(request.POST, instance=order)
-            if form.is_valid():
-                form.save()
-                return redirect('/')
-
-        context = {'form': form}
-        return render(request,'order/order_form.html', context)
-
-    def delete_order(request, pk):
-        order = Order.objects.get(id=pk)
-        if request.method == 'POST':
-            order.delete()
-            return redirect('/')
-
-        context = {'item': order}
-        return render(request, 'order/delete_order.html', context)
-
-
 class RegisterUserView(DataMixin, CreateView):
     form_class = RegisterUserForm
     template_name = 'users/register.html'
@@ -357,7 +310,7 @@ def logout_user(request):
 class ViewProduct(DetailView):
     model = Product
     pk_url_kwarg = 'product_id'
-    template_name = 'products/product_detail.html'
+    template_name = 'products/product.html'
     context_object_name = 'product_item'
 
 
@@ -367,3 +320,11 @@ def show_products_of_store(request, store_id):
       'products': products,
     }
     return render(request, 'products/products_of_store.html', context=context)
+
+
+def show_products_of_category(request, category_id):
+    products = Category.objects.get(id=category_id).product_set.all()
+    context = {
+      'products': products,
+    }
+    return render(request, 'products/products_of_category.html', context=context)

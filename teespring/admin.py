@@ -2,8 +2,8 @@ from django.contrib import admin
 from django.contrib.admin import ModelAdmin
 from django.utils.safestring import mark_safe
 
-from .models import User, Store, Category, Product, Review, UsersProductsRelation, UsersStoresRelation, CartProduct, \
-    Cart, Order, Customer, OrderItem, ShippingAddress
+from .models import User, Store, Category, Product, Review, UsersProductsRelation, UsersStoresRelation, \
+     Order, Customer, OrderItem, ShippingAddress
 
 
 @admin.register(Review)
@@ -101,24 +101,8 @@ class StoreAdmin(admin.ModelAdmin):
     get_image.short_description = "Image"
 
 
-@admin.register(UsersProductsRelation)
-class UsersProductsRelation(ModelAdmin):
-    pass
-
-
-@admin.register(UsersStoresRelation)
-class UsersStoresRelation(ModelAdmin):
-    pass
-
-@admin.register(CartProduct)
-class CartProduct(ModelAdmin):
-    pass
-
-@admin.register(Cart)
-class Cart(ModelAdmin):
-    pass
-
-
+admin.site.register(UsersProductsRelation)
+admin.site.register(UsersStoresRelation)
 admin.site.register(Customer)
 admin.site.register(Order)
 admin.site.register(OrderItem)

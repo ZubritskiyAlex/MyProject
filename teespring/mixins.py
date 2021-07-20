@@ -1,31 +1,8 @@
 from django.db.models import Count
-from django.views import View
 
-from teespring.models import User, Cart, Category
+from teespring.models import Category
 
 menu = ["Create product", "Create store", "Feedback", "About app"]
-
-
-
-class CartMixin(View):
-
-    def dispatch(self, request, *args, **kwargs):
-        if request.user.is_authenticated:
-            customer = User.objects.filter(user=request.user).first()
-            if not customer:
-                customer = User.objects.create(
-                    user=request.user
-                )
-            cart = Cart.objects.filter(owner=customer, in_order=False).first()
-            if not cart:
-                cart = Cart.objects.create(owner=customer)
-        else:
-            cart = Cart.objects.filter(for_anonymous_user=True).first()
-            if not cart:
-                cart = Cart.objects.create(for_anonymous_user=True)
-        self.cart = cart
-        return super().dispatch(request, *args, **kwargs)
-
 
 
 class DataMixin:

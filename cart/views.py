@@ -1,14 +1,20 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.views.decorators.http import require_POST
-
+from django.urls import reverse_lazy
 from teespring.models import Product
-from .models import Cart
+from .cart import Cart
 from .forms import CartAddProductForm
 
 
-@require_POST
+def cart_clear(request):
+    cart = Cart(request)
+    cart.clear()
+    return redirect(reverse_lazy("cart:cart_detail"))
+
+
+
 def cart_add(request, product_id):
     cart = Cart(request)
+    print(766)
     product = get_object_or_404(Product, id=product_id)
     form = CartAddProductForm(request.POST)
     if form.is_valid():
@@ -27,7 +33,9 @@ def cart_remove(request, product_id):
 
 def cart_detail(request):
     cart = Cart(request)
-    return render(request, 'cart/detail.html', {'cart': cart})
+    return render(request, 'cart_detail.html', {'cart': cart})
+
+
 
 
 

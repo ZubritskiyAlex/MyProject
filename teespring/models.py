@@ -241,42 +241,6 @@ class UsersStoresRelation(models.Model):
     def __str__(self):
         return f"{self.user.username} - {self.store.description}, RATE {self.rate}"
 
-
-class CartProduct(models.Model):
-
-    user = models.ForeignKey(User, verbose_name='Buyer', on_delete=models.CASCADE)
-    cart = models.ForeignKey('Cart', verbose_name='Cart', on_delete=models.CASCADE, related_name='related_products')
-    qty = models.PositiveIntegerField(default=1, verbose_name='Quantity')
-    product = models.ForeignKey(Product, verbose_name='Product', on_delete=models.CASCADE)
-    final_price = models.DecimalField(max_digits=9, decimal_places=2, verbose_name='Total_price')
-
-    def __str__(self):
-        return "Product: {} (for cartproduct)".format(self.product.title)
-
-    def save(self, *args, **kwargs):
-        self.final_price = self.qty * self.product.price
-        super().save(*args, **kwargs)
-
-
-class Cart(models.Model):
-
-    owner = models.ForeignKey(User, null=True, verbose_name='Owner', on_delete=models.CASCADE)
-    products = models.ManyToManyField(CartProduct, blank=True, related_name='related_cart')
-    total_products = models.PositiveIntegerField(default=0)
-    final_price = models.DecimalField(max_digits=9, default=0, decimal_places=2, verbose_name='Total_price')
-    in_order = models.BooleanField(default=False)
-    for_anonymous_user = models.BooleanField(default=False)
-
-    def __str__(self):
-        return str(self.id)
-
-    def save(self, *args, **kwargs):
-        if self.id:
-            self.total_products = self.products.count()
-            self.final_price = sum([cproduct.final_price for cproduct in self.products.all()])
-        super().save(*args, **kwargs)
-
-
 #########
 class Customer(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank=True)

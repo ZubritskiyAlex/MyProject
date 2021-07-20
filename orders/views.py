@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from cart.models import Cart
+from cart.cart import Cart
 from orders.forms import OrderCreateForm
 from orders.models import OrderItem
 from MyProject.tasks import order_created

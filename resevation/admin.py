@@ -4,5 +4,5 @@ from .models import Reservation
 
 @admin.register(Reservation)
 class ReservationAdmin(admin.ModelAdmin):
-    list_display = ['product', 'name', 'phone','email', 'date']
+    list_display = ['product', 'name', 'phone','email']
 

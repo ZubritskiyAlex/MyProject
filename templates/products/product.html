@@ -16,7 +16,7 @@
         <p>URL: {{ product.url }}</p>
         <p>Owner: {{ product.owner }}</p>
         <hr>
-        <a href="#"><button class="btn btn-danger">Add to card</button></a>
+        <a href="{% url 'cart:cart_add' product.id %}"><button class="btn btn-danger">Add to card</button></a>
     </div>
 
 
@@ -27,7 +27,7 @@
     {% if sended %}
     <h2> Thank you! Your reservation confirmed</h2>
     {% endif %}
-    <form action="" method="post">
+    <form action="#" method="post">
         {% csrf_token %}
         {{ form.as_p }}
         <input type="submit" value="Confirm the reservation">

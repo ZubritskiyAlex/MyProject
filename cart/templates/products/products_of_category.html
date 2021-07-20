@@ -1,0 +1,25 @@
+{% extends 'base.html'%}
+{% block content %}
+
+{% load static %}
+<head>
+    <meta charset="UTF-8">
+    <title>Products of category</title>
+    <link rel="stylesheet" href="{% static "css/styles.css" %}" />
+</head>
+<body>
+    <h1>Products of category</h1>
+
+<ul>
+{% for product in products %}
+        <a class="btn btn-outline-success" href="{% url 'products_of_category' category_id %}">{{ category.name }}</a>
+
+{% endfor %}
+
+</ul>
+
+
+{% endblock content %}
+
+
+</body>

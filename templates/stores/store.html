@@ -17,12 +17,9 @@
         <p>Date created: {{ store.date_created }}</p>
         <p>Category: {{ store.category }}</p>
         <p>URL: {{ store.url }}</p>
-
         <hr>
-        <a href="#"><button class="btn btn-danger">Check our products! </button></a>
+        <a href="{% url 'products_of_store' store.id %}"><button class="btn btn-danger">Check our products! </button></a>
     </div>
-
-
 
 </div>
 

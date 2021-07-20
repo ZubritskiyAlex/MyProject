@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div>
+    {% for product in cart %}
+        {{ product }}
+    <div>
+        <h1>item.product.name</h1>
+    </div>
+    {% empty %}
+        <div>
+            <p>Your cart is empty</p>
+        </div>
+    {% endfor %}
+</div>
+ <div>
+    <form action="{% url 'cart:cart_add' product.id %}" method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Add to cart">
+    </form>
+</div>
+
+    <a class="btn btn-danger" href="{% url 'cart:cart_clear' %}"></a>
+{% endblock content %}
