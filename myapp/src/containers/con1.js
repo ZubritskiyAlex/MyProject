@@ -1,7 +1,7 @@
 import React, {Component} from "react";
 
 
-class Container1 extends Component{
+class Con1 extends Component{
     render(){
     return(
     <div>
@@ -10,4 +10,4 @@ class Container1 extends Component{
 
     )}
 }
-export default Container1;
+export default Con1;
