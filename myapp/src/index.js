@@ -1,10 +1,18 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import App from './App';
+import {Provider} from "react-redux";
+
+import 'semantic-ui-css/semantic.min.css';
+import './app.css';
+
+import App from "./components/App";
+
+import createStore from "./store";
+const  store = createStore();
 
 ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-  document.getElementById('root')
+    <Provider store={createStore()}>
+        <App />
+    </Provider>,
+    document.getElementById('root')
 );
