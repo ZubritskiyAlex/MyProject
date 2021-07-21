@@ -22,7 +22,6 @@ def search_products(request):
     else:
         return render(request, 'search/searchproduct.html',{})
 
-
 def store_detail(request, store_id):
     store = get_object_or_404(Store, id=store_id)
     return render(request, "stores/store.html", {'store':store})
@@ -45,16 +44,6 @@ def show_product(request, product_id):
 
     return render(request, 'products/product.html', context=context)
 
-
-def show_store(request, store_id):
-    store = get_object_or_404(Store,
-                                pk=store_id)
-    context = {
-        'store': store,
-        'name': store.name,
-    }
-
-    return render(request, 'stores/store_detail.html', context=context)
 
 def main_page(request):
     stores = Store.objects.all()

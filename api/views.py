@@ -72,8 +72,7 @@ class StoreViewSet(ModelViewSet):
     filter_backends = [SearchFilter, OrderingFilter]
     permission_classes = [IsOwnerStaffOrReadOnly]
     filter_fields = ['name', 'description']
-    search_fields = ['popular_product', 'tranding_category']
-
+    search_fields = ['title', 'stores', 'category']
 
     def perform_create(self, serializer):
         serializer.validated_data['user'] = self.request.user

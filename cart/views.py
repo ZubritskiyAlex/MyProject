@@ -8,7 +8,7 @@ from .forms import CartAddProductForm
 def cart_clear(request):
     cart = Cart(request)
     cart.clear()
-    return redirect(reverse_lazy("cart:cart_detail"))
+    return redirect(reverse_lazy("cart:detail"))
 
 
 

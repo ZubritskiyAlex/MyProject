@@ -10,7 +10,8 @@ urlpatterns = [
 
     path("searchproduct/", views.search_products, name='searchproduct'),
     path("productsofstore/<int:store_id>", views.show_products_of_store, name='products_of_store'),
-    url(r"^productsofcategory/(?P<category_id>[\w-]+)/$", views.show_products_of_category, name='products_of_category'),
+    #path("productsofcategory/<category_id>", views.show_products_of_category, name='products_of_category'),
+    #url(r"^productsofcategory/(?P<category_id>[\w-]+)/$", views.show_products_of_category, name='products_of_category'),
     path('product/<int:product_id>/', show_product, name='product'),
     path('cart/', include('cart.urls', )),
     path('', main_page, name='home'),

@@ -19,7 +19,7 @@
       <div class="collapse navbar-collapse" id="navbarResponsive">
         <ul class="navbar-nav ml-auto">
           <li class="nav-item">
-              <a class="nav-link" href="{% url 'cart:cart_detail'%}">Cart <span class="badge badge-pill badge-danger"></span></a>
+              <a class="nav-link" href="{% url "cart:cart_detail" %}">Cart <span class="badge badge-pill badge-danger"></span></a>
               <p id = "cart-total">{{cartItems}}</p>
           </li>
         </ul>
@@ -32,7 +32,7 @@
     {% with total_items=cart|length %}
         {% if cart|length > 0 %}
             Your cart:
-            <a href="{% url "cart:detail" %}">
+            <a href="{% url "cart_detail" %}">
                 {{ total_items }} item{{ total_items|pluralize }},
                 ${{ cart.get_total_price }}
             </a>
