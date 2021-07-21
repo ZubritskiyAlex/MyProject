@@ -6,7 +6,7 @@ const CartComponent = ({ title, id, image, removeFromCart }) => (
     <List.Item>
       <List.Content floated="right">
         <Button onClick={removeFromCart.bind(this, id)} color="red">
-          Удалить
+          Delete
         </Button>
       </List.Content>
       <Image avatar src={image} />
@@ -17,17 +17,17 @@ const CartComponent = ({ title, id, image, removeFromCart }) => (
 
 const MenuComponent = ({ totalPrice, count, items }) => (
   <Menu>
-    <Menu.Item name="browse">Магазин книг</Menu.Item>
+    <Menu.Item name="browse">Store creator</Menu.Item>
 
     <Menu.Menu position="right">
       <Menu.Item name="signup">
-        Итого: &nbsp; <b>{totalPrice}</b>&nbsp;руб.
+        Total: &nbsp; <b>{totalPrice}</b>&nbsp;USD.
       </Menu.Item>
 
       <Popup
         trigger={
           <Menu.Item name="help">
-            Корзина (<b>{count}</b>)
+            Cart (<b>{count}</b>)
           </Menu.Item>
         }
         content={items.map(product => (
