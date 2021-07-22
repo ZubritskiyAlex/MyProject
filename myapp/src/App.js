@@ -1,17 +1,15 @@
-import Navbar from './Components/Navbar';
-import Profile from './Components/Profile';
+import React from 'react'
 import Header from "./Components/Header";
+import ProductsContent from "./Components/ProductsContent";
 import Footer from "./Components/Footer";
-import Login from "./Components/Login";
+
 
 
 const App =() => {
     return(
         <div className='app-wrapper'>
-            <Login/>
             <Header/>
-            <Navbar/>
-            <Profile/>
+            <ProductsContent/>
             <Footer/>
 
         </div>
