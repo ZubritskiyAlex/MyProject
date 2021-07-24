@@ -70,6 +70,20 @@ const handleClose = () =>{
     setOpen(false);
 }
 
+const [opensignup,setOpenSignUp] = React.useState(false);
+
+const handleClickOpenSignUp = () => {
+    setOpenSignUp(true);
+
+}
+
+const handleCloseSignUp = () =>{
+    setOpenSignUp(false);
+}
+
+
+
+
 
     return (
         <nav className='app-wrapper'>
@@ -102,7 +116,7 @@ const handleClose = () =>{
                     autoFocus
                     margin = "dense"
                     id="name"
-                    label= "Email Adress"
+                    label= "Email adress"
                     type="email"
                     fullWidth
                 />
@@ -122,7 +136,40 @@ const handleClose = () =>{
         </DialogActions>
     </Dialog>
     </Box>
-            <Button color="secondary" variant="contained">Sign up</Button>
+      <Box mr={3}>
+            <Button color="secondary" variant="contained" onClick={handleClickOpenSignUp} >Sign up</Button>
+            <Dialog open={opensignup} onClose={handleCloseSignUp} aria-labelledby="form-dialog-title">
+                <DialogTitle id="form-dialog-title">Sign up</DialogTitle>
+                <DialogContent>
+                    <DialogContentText>
+                        Sign up to start create!
+                    </DialogContentText>
+                    <TextField
+                    autoFocus
+                    margin = "dense"
+                    id="name"
+                    label= "Nickname"
+                    type="nickname"
+                    fullWidth
+                />
+
+                    <TextField
+                    autoFocus
+                    margin = "dense"
+                    id="pass"
+                    label= "Password"
+                    type="password"
+                    fullWidth
+                />
+                </DialogContent>
+            <DialogActions>
+                <Button onClick={handleCloseSignUp} color="primary">Cancel</Button>
+                <Button onClick={handleCloseSignUp} color="primary">Sign Up</Button>
+
+            </DialogActions>
+            </Dialog>
+            </Box>
+
   </Toolbar>
 </AppBar>
 <main>
