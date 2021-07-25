@@ -8,13 +8,12 @@ from .forms import CartAddProductForm
 def cart_clear(request):
     cart = Cart(request)
     cart.clear()
-    return redirect(reverse_lazy("cart:detail"))
+    return redirect(reverse_lazy("cart:cart_detail"))
 
 
 
 def cart_add(request, product_id):
     cart = Cart(request)
-    print(766)
     product = get_object_or_404(Product, id=product_id)
     form = CartAddProductForm(request.POST)
     if form.is_valid():
@@ -35,6 +34,8 @@ def cart_detail(request):
     cart = Cart(request)
     return render(request, 'cart_detail.html', {'cart': cart})
 
+def success_order(request):
+    return render(request, 'successful_order.html')
 
 
 
