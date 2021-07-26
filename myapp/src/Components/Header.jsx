@@ -13,6 +13,7 @@ import {
 
 } from "@material-ui/core";
 import {makeStyles} from "@material-ui/core";
+import {Link} from "react-router-dom";
 
 
 
@@ -174,10 +175,19 @@ const handleCloseSignUp = () =>{
 </AppBar>
 <main>
     <Button href="#text-buttons" color="primary">Home</Button>
+
     <Button href="#text-buttons" color="primary">Shops</Button>
+
+    <Link to="/products">
     <Button href="#text-buttons" color="primary">Products</Button>
+    </Link>
+
+
     <Button href="#text-buttons" color="primary">Create store!</Button>
+
+    <Link to="/createproduct">
     <Button href="#text-buttons" color="primary">Create product!</Button>
+    </Link>
     <Button href="#text-buttons" color="primary">Cart</Button>
 
     <Paper className={classes.mainFeaturesPost}
@@ -192,18 +202,14 @@ const handleCloseSignUp = () =>{
                      variant="h3"
                      gutterBottom
                     >
-                        HUI
+
                     </Typography>
                     <Typography
                         variant='h5'
                         color='inherit'
                         paragraph
                     >
-                        asfasdgasdgasdgadgasdxcvxcvzxc
                     </Typography>
-                    <Button variant="contained" color="secondary">
-                        Learn more
-                    </Button>
                 </div>
             </Grid>
             </Grid>
@@ -213,13 +219,15 @@ const handleCloseSignUp = () =>{
 
 <div className={classes.mainContent}>
     <Container maxWidth="sm">
-        <Typography variant="h2" align="center" color="textPrimary" gutterBottom>HUETA</Typography>
-        <Typography variant="h5" align="center" color="textSecondary" paragraph>HUEsasfafaTA</Typography>
+        <Typography variant="h2" align="center" color="textPrimary" gutterBottom>Welcome to shop creator!</Typography>
+        <Typography variant="h5" align="center" color="textSecondary" paragraph>This is my first website for remarkable people, on it you can create a product, an online store, buy a product and much more. I hope you like it!</Typography>
 
         <div className={classes.mainButtons}>
             <Grid container spacing={5} justify="center">
                 <Grid item>
+                    <Link to="/products">
                     <Button variant="contained" color='primary'>Start Now</Button>
+                    </Link>
                 </Grid>
                 <Grid item>
                     <Button variant="outlined" color="primary">Learn more</Button>
