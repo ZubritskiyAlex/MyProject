@@ -9,7 +9,7 @@ class CreateProduct extends React.Component{
     }
     create = (e) => {
         e.preventDefault();
-        if(this.state.name ==="" && this.state.price ===""&& this.state.shop ===""&& this.state.description ===""){
+        if(this.state.name ==="" || this.state.price ===""&& this.state.shop ===""&& this.state.description ===""){
             alert("All the fields are mandatory")
             return;
         }

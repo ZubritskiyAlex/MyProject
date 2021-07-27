@@ -17,7 +17,7 @@ const ShopDetail = (props) => {
         </div>
       </div>
       <div className="center-div">
-        <Link to="/">
+        <Link to="/shops">
           <button className="ui button blue center">
             Back to Shop List
           </button>

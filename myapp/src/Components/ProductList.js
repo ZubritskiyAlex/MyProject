@@ -3,13 +3,11 @@ import {Link} from 'react-router-dom';
 import ProductCard from "./ProductCard";
 
 const ProductList = (props) => {
-
     const inputEl = useRef("");
 
     const deleteProductHandler = (id) => {
             props.getProductId(id);
         };
-
 
 const renderProductList = props.products.map((product)=> {
         return (<ProductCard
@@ -19,7 +17,6 @@ const renderProductList = props.products.map((product)=> {
         />
         );
     });
-
 
 const getSearchTerm =() =>{
     props.searchKeyword(inputEl.current.value);
@@ -38,20 +35,19 @@ const getSearchTerm =() =>{
                     <input
                         ref={inputEl}
                         type="text"
-                        placeholder="Search Products"
+                        placeholder="Search product"
                         className="prompt"
                         value={props.term}
-                        onChange={getSearchTerm }
-                    />
+                        onChange={getSearchTerm}/>
                     <i className="search icon"></i>
                 </div>
             </div>
             <div className="ui celled list">
-                {renderProductList.length > 0
-                    ? renderProductList
-                    :"No products available"}
+                {renderProductList.length >0
+                 ? renderProductList
+                 : "No products available"}
             </div>
-        </div>
+            </div>
     );
 };
 

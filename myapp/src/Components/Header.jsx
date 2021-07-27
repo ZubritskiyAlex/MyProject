@@ -82,10 +82,6 @@ const handleCloseSignUp = () =>{
     setOpenSignUp(false);
 }
 
-
-
-
-
     return (
         <nav className='app-wrapper'>
             <header className='header'>
@@ -174,16 +170,20 @@ const handleCloseSignUp = () =>{
   </Toolbar>
 </AppBar>
 <main>
+    <Link to ="/">
     <Button href="#text-buttons" color="primary">Home</Button>
+    </Link>
 
+    <Link to="/shops">
     <Button href="#text-buttons" color="primary">Shops</Button>
-
+    </Link>
     <Link to="/products">
     <Button href="#text-buttons" color="primary">Products</Button>
     </Link>
 
-
+    <Link to="/createshop">
     <Button href="#text-buttons" color="primary">Create store!</Button>
+    </Link>
 
     <Link to="/createproduct">
     <Button href="#text-buttons" color="primary">Create product!</Button>
