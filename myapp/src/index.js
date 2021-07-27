@@ -4,30 +4,14 @@ import {Provider} from 'react-redux';
 import {createStore} from "redux";
 
 import App from './App';
+import reducer from './reducers';
 
 
-const initialState =[
-  'Hoodie',
-  'Laptop'
-
-];
-
-
-
-function shop(state = initialState, action){
-    if (action.type ==='ADD_PRODUCT'){
-        return [
-            ...state,
-            action.payload
-        ];
-    }
-    return state;
-}
-const store = createStore(shop);
-
+const store = createStore(reducer, window.__REDUX_DEVTOOLS_EXTENSION__&&
+    window.__REDUX_DEVTOOLS_EXTENSION__());
 ReactDOM.render(
   <Provider store={store}>
-    <App />,
+    <App />
   </Provider>,
   document.getElementById('root')
  );

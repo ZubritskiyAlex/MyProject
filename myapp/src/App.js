@@ -2,15 +2,33 @@ import React, {Component} from "react";
 import {connect} from "react-redux";
 
 class App extends Component{
+    addProduct() {
+        console.log('addTrack', this.productInput.value);
+        this.props.onAddProduct(this.productInput.value);
+        this.productInput.value ='';
+    }
+
+    findProduct() {
+        console.log('findProduct', this.searchInput.value);
+        this.props.onFindProduct(this.searchInput.value);
+    }
+
     render() {
-        console.log(this.props.testStore);
+        console.log(this.props.products);
         return(
             <div>
-                <input type="text"/>
-                <button>Add product</button>
-                <ul>
-                    {this.props.testStore.map((product,index) =>
-                    <li key={index}>{product}</li>
+            <div>
+                <input type="text" ref={(input) => {this.productInput = input }} />
+                <button onClick={this.addProduct.bind(this)}>Add product</button>
+            </div>
+
+            <div>
+                <input type="text" ref={(input) => {this.searchInput = input }} />
+                <button onClick={this.findProduct.bind(this)}>Find product</button>
+            </div>
+            <ul>
+                    {this.props.products.map((product,index) =>
+                    <li key={index}>{product.name}</li>
                     )}
                 </ul>
             </div>
@@ -19,7 +37,19 @@ class App extends Component{
 }
 export default connect(
     state => ({
-           testStore: state
+           products: state.products.filter(product => product.name.includes(state.filterProducts))
     }),
-    dispatch => ({})
+    dispatch => ({
+        onAddProduct: (name) => {
+            const payload = {
+                id: Date.now().toString(),
+                name
+            };
+            dispatch({type: 'ADD_PRODUCT', payload});
+        },
+        onFindProduct: (name) => {
+            console.log('name', name)
+            dispatch({type: 'FIND_PRODUCT', payload: name});
+        }
+    })
 )(App);
