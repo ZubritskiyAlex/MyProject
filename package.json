@@ -18,5 +18,9 @@
   "bugs": {
     "url": "https://github.com/ZubritskiyAlex/MyProject/issues"
   },
-  "homepage": "https://github.com/ZubritskiyAlex/MyProject#readme"
+  "homepage": "https://github.com/ZubritskiyAlex/MyProject#readme",
+  "dependencies": {
+    "react-router-dom": "^5.2.0",
+    "uuidv4": "^6.2.11"
+  }
 }
