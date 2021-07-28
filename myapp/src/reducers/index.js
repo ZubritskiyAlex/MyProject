@@ -6,7 +6,7 @@ import filterProducts from "./filterProducts";
 
 
 export default combineReducers({
-    products,
-    shops,
-    filterProducts
-})
+        products,
+        shops,
+        filterProducts
+    });
