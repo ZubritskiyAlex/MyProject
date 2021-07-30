@@ -20,7 +20,9 @@
   },
   "homepage": "https://github.com/ZubritskiyAlex/MyProject#readme",
   "dependencies": {
+    "react-redux": "^7.2.4",
     "react-router-dom": "^5.2.0",
+    "redux": "^4.1.0",
     "uuidv4": "^6.2.11"
   }
 }

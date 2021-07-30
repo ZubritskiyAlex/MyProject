@@ -1,0 +1,5 @@
+export const CREATE_PRODUCT = 'CREATE_PRODUCT'
+export const FETCH_PRODUCTS = 'FETCH_PRODUCTS'
+
+export const SHOW_LOADER = 'APP/SHOW_LOADER'
+export const HIDE_LOADER = 'APP/HIDE_LOADER'
