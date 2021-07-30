@@ -6,4 +6,5 @@ export default ({products}) => {
         return <button className="btn btn-primary">Load products</button>
     }
     return products.map(product => <Product product={product} key={product}/>)
+
 }

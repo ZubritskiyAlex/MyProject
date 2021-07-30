@@ -6,7 +6,7 @@ const Products = ({syncProducts}) => {
     if (!syncProducts.length){
         return <p className="text-center"> There are no posts yet</p>
     }
-    return syncProducts.map(product => <Product product={product} key={product} />)
+    return syncProducts.map(product => <Product product={product} key={product.id} />)
 }
 
 const mapStateToProps = state => {

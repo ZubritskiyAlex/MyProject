@@ -1,6 +1,6 @@
 import React from "react";
 import {connect} from "react-redux";
-import {createProduct} from "../redux/actions";
+import {createProduct} from "../redux/action$";
 
 class ProductForm extends React.Component{
 
@@ -20,7 +20,7 @@ class ProductForm extends React.Component{
             title, id: Date.now().toString()
         }
 
-        this.props.createProduct(newProduct)
+        console.log(newProduct)
         this.setState({title: ''})
     }
 
@@ -44,6 +44,7 @@ class ProductForm extends React.Component{
                         className="form-control"
                         id="title"
                         value={this.state.title}
+                        name="title"
                         onChange={this.changeInputHandler}
                     />
                 </div>

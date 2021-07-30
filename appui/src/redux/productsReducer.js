@@ -1,4 +1,4 @@
-import {CREATE_PRODUCT, FETCH_PRODUCTS} from "./types";
+import {CREATE_PRODUCT} from "./types";
 
 const initialState = {
     products: [],
@@ -6,11 +6,10 @@ const initialState = {
 }
 
 export const productsReducer = (state= initialState, action) => {
-  switch (action.type){
+  switch (action.type) {
       case CREATE_PRODUCT:
-          return {...state, products: state.products.concat([action.payload]) }
-      case FETCH_PRODUCTS:
-          return {...state, fetchedProducts: action.payload}
+          return {...state, products: [...state.products, action.payload]}
+
       default: return state
   }
 }
