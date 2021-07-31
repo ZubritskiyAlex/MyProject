@@ -2,13 +2,13 @@ import React from "react";
 import {Typography} from "@material-ui/core";
 
 export const ProductForm = () => {
-    return(
 
+    return(
         <Typography variant="h2" align="center" color="textPrimary" gutterBottom>Welcome to SiteMaker!
                 <h2>It's time to create!</h2>
                 <h3>Create product!</h3>
 
-        <form>
+        <form >
             <div className="form-group">
                <ul>
                 <input
@@ -44,12 +44,8 @@ export const ProductForm = () => {
                     <input
                     type ='text'
                     className='form-control'
-                    placeholder='Enter the storename'
-                />
-
+                    placeholder='Enter the storename'/>
                 </ul>
-
-
             </div>
         </form>
     </Typography>

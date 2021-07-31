@@ -1,25 +1,35 @@
 import React from "react";
+import {Container, Grid, Paper, Typography} from "@material-ui/core";
 
-export const Products = ({products}) => {
-    return(
-        <ul className="list-group">
-            {products.map(
-                product => (
-                <li
-                    className="list-group-item note"
-                    key={product.id}
-                >
+export const Products = () => {
+    return(<div>
+            <hr/>
+        <Typography variant="h1" align="center" color="textPrimary" gutterBottom>
+            <Paper>
+        <Container fixed>
+            <div/>
+            <Grid container>
+            <Grid item md={12}>
+                <Typography variant="h2" align="center" color="textPrimary" gutterBottom>Welcome to SiteMaker!
+                <p>This is my first experience with React!</p>
+                <h2>I hope you enjoy it   : )</h2>
+            </Typography>
+            </Grid>
+            </Grid>
 
-                <div>
-                    <strong>{product.title}</strong>
-                    <small>{new Date().toLocaleTimeString()}</small>
-                </div>
-                <button type= "button"
-                        className="btn btn-outline-danger btn-sm">
-                    &times;
-                    Hide the product</button>
-                 </li>
-                ))}
-        </ul>
+        </Container>
+            </Paper>
+
+        </Typography>
+
+            <h1>Products List</h1>
+        </div>
+
+
+
+
+
+
     )
+
 }
