@@ -1,9 +1,12 @@
+import AddShoppingCartOutlinedIcon from '@material-ui/icons/AddShoppingCartOutlined';
+
 export const ProductCard = ({ title,
     description,
     price,
-    quantityCount,
+    in_cart,
     orderProduct}) => {
 
+    const cartFill = in_cart ? 'crimson': 'black'
 
         return(
         <div className="post">
@@ -11,8 +14,9 @@ export const ProductCard = ({ title,
             <p>{description}</p>
             <p>{price}</p>
             <div>
-                <button onClick={orderProduct}>add to card</button>
-                {quantityCount}
+                <button onClick={orderProduct}>
+                    <AddShoppingCartOutlinedIcon style={{fill: cartFill}} />
+                </button>
             </div>
         </div>
     );

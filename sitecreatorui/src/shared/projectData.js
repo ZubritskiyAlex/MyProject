@@ -4,7 +4,8 @@ export const products = [
             title: 'Hoodie',
             description: 'sport wear',
             price: '200$',
-            quantityCount:0
+            quantityCount:0,
+            in_cart: true,
         },
 
         {
@@ -12,6 +13,7 @@ export const products = [
             title: 'Laptop',
             description: 'digital device',
             price: "700$",
-            quantityCount:0
+            quantityCount:0,
+            in_cart: false,
         }
     ]

@@ -6,24 +6,23 @@ export class ProductContent extends Component {
 
     state = {
         showProducts: true,
-        productsArr: products
+        productsArr: JSON.parse(localStorage.getItem('blogProducts'))|| products
     };
 
     orderProduct = id =>{
-        const temp = this.state.productsArr;
-        temp[id].quantityCount++;
+        const temp = [...this.state.productsArr];
+        temp[id].in_cart = !temp[id].in_cart;
 
         this.setState({
             productsArr:temp
         })
-    }
+
+        localStorage.setItem('blogProducts',JSON.stringify(temp))
+   }
 
 
 
-
-
-
-    render() {
+    render(){
     const blogProducts = this.state.productsArr.map((item,id) => {
             return (
                 <ProductCard
