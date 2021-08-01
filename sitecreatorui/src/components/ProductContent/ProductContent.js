@@ -21,6 +21,17 @@ export class ProductContent extends Component {
    }
 
 
+   deleteProduct = id => {
+        if (window.confirm(`Удалить ${this.state.productsArr[id].title}?`)){
+            const temp = [...this.state.productsArr];
+            temp.splice(id,1);
+
+
+            this.setState({
+                productsArr:temp
+                    })
+        localStorage.setItem('blogProducts', JSON.stringify(temp))
+        }}
 
     render(){
     const blogProducts = this.state.productsArr.map((item,id) => {
@@ -32,7 +43,7 @@ export class ProductContent extends Component {
                     price = {item.price}
                     quantityCount={item.quantityCount}
                     orderProduct={() => this.orderProduct(id)}
-
+                    deleteProduct = {() => this.deleteProduct(id)}
                 />
             );
         }
