@@ -13,6 +13,7 @@ export class ProductContent extends Component {
         showAddProductForm: false,
 //      productsArr: JSON.parse(localStorage.getItem('blogProducts'))|| products
         productsArr: [],
+        isPending: false
     };
 
     orderProduct = id =>{
@@ -33,6 +34,7 @@ export class ProductContent extends Component {
            axios.delete(`https://6107ceafd73c6400170d3616.mockapi.io/api/v1/Products/${blogProduct.id}`)
                .then((response) => {
                    console.log('The product was deleted =>', response.data)
+                   this.fetchProducts()
                })
                .catch((err) => {
                    console.log(err)
@@ -81,10 +83,14 @@ export class ProductContent extends Component {
    }
 
    fetchProducts = () => {
+    this.setState({
+       isPending: true
+    })
    axios.get('https://6107ceafd73c6400170d3616.mockapi.io/api/v1/Products')
             .then((response) =>{
                 this.setState({
-                    productsArr:response.data
+                    productsArr:response.data,
+                    isPending: false
                 })
                 console.log(response)
             })
@@ -140,6 +146,9 @@ export class ProductContent extends Component {
                            Create new product!
                        </Button>
                         </div>
+                        {
+                            this.state.isPending && <h1>Please, await</h1>
+                        }
                         <div className="products">{blogProducts}</div>
                         </>
                     </div>
