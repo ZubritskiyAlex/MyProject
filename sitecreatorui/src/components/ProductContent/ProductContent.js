@@ -3,6 +3,7 @@ import {ProductCard} from "./components/ProductCard";
 import {Component} from "react";
 import {AddProductForm} from "./components/AddProductForm";
 import {Button} from "@material-ui/core";
+import axios from "axios";
 
 
 export class ProductContent extends Component {
@@ -10,7 +11,8 @@ export class ProductContent extends Component {
     state = {
         showProducts: true,
         showAddProductForm: false,
-        productsArr: JSON.parse(localStorage.getItem('blogProducts'))|| products
+//      productsArr: JSON.parse(localStorage.getItem('blogProducts'))|| products
+        productsArr: [],
     };
 
     orderProduct = id =>{
@@ -25,17 +27,29 @@ export class ProductContent extends Component {
    }
 
 
-   deleteProduct = id => {
-        if (window.confirm(`Do you really want to delete ${this.state.productsArr[id].title}, with id=${this.state.productsArr[id].id}?`)){
-            const temp = [...this.state.productsArr];
-            temp.splice(id,1);
+   deleteProduct = (blogProduct) => {
+       if (window.confirm(`Do you really want to delete ${blogProduct.title}?`)) {
 
-            this.setState({
-                productsArr:temp
-                    })
-        localStorage.setItem('blogProducts', JSON.stringify(temp))
-        }}
-   handleAddProductFormShow = () => {
+           axios.delete(`https://6107ceafd73c6400170d3616.mockapi.io/api/v1/Products/${blogProduct.id}`)
+               .then((response) => {
+                   console.log('The product was deleted =>', response.data)
+               })
+               .catch((err) => {
+                   console.log(err)
+               })
+
+
+       //     const temp = [...this.state.productsArr];
+       //     temp.splice(id,1);
+
+       //     this.setState({
+       //         productsArr:temp
+       //             })
+       // localStorage.setItem('blogProducts', JSON.stringify(temp))
+       }}
+
+
+    handleAddProductFormShow = () => {
         this.setState({
             showAddProductForm: true
         });
@@ -66,8 +80,23 @@ export class ProductContent extends Component {
         })
    }
 
+   fetchProducts = () => {
+   axios.get('https://6107ceafd73c6400170d3616.mockapi.io/api/v1/Products')
+            .then((response) =>{
+                this.setState({
+                    productsArr:response.data
+                })
+                console.log(response)
+            })
+            .catch((err) => {
+                console.log(err)
+            })
+   }
+
+
    componentDidMount() {
-        window.addEventListener('keyup', this.handleEscape)
+        this.fetchProducts()
+        window.addEventListener('keyup', this.handleEscape);
    }
 
    componentWillUnmount() {
@@ -85,21 +114,24 @@ export class ProductContent extends Component {
                     price = {item.price}
                     quantityCount={item.quantityCount}
                     orderProduct={() => this.orderProduct(id)}
-                    deleteProduct = {() => this.deleteProduct(id)}
+                    deleteProduct = {() => this.deleteProduct(item)}
                 />
             );
         }
     )
 
+        if (this.state.productsArr.length === 0)
+            return <h1>Loading...</h1>
+
         return (
                 <div className="productsPage">
-                {this.state.showAddProductForm ? (
+                {this.state.showAddProductForm && (
                   <AddProductForm
                   productsArr={this.state.productsArr}
                   addNewBlogProduct={this.addNewBlogProduct}
                   handleAddFormHide={this.handleAddProductFormHide}
                   />
-                    ) : null}
+                    )}
                     <>
                     <h1>Simple ProductCreator</h1>
                     <div className="addNewProduct">
