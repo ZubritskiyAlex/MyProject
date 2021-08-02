@@ -41,5 +41,7 @@ button{
   outline: unset;
   border: none;
   font-family: "Poppins", sans-serif;
+  background-color: unset;
   cursor: pointer;
 }
+

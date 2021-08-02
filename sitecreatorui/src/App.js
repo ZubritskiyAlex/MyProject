@@ -6,7 +6,8 @@ import {ProductContent} from "./components/ProductContent/ProductContent";
 function App() {
   return (
     <div className="App">
-      <Header/>
+
+        <Header/>
 
       <main>
           <ProductContent />
