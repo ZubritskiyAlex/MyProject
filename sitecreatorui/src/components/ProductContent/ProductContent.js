@@ -64,7 +64,6 @@ export class ProductContent extends Component {
                 productsArr: products
             }
         })
-       this.handleAddProductFormHide()
    }
 
    componentDidMount() {
@@ -98,6 +97,7 @@ export class ProductContent extends Component {
                   <AddProductForm
                   productsArr={this.state.productsArr}
                   addNewBlogProduct={this.addNewBlogProduct}
+                  handleAddFormHide={this.handleAddProductFormHide}
                   />
                     ) : null}
                     <>

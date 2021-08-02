@@ -6,12 +6,26 @@ import {Component} from "react";
 
 
 export class AddProductForm extends Component{
+    constructor(props) {
+        super(props);
+        this.state = {
+            productTitle: '',
+            productDescription: '',
+            productPrice: ''
+        }
+    this.handleProductTitleChange = this.handleProductTitleChange.bind(this);
+    this.handleProductDescriptionChange = this.handleProductDescriptionChange.bind(this);
+    this.handleProductPriceChange = this.handleProductPriceChange.bind(this);
+    this.createProduct = this.createProduct.bind(this);
 
-    state = {
-        productTitle: '',
-        productDescription: '',
-        productPrice: ''
     }
+
+
+//    state = {
+//        productTitle: '',
+//        productDescription: '',
+//        productPrice: ''
+//    }
 
     handleProductTitleChange = e => {
         this.setState({
@@ -33,7 +47,8 @@ export class AddProductForm extends Component{
         })
     }
 
-    createProduct = () => {
+    createProduct = (e) => {
+        e.preventDefault()
         const product = {
             id: this.props.productsArr.length +1,
             title: this.state.productTitle,
@@ -44,6 +59,7 @@ export class AddProductForm extends Component{
 
     console.log(product)
         this.props.addNewBlogProduct(product)
+        this.props.handleAddFormHide()
     }
 
 
@@ -54,7 +70,7 @@ export class AddProductForm extends Component{
     const handleAddFormHide = this.props.handleAddProductFormHide;
     return(
        <>
-       <form action="" className="addProductForm" >
+       <form className="addProductForm" onSubmit={this.createProduct} >
             <button className="hideBtn" onClick={handleAddFormHide}><CloseIcon/></button>
            <h2> Сreating a product</h2>
            <div>
@@ -64,8 +80,8 @@ export class AddProductForm extends Component{
                    name="productTitle"
                    placeholder="Title of product"
                    value={this.state.productTitle}
-                   onChange={this.props.handleProductTitleChange}
-
+                   onChange={this.handleProductTitleChange}
+                   required
 
                />
            </div>
@@ -75,7 +91,8 @@ export class AddProductForm extends Component{
                    name="productDescription"
                    placeholder="Description of product"
                    value={this.state.productDescription}
-                   onChange={this.props.handleProductDescriptionChange}
+                   onChange={this.handleProductDescriptionChange}
+                   required
 
                />
            </div>
@@ -86,8 +103,9 @@ export class AddProductForm extends Component{
                    type="text"
                    name="productPrice"
                    placeholder="Price of product"
-           //        value={this.state.productPrice}
-                   onChange={this.props.handleProductPriceChange}
+                   value={this.productPrice}
+                   onChange={this.handleProductPriceChange}
+                   required
 
                />
            </div>
