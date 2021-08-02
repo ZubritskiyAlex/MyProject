@@ -72,15 +72,24 @@ export class ProductContent extends Component {
 
    addNewBlogProduct = (blogProduct) => {
 
-        this.setState((state) => {
-            const products = [...state.productsArr];
-            products.push(blogProduct);
-            localStorage.setItem('blogProducts', JSON.stringify(products))
-            return{
-                productsArr: products
-            }
-        })
-   }
+        axios.post('https://6107ceafd73c6400170d3616.mockapi.io/api/v1/Products', blogProduct)
+            .then((response) => {
+                console.log("Product was been created =>", response.data)
+                this.fetchProducts()
+            })
+            .catch((err) =>{
+                console.log(err)
+            })
+
+   //     this.setState((state) => {
+   //         const products = [...state.productsArr];
+   //         products.push(blogProduct);
+   //         localStorage.setItem('blogProducts', JSON.stringify(products))
+   //         return{
+   //             productsArr: products
+   //         }
+   //     })
+   };
 
    fetchProducts = () => {
     this.setState({

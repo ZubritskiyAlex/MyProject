@@ -50,7 +50,6 @@ export class AddProductForm extends Component{
     createProduct = (e) => {
         e.preventDefault()
         const product = {
-            id: this.props.productsArr.length +1,
             title: this.state.productTitle,
             description: this.state.productDescription,
             price: this.state.productPrice,
