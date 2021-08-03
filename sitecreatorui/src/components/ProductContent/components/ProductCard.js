@@ -1,15 +1,23 @@
 import './ProductCard.css'
 import AddShoppingCartOutlinedIcon from '@material-ui/icons/AddShoppingCartOutlined';
 import HighlightOffIcon from '@material-ui/icons/HighlightOff';
-
+import EditIcon from '@material-ui/icons/Edit';
 
 export const ProductCard = ({ title,
     description,
     price,
     in_cart,
     orderProduct,
-    deleteProduct
+    deleteProduct,
+    handleEditFormShow,
+    handleSelectProduct
                             }) => {
+
+    const showEditForm = () => {
+        handleSelectProduct();
+        handleEditFormShow();
+    }
+
 
     const cartFill = in_cart ? 'crimson': 'black'
 
@@ -25,9 +33,16 @@ export const ProductCard = ({ title,
                 </button>
             </div>
         </div>
-            <button className="deleteBtn" onClick={deleteProduct}>
-                <HighlightOffIcon/>
-            </button>
+            <div className="productControl">
+
+                <button className="editBtn" onClick={showEditForm}>
+                <EditIcon/>
+                </button>
+                <button className="deleteBtn" onClick={deleteProduct}>
+                    <HighlightOffIcon/>
+                </button>
+            </div>
+
         </div>
     );
 };

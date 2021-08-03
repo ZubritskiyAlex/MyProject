@@ -1,22 +1,22 @@
-import "./AddProductForm.css"
-import AddCircleOutlineRoundedIcon from '@material-ui/icons/AddCircleOutlineRounded';
-import {Button} from "@material-ui/core";
+import "./EditProductForm.css"
+import SaveIcon from '@material-ui/icons/Close';
 import CloseIcon from '@material-ui/icons/Close';
+import {Button} from "@material-ui/core";
 import {Component} from "react";
 
 
-export class AddProductForm extends Component{
+export class EditProductForm extends Component{
     constructor(props) {
         super(props);
         this.state = {
-            productTitle: '',
-            productDescription: '',
-            productPrice: ''
+            productTitle: this.props.selectedProduct.title,
+            productDescription: this.props.selectedProduct.description,
+            productPrice:this.props.selectedProduct.price,
         }
     this.handleProductTitleChange = this.handleProductTitleChange.bind(this);
     this.handleProductDescriptionChange = this.handleProductDescriptionChange.bind(this);
     this.handleProductPriceChange = this.handleProductPriceChange.bind(this);
-    this.createProduct = this.createProduct.bind(this);
+    this.saveProduct = this.saveProduct.bind(this);
 
     }
 
@@ -47,24 +47,27 @@ export class AddProductForm extends Component{
         })
     }
 
-    createProduct = (e) => {
+    saveProduct = (e) => {
         e.preventDefault()
         const product = {
+            id: this.props.selectedProduct.id,
             title: this.state.productTitle,
             description: this.state.productDescription,
             price: this.state.productPrice,
             in_cart: false,
         }
 
-    console.log(product)
-        this.props.addNewBlogProduct(product)
-        this.props.handleAddFormHide()
+//    console.log(product)
+        this.props.editBlogProduct(product)
+        this.props.handleEditFormHide()
     }
+
+
 
 
     handleEscape = (e) => {
         if (e.key === "Escape") {
-            this.props.handleAddProductFormHide();
+            this.props.handleEditProductFormHide();
         }
     };
 
@@ -77,16 +80,19 @@ export class AddProductForm extends Component{
     }
 
 
+
+
+
     render() {
-    const handleAddFormHide = this.props.handleAddProductFormHide;
+    const handleEditFormHide = this.props.handleEditProductFormHide;
     return(
        <>
-       <form className="addProductForm" onSubmit={this.createProduct} >
-            <button className="hideBtn" onClick={handleAddFormHide}><CloseIcon/></button>
-           <h2> Сreating a product</h2>
+       <form className="editProductForm" onSubmit={this.saveProduct}>
+            <button className="hideBtn" onClick={handleEditFormHide}><CloseIcon/></button>
+           <h2> Edit a product</h2>
            <div>
                <input
-                   className="addFormInput"
+                   className="editFormInput"
                    type="text"
                    name="productTitle"
                    placeholder="Title of product"
@@ -98,7 +104,7 @@ export class AddProductForm extends Component{
            </div>
            <div>
                <textarea
-                   className="addFormInput"
+                   className="editFormInput"
                    name="productDescription"
                    placeholder="Description of product"
                    value={this.state.productDescription}
@@ -110,7 +116,7 @@ export class AddProductForm extends Component{
 
             <div>
                <input
-                   className="addFormInput"
+                   className="editFormInput"
                    type="text"
                    name="productPrice"
                    placeholder="Price of product"
@@ -120,12 +126,11 @@ export class AddProductForm extends Component{
 
                />
            </div>
-
            <div>
-               <Button variant="contained" color="primary" onClick={this.createProduct}> Add product<AddCircleOutlineRoundedIcon/></Button>
+               <Button variant="contained" color="primary"> Save <SaveIcon/></Button>
            </div>
        </form>
-           <div onClick={this.props.handleAddProductFormHide} className="overlay"></div>
+           <div onClick={this.props.handleEditFormHide} className="overlay"></div>
        </>
    )
 }

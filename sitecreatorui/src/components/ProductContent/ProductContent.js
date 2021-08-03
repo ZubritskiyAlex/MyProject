@@ -2,8 +2,9 @@ import {products} from "../../shared/projectData";
 import {ProductCard} from "./components/ProductCard";
 import {Component} from "react";
 import {AddProductForm} from "./components/AddProductForm";
-import {Button} from "@material-ui/core";
+import {Button, CircularProgress} from "@material-ui/core";
 import axios from "axios";
+import {EditProductForm} from "./components/EditProductForm";
 
 
 export class ProductContent extends Component {
@@ -13,23 +14,45 @@ export class ProductContent extends Component {
         showAddProductForm: false,
 //      productsArr: JSON.parse(localStorage.getItem('blogProducts'))|| products
         productsArr: [],
-        isPending: false
+        isPending: false,
+
     };
 
-    orderProduct = id =>{
-        const temp = [...this.state.productsArr];
-        temp[id].in_cart = !temp[id].in_cart;
+    orderProduct = (blogProduct) =>{
 
-        this.setState({
-            productsArr:temp
+        const temp = {...blogProduct};
+        temp.in_cart = !temp.in_cart
+
+        axios.put(`https://6107ceafd73c6400170d3616.mockapi.io/api/v1/Products/${blogProduct.id}`, temp)
+            .then((response) =>{
+                console.log("order edit", response.data);
+                this.fetchProducts();
+            })
+            .catch((err) => {
+                console.log(err)
+
         })
 
-        localStorage.setItem('blogProducts',JSON.stringify(temp))
+
+
+
+    // add product to cart
+    //    const temp = [...this.state.productsArr];
+    //    temp[id].in_cart = !temp[id].in_cart;
+
+    //    this.setState({
+    //        productsArr:temp
+    //    })
+
+    //    localStorage.setItem('blogProducts',JSON.stringify(temp))
    }
 
 
    deleteProduct = (blogProduct) => {
        if (window.confirm(`Do you really want to delete ${blogProduct.title}?`)) {
+           this.setState({
+       isPending: true
+    })
 
            axios.delete(`https://6107ceafd73c6400170d3616.mockapi.io/api/v1/Products/${blogProduct.id}`)
                .then((response) => {
@@ -63,6 +86,19 @@ export class ProductContent extends Component {
         });
    }
 
+   handleEditProductFormShow = () => {
+        this.setState({
+            showEditProductForm: true,
+        });
+   }
+
+   handleEditProductFormHide = () => {
+        this.setState({
+            showEditProductForm: false,
+        });
+   }
+
+
 
    handleEscape = (e) => {
         if (e.key ==='Escape' && this.state.showAddProductForm){
@@ -71,6 +107,9 @@ export class ProductContent extends Component {
    }
 
    addNewBlogProduct = (blogProduct) => {
+        this.setState({
+       isPending: true
+    })
 
         axios.post('https://6107ceafd73c6400170d3616.mockapi.io/api/v1/Products', blogProduct)
             .then((response) => {
@@ -80,6 +119,23 @@ export class ProductContent extends Component {
             .catch((err) =>{
                 console.log(err)
             })
+       };
+
+
+
+   editBlogProduct = (updatedBlogProduct) => {
+       this.setState({
+           isPending: true,
+       });
+       axios.put(`https://6107ceafd73c6400170d3616.mockapi.io/api/v1/Products/${updatedBlogProduct.id}`,updatedBlogProduct)
+           .then((response) =>{
+               console.log("Product was been changed",response.data);
+               this.fetchProducts();
+           })
+           .catch((err) => {
+               console.log(err);
+           });
+   }
 
    //     this.setState((state) => {
    //         const products = [...state.productsArr];
@@ -89,12 +145,10 @@ export class ProductContent extends Component {
    //             productsArr: products
    //         }
    //     })
-   };
+
 
    fetchProducts = () => {
-    this.setState({
-       isPending: true
-    })
+
    axios.get('https://6107ceafd73c6400170d3616.mockapi.io/api/v1/Products')
             .then((response) =>{
                 this.setState({
@@ -108,19 +162,20 @@ export class ProductContent extends Component {
             })
    }
 
-
-   componentDidMount() {
-        this.fetchProducts()
-        window.addEventListener('keyup', this.handleEscape);
+   handleSelectProduct = (blogProduct) => {
+       this.setState({
+           selectedProduct: blogProduct
+       })
    }
 
-   componentWillUnmount() {
-        window.removeEventListener('keyup', this.handleEscape)
+
+   componentDidMount() {
+        this.fetchProducts();
    }
 
 
     render(){
-    const blogProducts = this.state.productsArr.map((item,id) => {
+    const blogProducts = this.state.productsArr.map((item) => {
             return (
                 <ProductCard
                     id ={item.id}
@@ -128,8 +183,11 @@ export class ProductContent extends Component {
                     description = {item.description}
                     price = {item.price}
                     quantityCount={item.quantityCount}
-                    orderProduct={() => this.orderProduct(id)}
+                    orderProduct={() => this.orderProduct(item)}
                     deleteProduct = {() => this.deleteProduct(item)}
+                    handleEditFormShow = {this.handleEditProductFormShow}
+                    handleSelectProduct = {() => this.handleSelectProduct(item)}
+
                 />
             );
         }
@@ -138,15 +196,31 @@ export class ProductContent extends Component {
         if (this.state.productsArr.length === 0)
             return <h1>Loading...</h1>
 
+
+
+        const productsOpacity = this.state.isPending ? 0.5 : 1
+
+
         return (
                 <div className="productsPage">
                 {this.state.showAddProductForm && (
                   <AddProductForm
-                  productsArr={this.state.productsArr}
-                  addNewBlogProduct={this.addNewBlogProduct}
-                  handleAddFormHide={this.handleAddProductFormHide}
+                      productsArr={this.state.productsArr}
+                      addNewBlogProduct={this.addNewBlogProduct}
+                      handleAddFormHide={this.handleAddProductFormHide}
                   />
                     )}
+
+                    {
+                        this.state.showEditProductForm && (
+                            <EditProductForm
+                            handleEditFormHide={this.handleEditProductFormHide}
+                            selectedProduct={this.state.selectedProduct}
+                            editBlogProduct = {this.editBlogProduct}
+                            />
+                        )
+                    }
+
                     <>
                     <h1>Simple ProductCreator</h1>
                     <div className="addNewProduct">
@@ -155,10 +229,11 @@ export class ProductContent extends Component {
                            Create new product!
                        </Button>
                         </div>
-                        {
-                            this.state.isPending && <h1>Please, await</h1>
-                        }
-                        <div className="products">{blogProducts}</div>
+
+                        <div className="products" style={{opacity: productsOpacity}}>
+                            {blogProducts}
+                        </div>
+                            {this.state.isPending && <CircularProgress color="secondary" className="preloader" /> }
                         </>
                     </div>
         );

@@ -7,3 +7,15 @@
 .deleteBtn svg{
     font-size: 40px;
 }
+
+.productControl{
+    display: flex;
+    align-items: center;
+}
+.postControl button {
+    padding: 0;
+}
+
+.deleteBtn svg{
+    font-size: 32px;
+}
