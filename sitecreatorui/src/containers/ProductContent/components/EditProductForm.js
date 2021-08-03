@@ -1,5 +1,5 @@
 import "./EditProductForm.css"
-import SaveIcon from '@material-ui/icons/Close';
+import SaveIcon from '@material-ui/icons/Save';
 import CloseIcon from '@material-ui/icons/Close';
 import {Button} from "@material-ui/core";
 import {Component} from "react";

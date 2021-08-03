@@ -1,3 +1,5 @@
+export const productsApiURL = `https://6107ceafd73c6400170d3616.mockapi.io/api/v1/Products`
+
 export const products = [
         {
             id:1,

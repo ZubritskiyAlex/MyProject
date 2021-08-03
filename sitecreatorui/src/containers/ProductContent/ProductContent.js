@@ -1,4 +1,4 @@
-import {products} from "../../shared/projectData";
+import {products, productsApiURL} from "../../shared/projectData";
 import {ProductCard} from "./components/ProductCard";
 import {Component} from "react";
 import {AddProductForm} from "./components/AddProductForm";
@@ -23,7 +23,7 @@ export class ProductContent extends Component {
         const temp = {...blogProduct};
         temp.in_cart = !temp.in_cart
 
-        axios.put(`https://6107ceafd73c6400170d3616.mockapi.io/api/v1/Products/${blogProduct.id}`, temp)
+        axios.put(`${productsApiURL}${blogProduct.id}`, temp)
             .then((response) =>{
                 console.log("order edit", response.data);
                 this.fetchProducts();
@@ -54,7 +54,7 @@ export class ProductContent extends Component {
        isPending: true
     })
 
-           axios.delete(`https://6107ceafd73c6400170d3616.mockapi.io/api/v1/Products/${blogProduct.id}`)
+           axios.delete(`${productsApiURL}${blogProduct.id}`)
                .then((response) => {
                    console.log('The product was deleted =>', response.data)
                    this.fetchProducts()
@@ -111,7 +111,7 @@ export class ProductContent extends Component {
        isPending: true
     })
 
-        axios.post('https://6107ceafd73c6400170d3616.mockapi.io/api/v1/Products', blogProduct)
+        axios.post(productsApiURL, blogProduct)
             .then((response) => {
                 console.log("Product was been created =>", response.data)
                 this.fetchProducts()
@@ -127,7 +127,7 @@ export class ProductContent extends Component {
        this.setState({
            isPending: true,
        });
-       axios.put(`https://6107ceafd73c6400170d3616.mockapi.io/api/v1/Products/${updatedBlogProduct.id}`,updatedBlogProduct)
+       axios.put(`${productsApiURL}${updatedBlogProduct.id}`,updatedBlogProduct)
            .then((response) =>{
                console.log("Product was been changed",response.data);
                this.fetchProducts();
@@ -149,7 +149,7 @@ export class ProductContent extends Component {
 
    fetchProducts = () => {
 
-   axios.get('https://6107ceafd73c6400170d3616.mockapi.io/api/v1/Products')
+   axios.get(productsApiURL)
             .then((response) =>{
                 this.setState({
                     productsArr:response.data,
