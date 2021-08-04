@@ -7,6 +7,8 @@ import axios from "axios";
 import {EditProductForm} from "./components/EditProductForm";
 
 
+let source;
+
 export class ProductContent extends Component {
 
     state = {
@@ -17,6 +19,33 @@ export class ProductContent extends Component {
         isPending: false,
 
     };
+
+    fetchProducts = () => {
+    source = axios.CancelToken.source();
+    axios.get(productsApiURL,{cancelToken:source.token})
+            .then((response) =>{
+                this.setState({
+                    productsArr:response.data,
+                    isPending: false
+                })
+                console.log(response)
+            })
+            .catch((err) => {
+                console.log(err)
+            })
+   }
+
+
+   componentDidMount() {
+        this.fetchProducts();
+   }
+
+   componentWillUnmount() {
+        if (source){
+            source.cancel('Axios get canceled')
+        }
+   }
+
 
     orderProduct = (blogProduct) =>{
 
@@ -147,20 +176,7 @@ export class ProductContent extends Component {
    //     })
 
 
-   fetchProducts = () => {
 
-   axios.get(productsApiURL)
-            .then((response) =>{
-                this.setState({
-                    productsArr:response.data,
-                    isPending: false
-                })
-                console.log(response)
-            })
-            .catch((err) => {
-                console.log(err)
-            })
-   }
 
    handleSelectProduct = (blogProduct) => {
        this.setState({
@@ -169,9 +185,7 @@ export class ProductContent extends Component {
    }
 
 
-   componentDidMount() {
-        this.fetchProducts();
-   }
+
 
 
     render(){
