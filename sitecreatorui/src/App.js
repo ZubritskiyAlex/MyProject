@@ -8,6 +8,10 @@ import {About} from "./components/About/about";
 import {AddProductForm} from "./containers/ProductContent/components/AddProductForm";
 import {Component, useState} from "react";
 import {connect} from "react-redux";
+import axios from "axios";
+import Menu from "./components/Menu/Menu";
+import {Container} from "semantic-ui-react";
+import ProductCard from "./components/Product/ProductCard";
 
 
 import './store'
@@ -16,32 +20,38 @@ import {setProducts} from "./actions/products";
 //const [isLoggedIn, setIsLoggedIn] = useState(localStorage.getItem('isLoggedIn') === 'true');
 //const [userName, setUserName] = useState(localStorage.getItem('userName'));
 
+import {products} from "./shared/projectData";
+
 
 
 class App extends Component {
 
+    componentWillMount() {
+        const {setProducts} = this.props
+        axios.get('/projectData').then(({data}) => {
+            setProducts(data);
+        });
+    }
 
     render() {
-        const {products} = this.props.products
-        const {setProducts} = this.props;
-        const newProducts = [
-            {
-                id:0,
-                title: 'asfasdgasdg -' + new Date()
-            }
-        ];
+        const {products, isReady} = this.props;
         return (
+
             <Router>
-                <div className="App">
+                <Container>
+                    <Menu/>
+
                     <Header
                        // userName={userName}
                        // isLoggedIn={isLoggedIn}
                        // setIsLoggedIn={setIsLoggedIn}
                     />
 
-
-                             <h1>{products[0].title}</h1>
-                             <button onClick={setProducts.bind(this, newProducts)}>Set new products</button>
+                        {!isReady
+                            ? 'Is loading'
+                            : products.map(product =>
+                                <ProductCard {...product}/>
+                        )}
                     <main>
                         <Switch>
                             <Route exact path="/products" component={ProductContent}/>
@@ -50,29 +60,25 @@ class App extends Component {
                             <Route exact path="/login" component={LoginPage}
                                   />
 
-
-
                             <Route exact path="/" component={About}/>
-
-
                         </Switch>
                     </main>
 
                     <Footer year={new Date().getFullYear()}/>
-                </div>
+                </Container>
             </Router>
         );
     }
 }
 
-const mapStateToProps = state =>({
-   ...state
+const mapStateToProps = ({products}) =>({
+   products: products.items,
+   isReady: products.isReady
 });
 
 const mapDispatchToProps = dispatch => ({
     setProducts: products => dispatch(setProducts(products))
 });
-
 
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);

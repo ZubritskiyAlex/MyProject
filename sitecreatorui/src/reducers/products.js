@@ -1,11 +1,6 @@
 const initialState = {
-    products: [
-        {
-            id:0,
-            title: 'New product'
-        }
-    ],
-
+    isLoading: false,
+    items: null,
 };
 
 export default (state=initialState, action) => {
@@ -13,8 +8,16 @@ export default (state=initialState, action) => {
         case 'SET_PRODUCTS':
             return {
                 ...state,
-                products: action.payload
+                products: action.payload,
+                isReady: true
             };
+
+        case 'SET_IS_READY':
+            return {
+                ...state,
+                isReady: action.payload
+            } ;
+            break;
         default:
             return state;
     }
