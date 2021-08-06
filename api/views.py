@@ -1,13 +1,10 @@
-from django.conf.urls import url
 from django.db.models import Count, Case, When, Avg
-from django.http import JsonResponse
-from django.shortcuts import get_object_or_404
+from django.http import JsonResponse, Http404
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework import status
-
-from rest_framework.decorators import action
-from rest_framework.mixins import UpdateModelMixin, ListModelMixin
+from rest_framework.mixins import UpdateModelMixin
 from rest_framework.response import Response
+from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet, GenericViewSet
 from api.pagination import CustomPageNumberPagination
 from api.permissions import IsOwnerStaffOrReadOnly
@@ -65,7 +62,6 @@ class UserViewSet(ModelViewSet):
 
 class StoreViewSet(ModelViewSet):
 
-    #queryset = UsersStoresRelation.objects.filter(like=True)
     queryset = Store.objects.all()
     serializer_class = StoreSerializer
     pagination_class = CustomPageNumberPagination
@@ -103,33 +99,56 @@ class ProductViewSet(ModelViewSet):
         serializer.validated_data['owner'] = self.request.user
         serializer.save()
 
-    def list(self, request, *args, **kwargs):
-        queryset = self.filter_queryset(self.get_queryset())
-        cart, products_in_cart = get_cart_and_products_in_cart(request)
-        page = self.paginate_queryset(queryset)
-        if page is not None:
-            serializer = self.get_serializer(page, many=True)
-            serializer_data = serializer.data
-            if cart:
-                for product in serializer_data:
-                    product['in_cart'] = True if product['id'] in products_in_cart else False
-            return self.get_paginated_response(serializer_data)
 
-        serializer = self.get_serializer(queryset, many=True)
-        serializer_data = serializer.data
-        if cart:
-            for product in serializer_data:
-                product['in_cart'] = True if product['id'] in products_in_cart else False
-        return Response(serializer_data)
 
-    def retrieve(self, request, *args, **kwargs):
-        instance = self.get_object()
-        serializer = self.get_serializer(instance)
-        cart, products_in_cart = get_cart_and_products_in_cart(request)
-        serializer_data = serializer.data
-        if cart:
-            serializer_data['in_cart'] = False if instance.id not in products_in_cart else True
-        return Response(serializer_data)
+class ProductList(APIView):
+
+    def get(self, request, format=None):
+        products = Product.objects.all()
+        serializer = ProductSerializer(products, many=True)
+        return Response(serializer.data)
+
+    def post(self, request):
+        print(request.data)
+        serializer = ProductSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+class ProductDetail(APIView):
+
+    def get_object(self, pk):
+        try:
+            return Product.objects.get(pk=pk)
+        except Product.DoesNotExist:
+            raise Http404
+
+    def put(self, request, pk):
+        product = Product.objects.get(pk=pk)
+        serializer = ProductSerializer(product, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def get(self, request, pk, format=None):
+        product = self.get_object(pk)
+        serializer = ProductSerializer(product)
+        return Response(serializer.data)
+
+    def delete(self, request, pk, format=None):
+        snippet = self.get_object(pk)
+        snippet.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+
+
+
+
 
 
 class ReviewViewSet(ModelViewSet):

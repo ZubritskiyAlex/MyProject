@@ -200,7 +200,7 @@ $(function () {
 
     // Setup authentication options.
     if (window.auth && window.auth.type === 'token') {
-      // Header authentication
+      // Sidebar authentication
       options.auth = new coreapi.auth.TokenAuthentication({
         scheme: window.auth.scheme,
         token: window.auth.token
