@@ -8,6 +8,7 @@ const ProductDetail = () => {
   let product = useSelector((state) => state.product);
   const { image, title, price, category, description } = product;
   const dispatch = useDispatch();
+
   const fetchProductDetail = async (id) => {
     const response = await axios
       .get(`https://fakestoreapi.com/products/${id}`)
@@ -44,7 +45,6 @@ const ProductDetail = () => {
                 <p>{description}</p>
                 <div className="ui vertical animated button" tabIndex="0">
                   <div className="hidden content">
-                    <i className="shop icon"></i>
                   </div>
                   <div className="visible content">Add to Cart</div>
                 </div>
