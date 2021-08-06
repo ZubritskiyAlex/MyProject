@@ -11,10 +11,11 @@ const ShopDetail = () => {
 
   const fetchShopDetail = async (id) => {
     const response = await axios
-      .get(`https://6107ceafd73c6400170d3616.mockapi.io/api/v1/Shops${id}`)
+      .get(`https://6107ceafd73c6400170d3616.mockapi.io/api/v1/Shops/${id}`)
       .catch((err) => {
         console.log("Err: ", err);
       });
+
     dispatch(selectedShop(response.data));
   };
 
