@@ -1,9 +1,40 @@
 import React, { useEffect } from "react";
 import axios from "axios";
-import { useParams } from "react-router-dom";
+import {Link, useParams} from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {removeSelectedShop, selectedShop} from "../redux/actions/shopActions";
+import { makeStyles } from '@material-ui/core/styles';
+
+import Card from '@material-ui/core/Card';
+import CardActions from '@material-ui/core/CardActions';
+import CardContent from '@material-ui/core/CardContent';
+import Button from '@material-ui/core/Button';
+import Typography from '@material-ui/core/Typography';
+
+
+
+
+const useStyles = makeStyles({
+  root: {
+    minWidth: 275,
+  },
+  bullet: {
+    display: 'inline-block',
+    margin: '0 2px',
+    transform: 'scale(0.8)',
+  },
+  title: {
+    fontSize: 14,
+  },
+  pos: {
+    marginBottom: 12,
+  },
+});
+
 const ShopDetail = () => {
+
+  const classes = useStyles();
+  const bull = <span className={classes.bullet}>•</span>;
   const { shopId } = useParams();
   let shop = useSelector((state) => state.shop);
   const {title, owner, description } = shop;
@@ -25,32 +56,28 @@ const ShopDetail = () => {
       dispatch(removeSelectedShop());
     };
   }, [shopId]);
+
   return (
     <div className="ui grid container">
       {Object.keys(shop).length === 0 ? (
         <div>...Loading</div>
       ) : (
-        <div className="ui placeholder segment">
-          <div className="ui two column stackable center aligned grid">
-            <div className="ui vertical divider">AND</div>
-            <div className="middle aligned row">
-
-              <div className="column rp">
-                <h1>{title}</h1>
-                <h2>
-                  <a className="ui teal tag label">${description}</a>
-                </h2>
-                <h3 className="ui brown block header">{owner}</h3>
-
-                <div className="ui vertical animated button" tabIndex="0">
-                  <div className="hidden content">
-                  </div>
-                  <div className="visible content">Back to products</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+          <Card className={classes.root}>
+      <CardContent>
+        <Typography variant="h5" component="h2">
+          {title}
+        </Typography>
+        <Typography className={classes.pos} color="textSecondary">
+          {owner}
+        </Typography>
+        <Typography variant="body2" component="p">
+          {description}
+        </Typography>
+      </CardContent>
+      <CardActions>
+        <Link to ="/"><Button variant="contained" color="primary" >Back to shops</Button></Link>
+      </CardActions>
+    </Card>
       )}
     </div>
   );

@@ -32,7 +32,6 @@ export const About = () => {
                 <Link href="#">LinkedIn: &nbsp; <LinkedInIcon/></Link>
                 <Link href="#"> Telegram: &nbsp;<TelegramIcon/></Link>
                 <Link href="#"> Instagram: &nbsp;<InstagramIcon/></Link>
-
             </div>
         </Typography>
     );
