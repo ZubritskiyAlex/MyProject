@@ -24,7 +24,7 @@ def search_products(request):
 
 def store_detail(request, store_id):
     store = get_object_or_404(Store, id=store_id)
-    return render(request, "stores/store.html", {'store':store})
+    return render(request, "stores/store.html", {'configureStore':store})
 
 
 def show_product(request, product_id):
@@ -173,7 +173,7 @@ class CreateStore(LoginRequiredMixin, CreateView):
 
     def get_context_data(self, **kwargs):
         context = super(CreateStore, self).get_context_data(**kwargs)
-        context['title'] = "Add store!"
+        context['title'] = "Add configureStore!"
         return context
 
     @login_required

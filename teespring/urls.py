@@ -28,7 +28,7 @@ urlpatterns = [
     path("searchproduct/", views.search_products, name='searchproduct'),
     path("categories/", views.CategoriesListView.as_view(), name='categories_list'),
 
-    path('store/<int:store_id>/', store_detail, name='store'),
+    path('configureStore/<int:store_id>/', store_detail, name='configureStore'),
     path('orders/', include('orders.urls')),
 
 ]

@@ -176,12 +176,12 @@ class UsersStoresRelationView(UpdateModelMixin, GenericViewSet):
     permission_classes = [IsAuthenticated]
     queryset = UsersStoresRelation.objects.all()
     serializer_class = UsersStoresRelationSerializers
-    lookup_field = 'store'
+    lookup_field = 'configureStore'
 
     def get_object(self):
         obj, created = UsersProductsRelation.objects.get_or_create(
                     user=self.request.user,
-                    product_id=self.kwargs['store'])
+                    product_id=self.kwargs['configureStore'])
         return obj
 
 

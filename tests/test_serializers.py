@@ -25,7 +25,7 @@ class ProductSerializerTestCase(TestCase):
                                            price="500.00", date_created="01.09.2003", is_tranding_category=True,
                                            image=None, url="https://mi-shop.by/", draft=False,
                                            )
-        product_2 = Product.objects.create(title="Hoodie", stores="Bershka", category="clothes", description="Сlothes store",
+        product_2 = Product.objects.create(title="Hoodie", stores="Bershka", category="clothes", description="Сlothes configureStore",
                                            price="250.00", date_created="11.07.2005", is_tranding_category=True,
                                            image=None, url="https://www.bershka.com/", draft=False,
 
@@ -207,7 +207,7 @@ class CategorySerializerTestCase(TestCase):
 class ReviewSerializerTestCase(TestCase):
     def test_ok(self):
         review_1 = Review.objects.create(email ='sdgba@gmail.com',name ='Alex',
-                                         text ='Best store in the world!',
+                                         text ='Best configureStore in the world!',
                                          parent ='Alex',
                                          review_on_store ='Techno',product='Phone',)
         review_2 = Review.objects.create(email='sqwrqwr@gmail.com', name='Zeka',

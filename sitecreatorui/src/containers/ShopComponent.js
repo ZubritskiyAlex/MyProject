@@ -2,23 +2,59 @@ import React from "react";
 import { Link } from "react-router-dom";
 import {useSelector} from "react-redux";
 
+import { makeStyles } from '@material-ui/core/styles';
+import Card from '@material-ui/core/Card';
+import CardActions from '@material-ui/core/CardActions';
+import CardContent from '@material-ui/core/CardContent';
+import Button from '@material-ui/core/Button';
+import Typography from '@material-ui/core/Typography';
+
+const useStyles = makeStyles({
+  root: {
+    minWidth: 275,
+  },
+  bullet: {
+    display: 'inline-block',
+    margin: '0 2px',
+    transform: 'scale(0.8)',
+  },
+  title: {
+    fontSize: 14,
+  },
+  pos: {
+    marginBottom: 12,
+  },
+});
+
 const ShopComponent = () => {
+
+    const classes = useStyles();
+    const bull = <span className={classes.bullet}>•</span>;
     const shops = useSelector((state) =>state.allShops.shops)
     const renderList = shops.map((shop)=>{
         const {id, title, description, owner} = shop;
-        return(<div className="four column wide" key={id}>
+        return(
+
+            <Card className={classes.root} key={id}>
             <Link to={`/shop/${id}`}>
-            <div className="ui link cards">
-                <div className="card">
-                    <div className="content">
-                        <div className="header">{title}</div>
-                        <div className="meta price">{description}</div>
-                        <div className="meta">{owner}</div>
-                </div>
-            </div>
-        </div>
+            <CardContent>
+
+                <Typography variant="h5" component="h2">
+                Title:&nbsp; {title}
+                </Typography>
+
+                <Typography variant="h5" component="h2">
+                Description:&nbsp; {description}
+                </Typography>
+                <Typography variant="body2" component="p">
+                  Owner:&nbsp; {owner}
+                </Typography>
+        </CardContent>
+                  <CardActions>
+                    <Button size="small" variant="contained" color="secondary" >Learn More</Button>
+                  </CardActions>
         </Link>
-     </div>
+     </Card>
    );
   });
   return <>{renderList}</>;

@@ -119,7 +119,7 @@ class Migration(migrations.Migration):
                 ('in_bookmarks', models.BooleanField(default=False)),
                 ('rate', models.PositiveSmallIntegerField(choices=[(1, 'Ok'), (2, 'Fine'), (3, 'Good'), (4, 'Amazing'), (5, 'Incredible')], null=True)),
                 ('date_created', models.DateField()),
-                ('store', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='teespring.store')),
+                ('configureStore', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='teespring.configureStore')),
                 ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
             ],
         ),
@@ -136,17 +136,17 @@ class Migration(migrations.Migration):
             ],
         ),
         migrations.AddField(
-            model_name='store',
+            model_name='configureStore',
             name='customers',
             field=models.ManyToManyField(null=True, related_name='stores', through='teespring.UsersStoresRelation', to=settings.AUTH_USER_MODEL),
         ),
         migrations.AddField(
-            model_name='store',
+            model_name='configureStore',
             name='owner',
             field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='my_stores', to=settings.AUTH_USER_MODEL),
         ),
         migrations.AddField(
-            model_name='store',
+            model_name='configureStore',
             name='user',
             field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL),
         ),
@@ -172,7 +172,7 @@ class Migration(migrations.Migration):
                 ('text', models.TextField(max_length=5000, verbose_name='Message')),
                 ('parent', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to='teespring.review', verbose_name='Parent')),
                 ('product', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='teespring.product', verbose_name='Product')),
-                ('review_on_store', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to='teespring.store', verbose_name='Parent')),
+                ('review_on_store', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to='teespring.configureStore', verbose_name='Parent')),
             ],
             options={
                 'verbose_name': 'Review',

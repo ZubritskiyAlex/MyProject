@@ -8,7 +8,7 @@ from api.views import UserViewSet, StoreViewSet, CategoryViewSet, ProductViewSet
 router = DefaultRouter()
 
 router.register(r'user', UserViewSet)
-router.register(r'store', StoreViewSet)
+router.register(r'configureStore', StoreViewSet)
 router.register(r'category', CategoryViewSet)
 router.register(r'product', ProductViewSet)
 router.register(r'order', OrderViewSet)

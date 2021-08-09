@@ -29,7 +29,7 @@ class ProductApiTestCase(APITestCase):
                                            price="255.00", date_created="11.11.2000", is_tranding_category=True,
                                            image=None, url="https://www.bershka.com/", draft=False, owner="Petr"
                                            )
-        self.product_3 = Product.objects.create(title="test3", stores="Bershka", category="clothes", description="Сlothes store",
+        self.product_3 = Product.objects.create(title="test3", stores="Bershka", category="clothes", description="Сlothes configureStore",
                                            price="250.00", date_created="11.07.2005", is_tranding_category=True,
                                            image=None, url="https://www.bershka.com/", draft=False, owner="Zeka"
                                            )
@@ -202,7 +202,7 @@ class StoreApiTestCase(APITestCase):
                                        )
 
     def test_get(self):
-        url = reverse('store-list')
+        url = reverse('configureStore-list')
         response = self.client.get(url)
         stores = Store.objects.all().annotate(
             id__in=[self.store_1.id, self.store_2.id, self.store_3.id]).annotate(
@@ -215,7 +215,7 @@ class StoreApiTestCase(APITestCase):
 
 
     def test_get_search(self):
-        url = reverse('store-list')
+        url = reverse('configureStore-list')
         response = self.client.get(url, data={'search': 'Test_product_1'})
         serializer_data = StoreSerializer([self.store_1, self.store_2], many=True).data
         self.assertEqual(status.HTTP_200_OK, response.status_code)
@@ -224,7 +224,7 @@ class StoreApiTestCase(APITestCase):
 
     def test_create(self):
         self.assertEqual(3, Store.objects.all().count())
-        url = reverse('store-list')
+        url = reverse('configureStore-list')
         data = {
             "user": "Alex",
             "name": "TecStore",
@@ -246,7 +246,7 @@ class StoreApiTestCase(APITestCase):
 
 
     def test_update(self):
-        url = reverse('store-detail', args=(self.store_1.id))
+        url = reverse('configureStore-detail', args=(self.store_1.id))
         data = {
             "user": self.store_1.user,
             "name": "Device shop",
@@ -268,7 +268,7 @@ class StoreApiTestCase(APITestCase):
 
     def test_update_not_owner(self):
         self.user2 = User.objects.create(username='test_user2',)
-        url = reverse('store-detail', args=(self.store_1.id,))
+        url = reverse('configureStore-detail', args=(self.store_1.id,))
         data = {
 
             "user": self.store_1.user,
@@ -294,7 +294,7 @@ class StoreApiTestCase(APITestCase):
 
     def test_update_not_owner_but_staff(self):
         self.user2 = User.objects.create(username='test_user2',is_staff=True)
-        url = reverse('store-detail', args=(self.store_1.id,))
+        url = reverse('configureStore-detail', args=(self.store_1.id,))
         data = {
 
             "user": self.store_1.user,
@@ -424,7 +424,7 @@ class ReviewApiTestCase(APITestCase):
                                         date_created="26.04.2000", is_owner=False,
                                         )
         self.review_1 = Review.objects.create(email ='sdgba@gmail.com',name ='Alex',
-                                         text ='Best store in the world!',
+                                         text ='Best configureStore in the world!',
                                          parent ='Alex',
                                          review_on_store ='Techno',product='Phone',)
 
@@ -454,11 +454,11 @@ class ReviewApiTestCase(APITestCase):
 
     def test_create(self):
         self.assertEqual(3, Review.objects.all().count())
-        url = reverse('store-list')
+        url = reverse('configureStore-list')
         data = {
             "email": 'sdgba@gmail.com',
             "name":'Alex',
-            "text": 'Best store in the world!',
+            "text": 'Best configureStore in the world!',
             "parent": 'Alex',
             "review_on_store": 'Techno',
             "product": 'Phone'

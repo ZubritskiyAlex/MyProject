@@ -1,4 +1,5 @@
 import './App.css';
+import React from "react";
 import {Component} from "react";
 import Sidebar from "./containers/Sidebar";
 import {BrowserRouter as Router, Switch, Route, Redirect} from "react-router-dom";
@@ -10,29 +11,46 @@ import {About} from "./components/About/about";
 import AuthPage from "./pages/authpage.component";
 import ShopsPage from "./pages/shopspage.component";
 import EditShopPage from "./pages/editshoppage.component";
+import {connect} from "react-redux";
+import Spinner from "./components/spinner/spinner.component";
 
-class App extends Component{
+import 'react-toastify/dist/ReactToastify.css'
+import {ToastContainer, Slide} from "react-toastify";
 
-    render() {
-        return(
+
+const App = ({user}) => {
+    return (
+        <React.Fragment>
+            <ToastContainer position="top-right" autoClose={2000}
+                hideProgressBar transition={Slide}/>
+            <Spinner/>
+            <Sidebar/>
             <div className="container my-5">
-                <Router>
-                    <Sidebar/>
-                    <Switch>
+                {user.isLoggedIn ?
+                    (<Switch>
+                        <Route path="/auth" exact component={AuthPage}/>
                         <Route path="/" exact component={ShopListing}/>
                         <Route path="/shop/:shopId" exact component={ShopDetail}/>
-                        <Route path ='/products' exact component={ProductListing} />
+                        <Route path='/products' exact component={ProductListing}/>
+                        <Route path="/product/:productId" exact component={ProductDetail}/>
+                        <Redirect to="/auth"/>
+                    </Switch> ):
+                    (<Switch>
+                        <Route path="/" exact component={ShopListing}/>
+                        <Route path="/shop/:shopId" exact component={ShopDetail}/>
+                        <Route path='/products' exact component={ProductListing}/>
                         <Route path="/product/:productId" exact component={ProductDetail}/>
                         <Route path="/about" exact component={About}/>
                         <Route path="/auth" exact component={AuthPage}/>
                         <Route path="/shops" exact component={ShopsPage}/>
                         <Route path="/edit-shop" exact component={EditShopPage}/>
-                        <Redirect to="/products"/>
-                    </Switch>
-                </Router>
+                        <Redirect to="/auth"/>
+                    </Switch>)
+                }
             </div>
-        );
-    }
+        </React.Fragment>
+    );
 }
 
-export default App;
+const mapStateToProps = (state) => ({user:state.user});
+export default connect(mapStateToProps)(App);

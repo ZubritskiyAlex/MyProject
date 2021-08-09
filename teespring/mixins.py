@@ -2,7 +2,7 @@ from django.db.models import Count
 
 from teespring.models import Category
 
-menu = ["Create product", "Create store", "Feedback", "About app"]
+menu = ["Create product", "Create configureStore", "Feedback", "About app"]
 
 
 class DataMixin:

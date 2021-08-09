@@ -49,7 +49,7 @@ const ProductComponent = () => {
                 <img src={image} alt={title} />
               </Typography>
         <Typography variant="body2" component="p">
-              {price}$
+              Price: {price}$
         </Typography>
          </CardContent>
           <CardActions>

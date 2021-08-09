@@ -50,7 +50,7 @@ class AddProductForm(forms.ModelForm):
 
 
 class AddStoreForm(forms.ModelForm):
-    """Add store form"""
+    """Add configureStore form"""
 
     def __init__(self,*args,**kwargs):
         super(AddStoreForm, self).__init__(*args,**kwargs)

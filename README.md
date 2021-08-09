@@ -1,6 +1,6 @@
 MyProject
 
-A web application is a platform for creating an online store. The user can create his own online store. The buyer does not have to be registered to be able to buy.
+A web application is a platform for creating an online configureStore. The user can create his own online configureStore. The buyer does not have to be registered to be able to buy.
 
 GETTING STARTED
 
