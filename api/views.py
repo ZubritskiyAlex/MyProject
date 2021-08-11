@@ -120,6 +120,7 @@ class ProductList(APIView):
 
 class ProductDetail(APIView):
 
+
     def get_object(self, pk):
         try:
             return Product.objects.get(pk=pk)

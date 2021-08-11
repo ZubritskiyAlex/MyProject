@@ -3,6 +3,7 @@ import {useDispatch , useSelector} from "react-redux";
 import ProductComponent from "./ProductComponent";
 import axios from "axios";
 import {setProducts} from "../redux/actions/productActions";
+import {API_PRODUCT_LIST_URL} from "../url_data/urlData";
 
 const ProductListing = () => {
     const products = useSelector((state)=> state);
@@ -10,7 +11,7 @@ const ProductListing = () => {
 
     const fetchProducts = async () => {
         const response = await axios
-            .get('http://127.0.0.1:8000/api/product/')
+            .get(API_PRODUCT_LIST_URL)
             .catch((err)=>{
                 console.log("Err",err);
             });

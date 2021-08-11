@@ -18,7 +18,7 @@ import IconButton from '@material-ui/core/IconButton';
 import Badge from '@material-ui/core/Badge';
 
 import MenuIcon from '@material-ui/icons/Menu';
-import {HomeRounded} from "@material-ui/icons";
+import {Group, GroupRounded, HomeRounded, RateReview} from "@material-ui/icons";
 
 
 
@@ -143,6 +143,7 @@ export default function Dashboard() {
           <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
             <Link to ="/"><Button variant="contained" color="primary" >Shops &nbsp; <StoreIcon />&nbsp;</Button></Link>
           </Typography>
+
 
           <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
               <Link to ="/addproduct"><Button variant="contained" color="primary" >Create product! &nbsp;<AddCircleOutlineOutlinedIcon/> </Button></Link>

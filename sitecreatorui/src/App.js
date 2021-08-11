@@ -11,7 +11,6 @@ import AuthPage from "./pages/authpage.component";
 import ShopsPage from "./pages/shopspage.component";
 import {connect} from "react-redux";
 import Spinner from "./components/spinner/spinner.component";
-import axios from "axios";
 import 'react-toastify/dist/ReactToastify.css'
 import {ToastContainer, Slide} from "react-toastify";
 
@@ -21,31 +20,19 @@ import AddShopForm from "./containers/AddShopComponent";
 
 
 
-function App({user, dispatchLogoutAction}){
+function App(){
 
-    const [products, setProducts] = useState([])
+
 
     return (
         <React.Fragment>
             <ToastContainer position="top-right" autoClose={2000}
                 hideProgressBar transition={Slide}/>
             <Spinner/>
-            <Sidebar isLoggedIn={user.isLoggedIn} userName={user.fullName}
-            onLogout={dispatchLogoutAction}
-            />
+            <Sidebar/>
             <div className="container my-5">
+                    <Switch>
 
-
-                {user.isLoggedIn ?
-                    (<Switch>
-                        <Route path="/auth" exact component={AuthPage}/>
-                        <Route path="/" exact component={ShopListing}/>
-                        <Route path="/shop/:shopId" exact component={ShopDetail}/>
-                        <Route path='/products' exact component={ProductListing}/>
-                        <Route path="/product/:productId" exact component={ProductDetail}/>
-                        <Redirect to="/auth"/>
-                    </Switch> ):
-                    (<Switch>
                         <Route path="/" exact component={ShopListing}/>
                         <Route path="/shop/:shopId" exact component={ShopDetail}/>
                         <Route path='/products' exact component={ProductListing}/>
@@ -56,8 +43,7 @@ function App({user, dispatchLogoutAction}){
                         <Route path="/addshop" exact component={AddShopForm}/>
                         <Route path="/addproduct" exact component={AddProductForm}/>
                         <Redirect to="/auth"/>
-                    </Switch>)
-                }
+                    </Switch>
             </div>
         </React.Fragment>
     );

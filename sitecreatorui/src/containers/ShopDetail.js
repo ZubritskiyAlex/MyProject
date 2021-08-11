@@ -42,7 +42,7 @@ const ShopDetail = () => {
 
   const fetchShopDetail = async (id) => {
     const response = await axios
-      .get(`https://6107ceafd73c6400170d3616.mockapi.io/api/v1/Shops/${id}`)
+      .get(`http://127.0.0.1:8000/api/store/${id}`)
       .catch((err) => {
         console.log("Err: ", err);
       });

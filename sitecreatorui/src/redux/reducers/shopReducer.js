@@ -41,7 +41,7 @@ export const selectedShopReducer = (state ={}, {type, payload}) =>{
 export const AddShopReducer = (state = initialState, {type, payload}) =>{
     switch (type){
         case ActionTypes.ADD_SHOP:
-            return {...state, products: payload};
+            return {...state, shops: payload};
         default:
             return state;
     }
