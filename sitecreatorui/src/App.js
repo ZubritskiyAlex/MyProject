@@ -22,15 +22,8 @@ import AddShopForm from "./containers/AddShopComponent";
 
 
 function App({user, dispatchLogoutAction}){
-    const [products, setProducts] = useState([])
 
-    useEffect(() =>{
-        axios({
-            method: "GET",
-            url: "http://127.0.0.1:8000/api/product/"
-        }).then(response => {setProducts(response.data)
-        })
-    }, [])
+    const [products, setProducts] = useState([])
 
     return (
         <React.Fragment>
@@ -41,9 +34,7 @@ function App({user, dispatchLogoutAction}){
             onLogout={dispatchLogoutAction}
             />
             <div className="container my-5">
-                <ul>
-                    {products.map(p => (<li key={p.id}></li>))}
-                </ul>
+
 
                 {user.isLoggedIn ?
                     (<Switch>

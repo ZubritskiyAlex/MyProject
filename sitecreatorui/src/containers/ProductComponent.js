@@ -30,7 +30,7 @@ const ProductComponent = () => {
   const classes = useStyles();
   const bull = <span className={classes.bullet}>•</span>;
   const products = useSelector((state) => state.allProducts.products);
-  const renderList = products.map((product) => {
+  const renderList = products.results?.map((product) => {
     const { id, title, image, price, category } = product;
     return (
 

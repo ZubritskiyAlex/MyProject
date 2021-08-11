@@ -31,8 +31,8 @@ const ShopComponent = () => {
     const classes = useStyles();
     const bull = <span className={classes.bullet}>•</span>;
     const shops = useSelector((state) =>state.allShops.shops)
-    const renderList = shops.map((shop)=>{
-        const {id, title, description, owner} = shop;
+    const renderList = shops.results?.map((shop)=>{
+        const {id, name, description, owner} = shop;
         return(
 
             <Card className={classes.root} key={id}>
@@ -40,7 +40,7 @@ const ShopComponent = () => {
             <CardContent>
 
                 <Typography variant="h5" component="h2">
-                Title:&nbsp; {title}
+                StoreName:&nbsp; {name}
                 </Typography>
 
                 <Typography variant="h5" component="h2">

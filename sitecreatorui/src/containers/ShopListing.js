@@ -11,7 +11,7 @@ const ShopListing= () => {
 
     const fetchShops = async () => {
         const response = await axios
-            .get("https://6107ceafd73c6400170d3616.mockapi.io/api/v1/Shops/")
+            .get("http://127.0.0.1:8000/api/store/")
             .catch((err)=>{
                 console.log("Err", err);
             });

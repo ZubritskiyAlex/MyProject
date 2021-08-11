@@ -57,6 +57,8 @@ INSTALLED_APPS = [
     'django_celery_beat',
     'django_celery_results',
     'resevation',
+    'corsheaders',
+
 ]
 
 
@@ -70,6 +72,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
 
 ]
 
@@ -112,7 +116,9 @@ DATABASES = {
     }
 }
 
-
+CORS_ORIGIN_WHITELIST = [
+    'http://localhost:3000',
+]
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
 

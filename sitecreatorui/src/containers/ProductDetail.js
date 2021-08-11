@@ -36,7 +36,7 @@ const useStyles = makeStyles({
 
 
 
-const ProductDetail = () => {
+const ProductDetail = (onAdd) => {
   const classes = useStyles();
   const bull = <span className={classes.bullet}>•</span>;
   const { productId } = useParams();
@@ -47,7 +47,7 @@ const ProductDetail = () => {
 
   const fetchProductDetail = async (id) => {
     const response = await axios
-      .get(`https://fakestoreapi.com/products/${id}`)
+      .get(`http://127.0.0.1:8000/api/product/${id}`)
       .catch((err) => {
         console.log("Err: ", err);
       });
@@ -87,7 +87,7 @@ const ProductDetail = () => {
       </CardContent>
       <CardActions>
         <Link to ="/products"> <Button variant="contained" color="primary" >Back to products</Button>&nbsp;</Link>
-        <Link to ="#"> <Button variant="contained" color="secondary" >Add to cart <AddShoppingCartRoundedIcon/></Button>&nbsp;</Link>
+        <Button variant="contained" color="secondary" onClick={onAdd} >Add to cart()<AddShoppingCartRoundedIcon/></Button>
         </CardActions>
     </Card>
 
