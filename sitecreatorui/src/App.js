@@ -1,8 +1,7 @@
 import './App.css';
-import React from "react";
-import {Component} from "react";
+import React, {useEffect, useState} from "react";
 import Sidebar from "./containers/Sidebar";
-import {BrowserRouter as Router, Switch, Route, Redirect} from "react-router-dom";
+import { Switch, Route, Redirect} from "react-router-dom";
 import ProductListing from "./containers/ProductListing";
 import ProductDetail from "./containers/ProductDetail";
 import ShopListing from "./containers/ShopListing";
@@ -10,22 +9,42 @@ import ShopDetail from "./containers/ShopDetail";
 import {About} from "./components/About/about";
 import AuthPage from "./pages/authpage.component";
 import ShopsPage from "./pages/shopspage.component";
-import EditShopPage from "./pages/editshoppage.component";
 import {connect} from "react-redux";
 import Spinner from "./components/spinner/spinner.component";
-
+import axios from "axios";
 import 'react-toastify/dist/ReactToastify.css'
 import {ToastContainer, Slide} from "react-toastify";
 
+import {logoutUser} from "./redux/actions/authActionCreator";
+import AddProductForm from "./containers/AddProductComponent";
+import AddShopForm from "./containers/AddShopComponent";
 
-const App = ({user}) => {
+
+
+function App({user, dispatchLogoutAction}){
+    const [products, setProducts] = useState([])
+
+    useEffect(() =>{
+        axios({
+            method: "GET",
+            url: "http://127.0.0.1:8000/api/product/"
+        }).then(response => {setProducts(response.data)
+        })
+    }, [])
+
     return (
         <React.Fragment>
             <ToastContainer position="top-right" autoClose={2000}
                 hideProgressBar transition={Slide}/>
             <Spinner/>
-            <Sidebar/>
+            <Sidebar isLoggedIn={user.isLoggedIn} userName={user.fullName}
+            onLogout={dispatchLogoutAction}
+            />
             <div className="container my-5">
+                <ul>
+                    {products.map(p => (<li key={p.id}></li>))}
+                </ul>
+
                 {user.isLoggedIn ?
                     (<Switch>
                         <Route path="/auth" exact component={AuthPage}/>
@@ -43,7 +62,8 @@ const App = ({user}) => {
                         <Route path="/about" exact component={About}/>
                         <Route path="/auth" exact component={AuthPage}/>
                         <Route path="/shops" exact component={ShopsPage}/>
-                        <Route path="/edit-shop" exact component={EditShopPage}/>
+                        <Route path="/addshop" exact component={AddShopForm}/>
+                        <Route path="/addproduct" exact component={AddProductForm}/>
                         <Redirect to="/auth"/>
                     </Switch>)
                 }
@@ -53,4 +73,10 @@ const App = ({user}) => {
 }
 
 const mapStateToProps = (state) => ({user:state.user});
-export default connect(mapStateToProps)(App);
+const mapDispatchToProps = (dispatch) => ({
+    dispatchLogoutAction: () => dispatch(logoutUser())
+});
+
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);

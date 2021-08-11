@@ -13,6 +13,7 @@ router.register(r'category', CategoryViewSet)
 router.register(r'product', ProductViewSet)
 router.register(r'order', OrderViewSet)
 router.register(r'review', ReviewViewSet)
+router.register(r'store', StoreViewSet)
 router.register(r'product_relation', UsersProductsRelationView)
 router.register(r'store_relation', UsersStoresRelationView)
 

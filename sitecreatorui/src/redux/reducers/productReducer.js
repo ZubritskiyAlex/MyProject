@@ -13,6 +13,17 @@ export const productReducer = (state = initialState, {type, payload}) =>{
     }
 };
 
+
+export const AddProductReducer = (state = initialState, {type, payload}) =>{
+    switch (type){
+        case ActionTypes.ADD_PRODUCT:
+            return state.concat(payload);
+        default:
+            return state;
+    }
+};
+
+
 export const selectedProductReducer = (state ={}, {type, payload}) =>{
     switch (type){
         case ActionTypes.SELECTED_PRODUCT:

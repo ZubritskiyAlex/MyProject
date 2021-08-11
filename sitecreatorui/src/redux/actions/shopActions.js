@@ -20,3 +20,9 @@ export const removeSelectedShop = () => {
         type: ActionTypes.REMOVE_SELECTED_SHOP,
     };
 };
+
+export const AddShop = () => {
+    return{
+        type: ActionTypes.ADD_SHOP,
+    };
+};

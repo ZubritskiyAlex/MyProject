@@ -63,16 +63,16 @@ class ProductsListView(ListView):
 
 class StoresListView(ListView):
     """Stores list"""
-    paginate_by = 5
     model = Store
     queryset = Store.objects.all()
     template_name = "stores/stores_list.html"
     ordering_fields = ['name', 'description', 'popular_product']
 
-
     def get(self, request):
         stores = Store.objects.all()
         return render(request, "stores/stores_list.html", {"store_list": stores})
+
+
 
 
 class UsersListView(ListView):
