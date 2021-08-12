@@ -156,7 +156,7 @@ export default function Dashboard() {
               <Link to ="/about"><Button variant="contained" color="primary" >About app &nbsp;<InfoIcon/></Button></Link>
           </Typography>
           <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
-             <Link to ="/login"><Button variant="contained" color="primary" >Login &nbsp;<ExitToAppIcon/></Button></Link>
+             <Link to ="/auth"><Button variant="contained" color="primary" >Login &nbsp;<ExitToAppIcon/></Button></Link>
           </Typography>
 
 

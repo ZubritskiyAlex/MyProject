@@ -1,5 +1,5 @@
 import './App.css';
-import React, {useEffect, useState} from "react";
+import React from "react";
 import Sidebar from "./containers/Sidebar";
 import { Switch, Route, Redirect} from "react-router-dom";
 import ProductListing from "./containers/ProductListing";
@@ -14,15 +14,13 @@ import Spinner from "./components/spinner/spinner.component";
 import 'react-toastify/dist/ReactToastify.css'
 import {ToastContainer, Slide} from "react-toastify";
 
-import {logoutUser} from "./redux/actions/authActionCreator";
 import AddProductForm from "./containers/AddProductComponent";
 import AddShopForm from "./containers/AddShopComponent";
+import Login from "./components/Login/login"
 
 
 
 function App(){
-
-
 
     return (
         <React.Fragment>
@@ -42,6 +40,8 @@ function App(){
                         <Route path="/shops" exact component={ShopsPage}/>
                         <Route path="/addshop" exact component={AddShopForm}/>
                         <Route path="/addproduct" exact component={AddProductForm}/>
+                        <Route path="/login" exact component={Login}/>
+
                         <Redirect to="/auth"/>
                     </Switch>
             </div>
@@ -49,11 +49,8 @@ function App(){
     );
 }
 
-const mapStateToProps = (state) => ({user:state.user});
-const mapDispatchToProps = (dispatch) => ({
-    dispatchLogoutAction: () => dispatch(logoutUser())
-});
 
 
 
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+
+export default (App);

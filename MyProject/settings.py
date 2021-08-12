@@ -58,7 +58,6 @@ INSTALLED_APPS = [
     'django_celery_results',
     'resevation',
     'corsheaders',
-
 ]
 
 
@@ -84,7 +83,7 @@ TEMPLATE_DIR = os.path.join(BASE_DIR, "templates")
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [TEMPLATE_DIR, BASE_DIR / 'templates', BASE_DIR/'myproject-ui/build']
+        'DIRS': [TEMPLATE_DIR, BASE_DIR / 'templates']
         ,
         'APP_DIRS': True,
         'OPTIONS': {

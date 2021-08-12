@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from rest_framework.serializers import ModelSerializer
+from rest_framework.authtoken.models import Token
 
 from teespring.models import User, Store, Product, Category, Review, UsersProductsRelation, UsersStoresRelation, \
     Order
@@ -7,17 +8,24 @@ from teespring.models import User, Store, Product, Category, Review, UsersProduc
 
 class UserSerializer(ModelSerializer):
 
-    user = serializers.SerializerMethodField()
+  #  user = serializers.SerializerMethodField()
 
     class Meta:
         model = User
         fields = '__all__'
+       # extra_kwargs ={'password': {'write_only': True, 'required': True}}
 
-    @staticmethod
-    def get_user(obj):
-        if not (obj.user.first_name and obj.user.last_name):
-            return obj.user.username
-        return ' '.join([obj.user.first_name, obj.user.last_name])
+    def create(self, validated_data):
+        user = User.objects.create_user(**validated_data)
+        Token.objects.create(user=user)
+        return user
+
+
+ #   @staticmethod
+ #   def get_user(obj):
+ #       if not (obj.user.first_name and obj.user.last_name):
+ #           return obj.user.username
+ #       return ' '.join([obj.user.first_name, obj.user.last_name])
 
 
 class StoreSerializer(ModelSerializer):

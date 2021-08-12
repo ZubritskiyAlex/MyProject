@@ -1,67 +1,60 @@
-import React, {useState} from "react";
-import {Button} from "@material-ui/core";
-import {toast} from "react-toastify";
-import {connect} from "react-redux";
-import {loginUser} from "../../redux/actions/authActionCreator";
-import mapDispatchToProps from "react-redux/lib/connect/mapDispatchToProps";
+import React, {Component} from "react";
+class Login extends Component{
+
+    state= {
+        credentials: {username: '', password: ''}
+    }
+
+    login = event => {
+        console.log(this.state.credentials);
+        fetch('http://127.0.0.1:8000/auth/', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(this.state.credentials)
+            })
+            .then( data => data.json())
+            .then(
+                data => {
+                    console.log(data);
+                }
+        ).catch( error => console.error(error))
+    }
+
+    inputChanged = event => {
+        const cred = this.state.credentials;
+        cred[event.target.name] = event.target.value
+        this.setState({credentials:cred})
 
 
-const LoginForm = ({dispatchLoginAction}) => {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('')
+    }
 
-    const handleOnSubmit = (event) => {
-        event.preventDefault();
-        dispatchLoginAction(email, password,
-            () => toast.success("Logged in successfully"),
-            (message) => toast.error(`Error: ${message}`));
+    render() {
+        return(
+            <div>
+                <h1>Login user form</h1>
 
-    };
-
-
-
-
-    return (
-        <React.Fragment>
-            <h2>Have an Account?</h2>
-            <h4>Login here</h4>
-            <br/>
-
-            <form noValidate onSubmit={handleOnSubmit}>
-                <div className="form-group">
-                <label htmlFor="email">Email Address</label>
-                <input noValidate id="email"
-                       type="email"
-                       name="email"
-                       placeholder="Email"
-                       value={email}
-                       onChange={(e) => setEmail(e.target.value)}
-                       className="form-control"
+                <label>
+                Username:
+                <input type="username" name="username"
+                value={this.state.credentials.username}
+                onChange={this.inputChanged}
                 />
-                </div>
+                </label>
 
-                <div className="form-group">
-                <label htmlFor="email">Password</label>
-                <input noValidate id="password"
-                       type="password"
-                       name="password"
-                       placeholder="Password"
-                       value={password}
-                       onChange={(e) => setPassword(e.target.value)}
-                       className="form-control"
+                <label>
+                Password:
+                <input type="password"
+                    name="password"
+                    value={this.state.credentials.password}
+                    onChange={this.inputChanged}
+
                 />
-                </div>
+                </label>
+                <button onClick={this.login}>Login</button>
 
-                <Button type="submit" className="btn btn-primary mr-2">
-                    Login | <i className="fas fa-sign-in-alt"></i>
-                </Button>
-                <Button type="submit" className="btn btn-outline-secondary">
-                    Cancel | <i className="fas fa-times"></i>
-                </Button>
+            </div>
+        );
+    }
+}
 
-            </form>
-        </React.Fragment>
-    );
-};
-
-export default connect(null, mapDispatchToProps)(LoginForm);
+export default Login;
